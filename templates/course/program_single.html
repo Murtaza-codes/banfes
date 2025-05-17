@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %} {{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+            {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journal me-1"></i>{% trans 'My courses' %}</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-bookmark me-1"></i>{{ program.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="card bg-primary text-white border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold mb-2"><i class="bi bi-mortarboard-fill me-2"></i>{{ program.title }}</h1>
+                    {% if program.summary %}
+                    <p class="lead mb-0">{{ program.summary }}</p>
+                    {% endif %}
+                </div>
+                {% if request.user.is_superuser %}
+                <a class="btn btn-light" href="{% url 'course_add' pk=program.pk %}">
+                    <i class="bi bi-plus-circle me-2"></i>{% trans 'Add Course' %}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'snippets/messages.html' %}
+    
+    <!-- Filter Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="bi bi-funnel me-2"></i>{% trans 'Filter Courses' %}</h5>
+            {% include 'snippets/filter_form.html' %}
+        </div>
+    </div>
+    
+    <!-- Courses Section -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-book me-2 text-primary"></i>{% trans 'Available Courses' %}</h5>
+                {% if credits %}
+                <span class="badge bg-primary rounded-pill">
+                    <i class="bi bi-award me-1"></i>{% trans 'Total Credits' %}: {{ credits.total_credits }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body p-0">
+            {% if courses %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-hash me-2"></i>#</th>
+                            <th><i class="bi bi-journal-text me-2"></i>{% trans 'Course Name' %}</th>
+                            <th><i class="bi bi-upc me-2"></i>{% trans 'Code' %}</th>
+                            <th><i class="bi bi-stars me-2"></i>{% trans 'Credits' %}</th>
+                            <th><i class="bi bi-bar-chart-steps me-2"></i>{% trans 'Level' %}</th>
+                            <th><i class="bi bi-calendar-date me-2"></i>{% trans 'Year' %}</th>
+                            {% if request.user.is_superuser %}
+                            <th class="text-end"><i class="bi bi-gear me-2"></i>{% trans 'Actions' %}</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses %}
+                        <tr>
+                            <td>{{ forloop.counter }}.</td>
+                            <td>
+                                <a href="{{ course.get_absolute_url }}" class="text-decoration-none fw-medium">
+                                    {{ course.title }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-light text-dark">{{ course.code }}</span></td>
+                            <td>{{ course.credit }}</td>
+                            <td>
+                                <span class="badge {% if course.level == 'High School' %}bg-info{% else %}bg-secondary{% endif %} text-white">
+                                    {{ course.level }}
+                                </span>
+                            </td>
+                            <td>{{ course.year }}</td>
+                            {% if request.user.is_superuser %}
+                            <td class="text-end">
+                                <div class="btn-group">
+                                    <a href="{{ course.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'edit_course' slug=course.slug %}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'edit_course' slug=course.slug %}">
+                                                <i class="bi bi-pencil-square me-2 text-primary"></i>{% trans 'Edit' %}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'course_session' slug=course.slug %}">
+                                                <i class="bi bi-calendar-week me-2 text-info"></i>{% trans 'Sessions' %}
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="{% url 'delete_course' slug=course.slug %}">
+                                                <i class="bi bi-trash me-2"></i>{% trans 'Delete' %}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
+                <h4 class="text-muted">{% trans 'No courses available for this program' %}</h4>
+                {% if request.user.is_superuser %}
+                <a href="{% url 'course_add' pk=program.pk %}" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle me-2"></i>{% trans 'Add Course' %}
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if courses.paginator.page_range|length > 1 %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if courses.number == 1 %}disabled{% endif %}">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <i class="bi bi-chevron-double-left"></i>
+                </a>
+            </li>
+            <li class="page-item {% if not courses.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="{% if courses.has_previous %}?page={{ courses.previous_page_number }}{% else %}#{% endif %}" aria-label="Previous">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            
+            {% for i in courses.paginator.page_range %}
+                {% if i == courses.number %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% elif i > courses.number|add:'-3' and i < courses.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            <li class="page-item {% if not courses.has_next %}disabled{% endif %}">
+                <a class="page-link" href="{% if courses.has_next %}?page={{ courses.next_page_number }}{% else %}#{% endif %}" aria-label="Next">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item {% if courses.number == courses.paginator.num_pages %}disabled{% endif %}">
+                <a class="page-link" href="?page={{ courses.paginator.num_pages }}" aria-label="Last">
+                    <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock content %}

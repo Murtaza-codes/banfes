@@ -1,0 +1,489 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journal me-1"></i>{% trans 'My courses' %}</a></li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-book me-1"></i>{{ course.name }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+    <div class="row">
+        <!-- Main Discussion Area -->
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                                <i class="bi bi-chat-left-text-fill fs-4"></i>
+                            </div>
+                            <h2 class="mb-0">{% trans 'Course Discussion' %}</h2>
+                        </div>
+                        <button class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#newTopicModal">
+                            <i class="bi bi-plus-lg me-2"></i>{% trans 'New Topic' %}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card-body pt-2">
+                    <!-- Search and Filter -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-4 gap-2">
+                        <form method="GET" action="{{ request.path }}" class="d-flex flex-grow-1 me-2">
+                            <div class="input-group" style="max-width: 400px;">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="search" name="search" class="form-control border-start-0" 
+                                       placeholder="{% trans 'Search discussions...' %}"
+                                       value="{{ request.GET.search|default:'' }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="d-flex gap-2">
+                            <select class="form-select" style="max-width: 150px;" id="topicTypeFilter">
+                                <option value="all" {% if not request.GET.type %}selected{% endif %}>{% trans 'All topics' %}</option>
+                                <option value="question" {% if request.GET.type == 'question' %}selected{% endif %}>{% trans 'Questions' %}</option>
+                                <option value="announcement" {% if request.GET.type == 'announcement' %}selected{% endif %}>{% trans 'Announcements' %}</option>
+                                <option value="general" {% if request.GET.type == 'general' %}selected{% endif %}>{% trans 'General' %}</option>
+                            </select>
+                            
+                            <select class="form-select" style="max-width: 150px;" id="topicSortFilter">
+                                <option value="newest" {% if request.GET.sort == 'newest' or not request.GET.sort %}selected{% endif %}>{% trans 'Newest' %}</option>
+                                <option value="active" {% if request.GET.sort == 'active' %}selected{% endif %}>{% trans 'Most active' %}</option>
+                                <option value="unanswered" {% if request.GET.sort == 'unanswered' %}selected{% endif %}>{% trans 'Unanswered' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Discussion List -->
+                    <div class="list-group mb-4">
+                        {% for topic in topics %}
+                        <div class="list-group-item list-group-item-action p-3 border rounded mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="badge bg-{% if topic.topic_type == 'question' %}primary{% elif topic.topic_type == 'announcement' %}danger{% elif topic.topic_type == 'resource' %}info{% else %}success{% endif %} rounded-pill me-2">
+                                        {% if topic.topic_type == 'question' %}<i class="bi bi-question-circle me-1"></i>
+                                        {% elif topic.topic_type == 'announcement' %}<i class="bi bi-megaphone me-1"></i>
+                                        {% elif topic.topic_type == 'resource' %}<i class="bi bi-file-earmark me-1"></i>
+                                        {% else %}<i class="bi bi-chat me-1"></i>{% endif %}
+                                        {{ topic.get_topic_type_display }}
+                                    </span>
+                                    {% if topic.slug %}
+                                    <a href="{% url 'course_discussion_topic' course.slug topic.slug %}" class="fw-bold text-decoration-none">{{ topic.title }}</a>
+                                    {% else %}
+                                    <span class="fw-bold">{{ topic.title }}</span>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ topic.created_at|timesince }} {% trans 'ago' %}</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ topic.created_by.get_picture }}" class="rounded-circle me-2" width="32" height="32" alt="{{ topic.created_by.get_full_name }}" style="object-fit: cover;">
+                                    <span class="text-muted small"><i class="bi bi-person me-1"></i>{{ topic.created_by.get_full_name }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-flex align-items-center text-muted small">
+                                        <i class="bi bi-eye me-1"></i> {{ topic.views }}
+                                    </span>
+                                    <span class="d-flex align-items-center text-muted small">
+                                        <i class="bi bi-chat-left me-1"></i> {{ topic.responses.count }}
+                                    </span>
+                                    <a href="{% url 'course_discussion_topic' course.slug topic.slug %}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye me-1"></i> {% trans 'View' %}
+                                    </a>
+                                    <a href="{% url 'course_discussion_topic' course.slug topic.slug %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-reply me-1"></i> {% trans 'Reply' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center p-5 border rounded">
+                            <div class="text-muted mb-3">
+                                <i class="bi bi-chat-square-text fs-1"></i>
+                            </div>
+                            <h4>{% trans 'No discussion topics yet' %}</h4>
+                            <p class="mb-4">{% trans 'Start the conversation by creating the first topic!' %}</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newTopicModal">
+                                <i class="bi bi-plus-lg me-2"></i>{% trans 'New Topic' %}
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if topics.has_other_pages %}
+                    <nav aria-label="Discussion pagination">
+                        <ul class="pagination justify-content-center">
+                            {% if topics.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ topics.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for i in topics.paginator.page_range %}
+                                {% if topics.number == i %}
+                                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if topics.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ topics.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- AI Assistant -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-info bg-opacity-10 text-info p-2 rounded-circle me-2">
+                            <i class="bi bi-robot fs-5"></i>
+                        </div>
+                        <h5 class="mb-0">{% trans 'AI Discussion Assistant' %}</h5>
+                    </div>
+        </div>
+        <div class="card-body">
+            <form id="aiForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                            <label for="prompt" class="form-label">{% trans 'Ask AI a question about the course' %}</label>
+                    <textarea 
+                        class="form-control" 
+                        id="prompt" 
+                                rows="3" 
+                        maxlength="300" 
+                                required
+                                placeholder="{% trans 'Example: How do I approach the assignment problem?' %}"></textarea>
+                            <small class="text-muted d-block text-end mt-1">
+                                <span id="charCount">0</span>/300
+                    </small>
+                </div>
+                        <button type="submit" class="btn btn-info w-100" id="submitBtn">
+                            <i class="bi bi-send me-2"></i>{% trans 'Ask AI Assistant' %}
+                </button>
+            </form>
+            
+            <div id="responseArea" class="mt-4" style="display: none;">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-info bg-opacity-10 text-info p-2 rounded-circle me-2">
+                                <i class="bi bi-robot"></i>
+                            </div>
+                            <h6 class="mb-0">{% trans 'AI Response' %}</h6>
+                        </div>
+                <div id="aiResponse" class="p-3 bg-light rounded"></div>
+            </div>
+            
+            <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 text-success p-2 rounded-circle me-2">
+                            <i class="bi bi-bar-chart-line fs-5"></i>
+                        </div>
+                        <h5 class="mb-0">{% trans 'Discussion Stats' %}</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="bi bi-chat-square me-2"></i>{% trans 'Total Topics' %}</span>
+                            <span class="badge bg-primary rounded-pill">{{ stats.total_topics }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="bi bi-chat-dots me-2"></i>{% trans 'Total Responses' %}</span>
+                            <span class="badge bg-primary rounded-pill">{{ stats.total_responses }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="bi bi-person-check me-2"></i>{% trans 'Your Contributions' %}</span>
+                            <span class="badge bg-primary rounded-pill">{{ stats.user_contributions }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="bi bi-people me-2"></i>{% trans 'Active Participants' %}</span>
+                            <span class="badge bg-primary rounded-pill">{{ stats.active_participants }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-warning bg-opacity-10 text-warning p-2 rounded-circle me-2">
+                            <i class="bi bi-clock-history fs-5"></i>
+                        </div>
+                        <h5 class="mb-0">{% trans 'Recent Activity' %}</h5>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for activity in recent_activities %}
+                        <div class="list-group-item px-3 py-3">
+                            <div class="d-flex">
+                                <img src="{{ activity.user.get_picture }}" class="rounded-circle me-2" width="32" height="32" alt="{{ activity.user.get_full_name }}" style="object-fit: cover;">
+                                <div>
+                                    <div class="fw-medium">{{ activity.user.get_full_name }}</div>
+                                    <p class="text-muted mb-0 small">{{ activity.action_text }} <a href="{{ activity.url }}" class="text-decoration-none">{{ activity.topic.title }}</a></p>
+                                    <small class="text-muted">{{ activity.timestamp|timesince }} {% trans 'ago' %}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="list-group-item px-3 py-4 text-center">
+                            <div class="text-muted mb-2">
+                                <i class="bi bi-clock-history fs-4"></i>
+                            </div>
+                            <p class="mb-0">{% trans 'No recent activity' %}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Topic Modal -->
+<div class="modal fade" id="newTopicModal" tabindex="-1" aria-labelledby="newTopicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="newTopicModalLabel"><i class="bi bi-plus-circle me-2"></i>{% trans 'Create New Discussion Topic' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newTopicForm" method="POST" action="{% url 'course_discussion_new_topic' course.slug %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="topicTitle" class="form-label"><i class="bi bi-type me-1"></i>{% trans 'Topic Title' %}</label>
+                        <input type="text" class="form-control" id="topicTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="topicCategory" class="form-label"><i class="bi bi-tag me-1"></i>{% trans 'Category' %}</label>
+                        <select class="form-select" id="topicCategory" name="topic_type" required>
+                            <option value="" selected disabled>{% trans 'Select a category' %}</option>
+                            <option value="question">{% trans 'Question' %}</option>
+                            <option value="announcement">{% trans 'Announcement' %}</option>
+                            <option value="general">{% trans 'General Discussion' %}</option>
+                            <option value="resource">{% trans 'Resource Sharing' %}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="topicContent" class="form-label"><i class="bi bi-text-paragraph me-1"></i>{% trans 'Content' %}</label>
+                        <textarea class="form-control" id="topicContent" name="content" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="notifyReplies" name="notify_replies" checked>
+                            <label class="form-check-label" for="notifyReplies">
+                                <i class="bi bi-bell me-1"></i>{% trans 'Notify me when someone replies' %}
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="course_id" value="{{ course.id }}">
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><i class="bi bi-x me-1"></i>{% trans 'Cancel' %}</button>
+                <button type="button" class="btn btn-primary" id="postTopicBtn">
+                    <i class="bi bi-send me-2"></i>{% trans 'Post Topic' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'course/course_components.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const promptField = document.getElementById('prompt');
+    const charCount = document.getElementById('charCount');
+    const submitBtn = document.getElementById('submitBtn');
+    const responseArea = document.getElementById('responseArea');
+    const aiResponse = document.getElementById('aiResponse');
+    const errorMessage = document.getElementById('errorMessage');
+    const aiForm = document.getElementById('aiForm');
+    const postTopicBtn = document.getElementById('postTopicBtn');
+    const topicTypeFilter = document.getElementById('topicTypeFilter');
+    const topicSortFilter = document.getElementById('topicSortFilter');
+
+    // Character count
+    if (promptField && charCount) {
+        promptField.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+    }
+
+    // Form submit with toast notification
+    if (aiForm) {
+        aiForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (promptField.value.trim() === '') {
+                courseToast.warning('{% trans "Please enter a question first." %}');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>{% trans 'Processing...' %}`;
+            
+            // Real API call
+            fetch('{% url "course_ai_assistant" course.slug %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                },
+                body: JSON.stringify({
+                    prompt: promptField.value
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('{% trans "Server error" %}');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="bi bi-send me-2"></i>{% trans 'Ask AI Assistant' %}`;
+                
+                // Show response
+                responseArea.style.display = 'block';
+                aiResponse.textContent = data.response;
+                
+                // Show success toast
+                courseToast.success('{% trans "AI response generated successfully!" %}');
+            })
+            .catch(error => {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="bi bi-send me-2"></i>{% trans 'Ask AI Assistant' %}`;
+                
+                // Show error
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = error.message;
+                
+                // Show error toast
+                courseToast.error('{% trans "Error getting AI response. Please try again." %}');
+                
+                // Hide error after 5 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            });
+        });
+    }
+    
+    // New topic form with toast notification
+    if (postTopicBtn) {
+        postTopicBtn.addEventListener('click', function() {
+            const topicForm = document.getElementById('newTopicForm');
+            const topicTitle = document.getElementById('topicTitle');
+            const topicCategory = document.getElementById('topicCategory');
+            const topicContent = document.getElementById('topicContent');
+            
+            if (!topicTitle.value || !topicCategory.value || !topicContent.value) {
+                courseToast.error('{% trans "Please fill in all required fields." %}');
+                return;
+            }
+            
+            // Submit the form
+            topicForm.submit();
+        });
+    }
+    
+    // Filter change handlers
+    if (topicTypeFilter) {
+        topicTypeFilter.addEventListener('change', function() {
+            applyFilters();
+        });
+    }
+    
+    if (topicSortFilter) {
+        topicSortFilter.addEventListener('change', function() {
+            applyFilters();
+        });
+    }
+    
+    // Apply filters function
+    function applyFilters() {
+        let url = new URL(window.location);
+        
+        // Get current search param if any
+        const currentSearch = url.searchParams.get('search');
+        
+        // Clear all params
+        url.search = '';
+        
+        // Add filters
+        if (topicTypeFilter.value !== 'all') {
+            url.searchParams.set('type', topicTypeFilter.value);
+        }
+        
+        url.searchParams.set('sort', topicSortFilter.value);
+        
+        // Preserve search
+        if (currentSearch) {
+            url.searchParams.set('search', currentSearch);
+        }
+        
+        // Navigate to filtered URL
+        window.location.href = url.toString();
+    }
+});
+</script>
+
+{% endblock content %}

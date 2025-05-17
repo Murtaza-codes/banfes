@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %} {{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+
+{% load static %}
+
+
+{% block content %}
+<div class="container-fluid py-4">
+    {% if user.is_authenticated %}
+    
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-person me-1"></i>{{ user.get_full_name }}</li>
+        </ol>
+    </nav>
+    
+    {% include 'snippets/messages.html' %}
+    
+    <div class="row g-4">
+        <!-- Profile Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>{% trans 'Profile' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="position-relative mb-4">
+                        <img src="{{ user.picture.url }}" alt="{{ user.get_full_name }}" class="rounded-circle profile-image border border-3 border-white shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                        <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success p-2">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </span>
+                    </div>
+                    <h5 class="fw-bold">{{ user.get_full_name|title }}</h5>
+                    <p class="text-muted mb-3">
+                        <span class="badge bg-primary text-white">
+                            <i class="bi bi-person-badge me-1"></i>{{ user.get_user_role }}
+                        </span>
+                    </p>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-clock-history text-muted me-2"></i>{% trans 'Last login' %}</span>
+                            <span class="badge bg-light text-dark">{{ user.last_login|date }}</span>
+                        </li>
+                    </ul>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'profile_update' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil-square me-2"></i>{% trans 'Edit Profile' %}
+                        </a>
+                        <a href="{% url 'change_password' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-shield-lock me-2"></i>{% trans 'Change Password' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Lecturer Courses -->
+            {% if user.is_lecturer and courses %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-book me-2"></i>{% trans 'My Courses' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for course in courses %}
+                        <div class="col-lg-4 col-md-6">
+                            <a href="{{ course.get_absolute_url }}" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm hover-card">
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title text-primary mb-1">
+                                            <i class="bi bi-journal-text me-2"></i>{{ course }}
+                                        </h6>
+                                        <div class="small text-muted">
+                                            <i class="bi bi-tag me-1"></i>{{ course.code }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Profile Information Tabs -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white p-0">
+                    <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal-info" type="button" role="tab" aria-controls="personal-info" aria-selected="true">
+                                <i class="bi bi-person-vcard me-2"></i>{% trans 'Personal Info' %}
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-info" type="button" role="tab" aria-controls="contact-info" aria-selected="false">
+                                <i class="bi bi-envelope me-2"></i>{% trans 'Contact Info' %}
+                            </button>
+                        </li>
+                        {% if user.is_student %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="academic-tab" data-bs-toggle="tab" data-bs-target="#academic-info" type="button" role="tab" aria-controls="academic-info" aria-selected="false">
+                                <i class="bi bi-mortarboard me-2"></i>{% trans 'Academic Info' %}
+                            </button>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="dates-tab" data-bs-toggle="tab" data-bs-target="#dates-info" type="button" role="tab" aria-controls="dates-info" aria-selected="false">
+                                <i class="bi bi-calendar-date me-2"></i>{% trans 'Important Dates' %}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-4">
+                    <div class="tab-content" id="profileTabsContent">
+                        <!-- Personal Info Tab -->
+                        <div class="tab-pane fade show active" id="personal-info" role="tabpanel" aria-labelledby="personal-tab">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-person-fill me-2"></i>{% trans 'First Name' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.first_name|title }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-person-fill me-2"></i>{% trans 'Last Name' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.last_name|title }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-person-badge me-2"></i>{% trans 'Username' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.username }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-gender-ambiguous me-2"></i>{% trans 'Gender' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.gender }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Info Tab -->
+                        <div class="tab-pane fade" id="contact-info" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-envelope-fill me-2"></i>{% trans 'Email' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.email }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-telephone-fill me-2"></i>{% trans 'Phone' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.phone }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-geo-alt-fill me-2"></i>{% trans 'Address/City' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.address }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Academic Info Tab (for students) -->
+                        {% if user.is_student %}
+                        <div class="tab-pane fade" id="academic-info" role="tabpanel" aria-labelledby="academic-tab">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-building me-2"></i>{% trans 'School' %}
+                                            </h6>
+                                            <p class="card-text">{% trans 'Hawas Preparatory School' %}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-bar-chart-steps me-2"></i>{% trans 'Level' %}
+                                            </h6>
+                                            <p class="card-text">
+                                                <span class="badge bg-info">{{ student.level }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Important Dates Tab -->
+                        <div class="tab-pane fade" id="dates-info" role="tabpanel" aria-labelledby="dates-tab">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-clock-history me-2"></i>{% trans 'Last Login' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.last_login }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-calendar-plus me-2"></i>{% trans 'Registered Date' %}
+                                            </h6>
+                                            <p class="card-text">{{ user.date_joined|date }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if current_semester and current_session %}
+                                <div class="col-md-12">
+                                    <div class="card h-100 bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="bi bi-calendar-range me-2"></i>{% trans 'Academic Year' %}
+                                            </h6>
+                                            <p class="card-text">
+                                                <span class="badge bg-primary me-2">{{ current_semester }}</span>
+                                                <span class="badge bg-secondary">{{ current_session }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .profile-image {
+        transition: transform 0.3s ease;
+    }
+    .profile-image:hover {
+        transform: scale(1.05);
+    }
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock content %}

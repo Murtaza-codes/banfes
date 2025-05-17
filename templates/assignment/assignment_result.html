@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- Breadcrumb with modern styling -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-white shadow-sm p-3 rounded">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none">{% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none">{{ course }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'assignment_list' course.slug %}" class="text-decoration-none">{% trans 'Assignments' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Assignment Result' %}</li>
+    </ol>
+</nav>
+
+<div class="container-fluid px-4">
+    <!-- Assignment Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">{{ assignment.title }}</h2>
+        <span class="badge bg-primary p-2">{% trans 'Attempts' %}: {{ submission.attempts }}</span>
+    </div>
+
+    <div class="row">
+        <!-- Left Column - Scores and Feedback -->
+        <div class="col-lg-8">
+            <!-- Scores Card -->
+            <div class="card shadow-sm mb-4 border-0 rounded-3">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">{% trans 'Evaluation Results' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% if submission.final_score is not None %}
+                        <div class="col-md-4">
+                            <div class="p-3 bg-success bg-opacity-10 rounded-3 text-center">
+                                <h6 class="text-primary mb-2">{% trans 'Final Score' %}</h6>
+                                <h3 class="mb-0">{{ submission.final_score }}</h3>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if submission.ai_score is not None %}
+                        <div class="col-md-4">
+                            <div class="p-3 bg-info bg-opacity-10 rounded-3 text-center">
+                                <h6 class="text-primary mb-2">{% trans 'AI Score' %}</h6>
+                                <h3 class="mb-0">{{ submission.ai_score }}</h3>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if submission.teacher_score is not None %}
+                        <div class="col-md-4">
+                            <div class="p-3 bg-primary bg-opacity-10 rounded-3 text-center">
+                                <h6 class="text-primary mb-2">{% trans 'Teacher Score' %}</h6>
+                                <h3 class="mb-0">{{ submission.teacher_score }}</h3>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Feedback Sections -->
+                    {% if submission.ai_feedback %}
+                    <div class="mt-4">
+                        <h6 class="fw-bold text-success mb-3 ">
+                            <i class="fas fa-robot me-2"></i>{% trans 'AI Feedback' %}
+                        </h6>
+                        <div class="p-3 bg-light rounded-3 border">
+                            <p class="mb-0" style="white-space: pre-wrap;">{{ submission.ai_feedback }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if submission.teacher_feedback %}
+                    <div class="mt-4">
+                        <h6 class="fw-bold text-primary mb-3">
+                            <i class="fas fa-chalkboard-teacher me-2"></i>{% trans 'Teacher Feedback' %}
+                        </h6>
+                        <div class="p-3 bg-light rounded-3 border">
+                            <p class="mb-0" style="white-space: pre-wrap;">{{ submission.teacher_feedback }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Submission Details -->
+        <div class="col-lg-4">
+            <!-- Submission Info Card -->
+            <div class="card shadow-sm mb-4 border-0 rounded-3">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">{% trans 'Submission Details' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">{% trans 'Submitted At' %}</span>
+                        <span class="fw-bold">{{ submission.created_at|date:"D, d M Y H:i" }}</span>
+                    </div>
+                    {% if assignment.deadline %}
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">{% trans 'Deadline' %}</span>
+                        <span class="fw-bold">{{ assignment.deadline|date:"D, d M Y H:i" }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Submitted Files -->
+            <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-paperclip"></i> {% trans 'Submitted Files' %}</h5>
+            </div>
+            <div class="card-body">
+                {% if files %}
+                    <div class="row">
+                        {% for file in files %}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="file-item p-3  hover-shadow">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-file fa-2x text-primary me-2"></i>
+                                        <div class="file-info">
+                                            <p class="mb-1 text-break">{{ file.file.name|basename }}</p>
+                                            <div class="btn-group">
+                                                <a href="{{ file.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                    <i class="fas fa-eye"></i> {% trans 'View' %}
+                                                </a>
+                                                <a href="{{ file.file.url }}" class="btn btn-sm btn-outline-success" download>
+                                                    <i class="fas fa-download"></i> {% trans 'Download' %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> {% trans 'No files submitted.' %}
+                    </div>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Text -->
+    {% if submission.submission_text or submission.extracted_text %}
+    <div class="card shadow-sm mb-4 border-0 rounded-3">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">{% trans 'Submission Content' %}</h5>
+        </div>
+        <div class="card-body">
+            <div class="p-3 bg-light rounded-3 border">
+                <p class="mb-0" style="white-space: pre-wrap;" dir="rtl">
+                    {% if submission.submission_text and submission.extracted_text %}
+                        {{ submission.submission_text }}
+
+                        {{ submission.extracted_text }}
+                    {% elif submission.submission_text %}
+                        {{ submission.submission_text }}
+                    {% else %}
+                        {{ submission.extracted_text }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Re-upload Button -->
+    {% if assignment.allowed_submissions == 0 or submission.attempts < assignment.allowed_submissions %}
+        {% if assignment.deadline is not None and assignment.deadline > now %}
+        <div class="text-center mt-4 mb-5">
+            <a href="{% url 'assignment_submission' slug=course.slug assignment_id=assignment.id %}" 
+               class="btn btn-primary btn-lg px-4 py-2 rounded-pill">
+                <i class="fas fa-upload me-2"></i>{% trans 'Re-upload Assignment' %}
+            </a>
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock %}

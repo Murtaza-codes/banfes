@@ -1,0 +1,180 @@
+{% load i18n %}
+
+<!-- Video player template:
+Parameters:
+- video_url: URL to the video (can be YouTube URL or local file URL)
+- video_title: Title of the video (optional)
+- poster_url: URL to poster image (optional)
+- is_youtube: Boolean whether this is a YouTube video (optional, auto-detected)
+- autoplay: Boolean to enable autoplay (default: false)
+-->
+
+<!-- Include Plyr CSS directly -->
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+
+<div class="course-video-container mb-4">
+  {% if video_title %}
+  <h5 class="mb-3">{{ video_title }}</h5>
+  {% endif %}
+  
+  <div class="video-wrapper">
+    {% if is_youtube or "youtube.com" in video_url or "youtu.be" in video_url %}
+      <!-- YouTube Video with Plyr -->
+      <div class="plyr__video-embed" id="player">
+        <iframe
+          src="{{ video_url|default:"" }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+          allowfullscreen
+          allowtransparency
+          allow="autoplay"
+        ></iframe>
+      </div>
+    {% else %}
+      <!-- HTML5 Video with Plyr -->
+      <video 
+        id="player"
+        playsinline 
+        {% if poster_url %}poster="{{ poster_url }}"{% endif %}
+        controls
+        class="w-100"
+      >
+        <source src="{{ video_url|default:"" }}" type="video/mp4" />
+        {% trans 'Your browser does not support the video tag.' %}
+      </video>
+    {% endif %}
+  </div>
+  
+  {% if video_description %}
+  <div class="video-description mt-3">
+    <p>{{ video_description }}</p>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .course-video-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .video-wrapper {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    background-color: #000;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    width: 100%;
+    height: 0;
+  }
+  
+  .video-wrapper iframe,
+  .video-wrapper video,
+  .video-wrapper .plyr,
+  .video-wrapper .plyr__video-embed,
+  .video-wrapper .plyr__video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  
+  /* Plyr custom styling */
+  :root {
+    --plyr-color-main: #3d5a80;
+    --plyr-audio-controls-background: #fff;
+    --plyr-audio-control-color: #3d5a80;
+    --plyr-audio-control-color-hover: #3d5a80;
+    --plyr-control-radius: 4px;
+  }
+  
+  /* Ensure proper sizing on smaller screens */
+  @media (max-width: 576px) {
+    .plyr--video {
+      height: 100%;
+    }
+    
+    /* Make controls a bit larger for touch */
+    .plyr__control svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Ensure proper aspect ratio is maintained */
+    .plyr--is-touch .plyr__poster,
+    .plyr--is-touch video {
+      object-fit: cover;
+    }
+  }
+  
+  /* Fix for iOS Safari */
+  @supports (-webkit-touch-callout: none) {
+    .video-wrapper {
+      height: auto;
+      min-height: 200px;
+    }
+    
+    .video-wrapper video,
+    .video-wrapper iframe {
+      position: relative;
+      height: auto;
+      min-height: 200px;
+    }
+  }
+</style>
+
+<!-- Include Plyr JS directly -->
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Plyr
+    const player = new Plyr('#player', {
+      controls: [
+        'play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 
+        'captions', 'settings', 'pip', 'airplay', 'fullscreen'
+      ],
+      ratio: '16:9',
+      seekTime: 10,
+      speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
+      quality: { default: 720, options: [4320, 2880, 2160, 1440, 1080, 720, 576, 480, 360, 240] },
+      responsive: true,
+      fullscreen: { enabled: true, fallback: true, iosNative: true }
+    });
+    
+    // Make sure video player is properly sized after page load
+    setTimeout(function() {
+      if (player) {
+        player.refresh();
+      }
+    }, 300);
+    
+    // Fix for mobile orientation changes
+    window.addEventListener('resize', function() {
+      if (player) {
+        player.refresh();
+      }
+    });
+    
+    // Event listeners
+    player.on('ready', () => {
+      console.log('Video player is ready');
+    });
+    
+    player.on('play', () => {
+      console.log('Video started playing');
+    });
+    
+    player.on('timeupdate', () => {
+      // Track video progress if needed
+      if (player.duration > 0) {
+        const progress = (player.currentTime / player.duration) * 100;
+        if (progress === 100) {
+          console.log('Video completed');
+          // You can add tracking code here
+        }
+      }
+    });
+  });
+</script> 

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-calculator me-1"></i>{% trans 'Manage Score' %}</li>
+        </ol>
+    </nav>
+
+    {% include 'snippets/messages.html' %}
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="bi bi-pencil-square me-2"></i>{% trans 'Manage Score' %}</h2>
+    </div>
+
+    {% if current_semester %}
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>{{ current_semester }} {% trans 'Semester' %}</h5>
+                        <span class="badge bg-light text-primary rounded-pill">{{ current_session }}</span>
+                    </div>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-journal-text display-4 text-primary mb-3"></i>
+                        <h5 class="mb-3">{% trans 'Select a course to manage scores' %}</h5>
+                        <p class="text-muted mb-4">{% trans 'Choose a course from your assigned courses to enter or update student scores.' %}</p>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-book me-2"></i>{% trans 'Select Your Course' %}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                {% for course in courses %}
+                                    <li><a class="dropdown-item d-flex align-items-center" href="{% url 'add_score_for' course.id %}">
+                                        <i class="bi bi-journal-check me-2 text-primary"></i>{{ course.title }}
+                                        <span class="badge bg-light text-dark ms-auto">{{ course.code }}</span>
+                                    </a></li>
+                                {% empty %}
+                                    <li><span class="dropdown-item text-muted"><i class="bi bi-exclamation-circle me-2"></i>{% trans 'No courses available' %}</span></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    {% if courses %}
+                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <div>
+                            {% trans 'You can enter scores for assignments, exams, quizzes, and attendance.' %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>
+            {% trans 'No active semester found. Please contact an administrator.' %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

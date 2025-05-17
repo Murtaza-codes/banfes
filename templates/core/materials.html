@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Materials & Resources' %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 mb-4">{% trans 'Materials & Resources' %}</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans 'Educational Resources' %}</h3>
+                    <p class="text-muted">{% trans 'Access a variety of educational materials and resources to enhance your learning experience.' %}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-book me-2 text-primary"></i>{% trans 'Textbooks' %}</h5>
+                                    <p>{% trans 'Access digital textbooks and reading materials for your courses.' %}</p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">{% trans 'Browse Textbooks' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-file-earmark-pdf me-2 text-primary"></i>{% trans 'Study Guides' %}</h5>
+                                    <p>{% trans 'Download study guides and supplementary materials for exam preparation.' %}</p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">{% trans 'View Study Guides' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-play-circle me-2 text-primary"></i>{% trans 'Video Tutorials' %}</h5>
+                                    <p>{% trans 'Watch instructional videos and tutorials to enhance your understanding.' %}</p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">{% trans 'Watch Videos' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-clipboard-check me-2 text-primary"></i>{% trans 'Practice Tests' %}</h5>
+                                    <p>{% trans 'Take practice tests and quizzes to assess your knowledge and prepare for exams.' %}</p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">{% trans 'Take Practice Tests' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-calendar2-week me-2 text-primary"></i>{% trans 'Academic Calendar' %}</h5>
+                                    <p>{% trans 'View important dates, deadlines, and events for the academic year.' %}</p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">{% trans 'View Calendar' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-link-45deg me-2 text-primary"></i>{% trans 'External Resources' %}</h5>
+                                    <p>{% trans 'Access external educational resources and websites to supplement your learning.' %}</p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">{% trans 'Browse Resources' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

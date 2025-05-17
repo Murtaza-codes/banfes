@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+        <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}">{% trans 'My courses' %}</a></li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}">{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ course }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+<div>
+    <h1>Course grades</h1>
+    <table class="table">
+        <thead>
+            <tr>
+             Your grades    
+            </tr>
+        </thead>
+    </table>
+</div>    
+
+
+{% endblock content %}

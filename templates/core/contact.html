@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Contact Us' %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 mb-4">{% trans 'Contact Us' %}</h1>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="mb-4">{% trans 'Get in Touch' %}</h3>
+                    
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">{% trans 'Full Name' %}</label>
+                            <input type="text" class="form-control" id="name" placeholder="{% trans 'Enter your name' %}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{% trans 'Email Address' %}</label>
+                            <input type="email" class="form-control" id="email" placeholder="{% trans 'Enter your email' %}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">{% trans 'Subject' %}</label>
+                            <input type="text" class="form-control" id="subject" placeholder="{% trans 'Enter subject' %}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">{% trans 'Message' %}</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="{% trans 'Enter your message' %}"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-2"></i>{% trans 'Send Message' %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="mb-4">{% trans 'Contact Information' %}</h3>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-geo-alt-fill fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>{% trans 'Address' %}</h5>
+                            <p>123 Education Street, City, Country</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-envelope-fill fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>{% trans 'Email' %}</h5>
+                            <p>info@educationportal.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-telephone-fill fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>{% trans 'Phone' %}</h5>
+                            <p>+1 (123) 456-7890</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-clock-fill fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>{% trans 'Office Hours' %}</h5>
+                            <p>{% trans 'Monday - Friday: 9:00 AM - 5:00 PM' %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

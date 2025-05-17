@@ -1,0 +1,405 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journal me-1"></i>{% trans 'My courses' %}</a></li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ course }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-circle me-3">
+                                <i class="bi bi-play-btn-fill fs-4"></i>
+                            </div>
+                            <h2 class="mb-0">{% trans 'Course Videos' %}</h2>
+                        </div>
+                        {% if request.user.is_lecturer or request.user.is_superuser %}
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadVideoModal">
+                            <i class="bi bi-cloud-upload me-2"></i>{% trans 'Upload Video' %}
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body pt-0">
+                    <!-- Video Categories -->
+                    <ul class="nav nav-tabs mb-4" id="videoTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="all-videos-tab" data-bs-toggle="tab" 
+                                data-bs-target="#all-videos-tab-pane" type="button" role="tab" 
+                                aria-controls="all-videos-tab-pane" aria-selected="true">
+                                <i class="bi bi-collection-play me-2"></i>{% trans 'All Videos' %}
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="lectures-tab" data-bs-toggle="tab" 
+                                data-bs-target="#lectures-tab-pane" type="button" role="tab" 
+                                aria-controls="lectures-tab-pane" aria-selected="false">
+                                <i class="bi bi-mortarboard me-2"></i>{% trans 'Lectures' %}
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tutorials-tab" data-bs-toggle="tab" 
+                                data-bs-target="#tutorials-tab-pane" type="button" role="tab" 
+                                aria-controls="tutorials-tab-pane" aria-selected="false">
+                                <i class="bi bi-lightbulb me-2"></i>{% trans 'Tutorials' %}
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="supplementary-tab" data-bs-toggle="tab" 
+                                data-bs-target="#supplementary-tab-pane" type="button" role="tab" 
+                                aria-controls="supplementary-tab-pane" aria-selected="false">
+                                <i class="bi bi-plus-circle me-2"></i>{% trans 'Supplementary' %}
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="videoTabsContent">
+                        <!-- All Videos Tab -->
+                        <div class="tab-pane fade show active" id="all-videos-tab-pane" role="tabpanel" aria-labelledby="all-videos-tab" tabindex="0">
+                            <div class="row g-4">
+                                <!-- Current/Featured Video -->
+                                <div class="col-lg-8">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <h4 class="mb-3">{% trans 'Introduction to the Course' %}</h4>
+                                            
+                                            <!-- Featured Video Player -->
+                                            {% include 'course/course_video.html' with 
+                                                video_url="https://www.youtube.com/embed/ScMzIvxBSi4" 
+                                                video_title="" 
+                                                is_youtube=True
+                                            %}
+                                            
+                                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                                <div>
+                                                    <p class="text-muted mb-1">{% trans 'Uploaded by' %}: Dr. John Smith</p>
+                                                    <p class="text-muted mb-0">{% trans 'Upload Date' %}: 2023-10-15</p>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-outline-primary" id="showVideoNoteBtn">
+                                                        <i class="bi bi-sticky me-1"></i>{% trans 'Notes' %}
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-download me-1"></i>{% trans 'Download' %}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <hr class="my-3">
+                                            
+                                            <h5>{% trans 'Description' %}</h5>
+                                            <p>{% trans 'This is the introductory video for the course. It covers the main topics that will be explored throughout the semester and explains the course structure, grading policy, and expectations.' %}</p>
+                                            
+                                            <div class="mt-3">
+                                                <h6>{% trans 'Topics Covered' %}:</h6>
+                                                <ul>
+                                                    <li>{% trans 'Course overview and objectives' %}</li>
+                                                    <li>{% trans 'Key concepts and methodologies' %}</li>
+                                                    <li>{% trans 'Assessment criteria and deadlines' %}</li>
+                                                    <li>{% trans 'Required reading materials' %}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Video List -->
+                                <div class="col-lg-4">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-white py-3 border-0">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">{% trans 'Video Playlist' %}</h5>
+                                                <div class="input-group input-group-sm" style="width: 150px;">
+                                                    <span class="input-group-text bg-light border-end-0">
+                                                        <i class="bi bi-search"></i>
+                                                    </span>
+                                                    <input type="search" class="form-control border-start-0" placeholder="{% trans 'Search...' %}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="list-group list-group-flush">
+                                                <a href="#" class="list-group-item list-group-item-action active py-3 px-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0 position-relative">
+                                                            <img src="https://via.placeholder.com/120x68" alt="Video thumbnail" class="rounded" width="120" height="68">
+                                                            <span class="position-absolute top-50 start-50 translate-middle text-white">
+                                                                <i class="bi bi-play-circle-fill fs-4"></i>
+                                                            </span>
+                                                            <span class="position-absolute bottom-0 end-0 badge bg-dark m-1">10:15</span>
+                                                        </div>
+                                                        <div class="ms-3">
+                                                            <p class="mb-1 fw-medium">{% trans 'Introduction to the Course' %}</p>
+                                                            <small>{% trans 'Dr. John Smith' %} • {% trans 'Lecture' %}</small>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                
+                                                {% for i in "12345"|make_list %}
+                                                <a href="#" class="list-group-item list-group-item-action py-3 px-4 video-link" data-video-id="{{ i }}">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0 position-relative">
+                                                            <img src="https://via.placeholder.com/120x68" alt="Video thumbnail" class="rounded" width="120" height="68">
+                                                            <span class="position-absolute top-50 start-50 translate-middle text-white">
+                                                                <i class="bi bi-play-circle-fill fs-4"></i>
+                                                            </span>
+                                                            <span class="position-absolute bottom-0 end-0 badge bg-dark m-1">{{ i }}:45</span>
+                                                        </div>
+                                                        <div class="ms-3">
+                                                            <p class="mb-1 fw-medium">{% trans 'Topic' %} {{ i }} - {% trans 'Key Concepts' %}</p>
+                                                            <small>{% trans 'Dr. John Smith' %} • {% if i|divisibleby:"2" %}{% trans 'Lecture' %}{% else %}{% trans 'Tutorial' %}{% endif %}</small>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Other tabs would have similar structure -->
+                        <div class="tab-pane fade" id="lectures-tab-pane" role="tabpanel" aria-labelledby="lectures-tab" tabindex="0">
+                            <div class="text-center p-5">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-mortarboard fs-1"></i>
+                                </div>
+                                <p>{% trans 'Lecture videos will be displayed here.' %}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="tutorials-tab-pane" role="tabpanel" aria-labelledby="tutorials-tab" tabindex="0">
+                            <div class="text-center p-5">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-lightbulb fs-1"></i>
+                                </div>
+                                <p>{% trans 'Tutorial videos will be displayed here.' %}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="supplementary-tab-pane" role="tabpanel" aria-labelledby="supplementary-tab" tabindex="0">
+                            <div class="text-center p-5">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-plus-circle fs-1"></i>
+                                </div>
+                                <p>{% trans 'Supplementary videos will be displayed here.' %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if request.user.is_lecturer or request.user.is_superuser %}
+<!-- Upload Video Modal -->
+<div class="modal fade" id="uploadVideoModal" tabindex="-1" aria-labelledby="uploadVideoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="uploadVideoModalLabel">{% trans 'Upload New Video' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="videoUploadForm">
+                    <div class="mb-3">
+                        <label for="videoTitle" class="form-label">{% trans 'Video Title' %}</label>
+                        <input type="text" class="form-control" id="videoTitle" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoCategory" class="form-label">{% trans 'Category' %}</label>
+                        <select class="form-select" id="videoCategory" required>
+                            <option value="" selected disabled>{% trans 'Select a category' %}</option>
+                            <option value="lecture">{% trans 'Lecture' %}</option>
+                            <option value="tutorial">{% trans 'Tutorial' %}</option>
+                            <option value="supplementary">{% trans 'Supplementary' %}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoType" class="form-label">{% trans 'Video Source' %}</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="videoType" id="uploadBtn" value="upload" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="uploadBtn">
+                                <i class="bi bi-upload me-1"></i>{% trans 'Upload File' %}
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="videoType" id="youtubeBtn" value="youtube" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="youtubeBtn">
+                                <i class="bi bi-youtube me-1"></i>{% trans 'YouTube Link' %}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="uploadSection" class="mb-3">
+                        <label for="videoFile" class="form-label">{% trans 'Video File' %}</label>
+                        <input class="form-control" type="file" id="videoFile" accept="video/mp4,video/webm">
+                        <div class="form-text">{% trans 'Maximum file size: 500MB. Supported formats: MP4, WebM.' %}</div>
+                    </div>
+                    
+                    <div id="youtubeSection" class="mb-3" style="display: none;">
+                        <label for="youtubeUrl" class="form-label">{% trans 'YouTube URL' %}</label>
+                        <input type="url" class="form-control" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+                        <div class="form-text">{% trans 'Paste the full YouTube video URL.' %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoDescription" class="form-label">{% trans 'Description' %}</label>
+                        <textarea class="form-control" id="videoDescription" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoTopic" class="form-label">{% trans 'Associated Topic' %}</label>
+                        <select class="form-select" id="videoTopic">
+                            <option value="" selected disabled>{% trans 'Select a topic' %}</option>
+                            <option value="1">{% trans 'Topic 1: Introduction' %}</option>
+                            <option value="2">{% trans 'Topic 2: Key Concepts' %}</option>
+                            <option value="3">{% trans 'Topic 3: Advanced Techniques' %}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" class="btn btn-primary" id="submitVideoBtn">
+                    <i class="bi bi-cloud-upload me-2"></i>{% trans 'Upload Video' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% include 'course/course_components.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Video source toggle
+    const uploadBtn = document.getElementById('uploadBtn');
+    const youtubeBtn = document.getElementById('youtubeBtn');
+    const uploadSection = document.getElementById('uploadSection');
+    const youtubeSection = document.getElementById('youtubeSection');
+    
+    if (uploadBtn && youtubeBtn) {
+        uploadBtn.addEventListener('change', function() {
+            uploadSection.style.display = 'block';
+            youtubeSection.style.display = 'none';
+        });
+        
+        youtubeBtn.addEventListener('change', function() {
+            uploadSection.style.display = 'none';
+            youtubeSection.style.display = 'block';
+        });
+    }
+    
+    // Video upload form submission
+    const submitVideoBtn = document.getElementById('submitVideoBtn');
+    if (submitVideoBtn) {
+        submitVideoBtn.addEventListener('click', function() {
+            const videoTitle = document.getElementById('videoTitle').value;
+            const videoCategory = document.getElementById('videoCategory').value;
+            
+            if (!videoTitle || !videoCategory) {
+                courseToast.warning('{% trans "Please fill in all required fields." %}');
+                return;
+            }
+            
+            // Check if upload or YouTube link
+            const videoType = document.querySelector('input[name="videoType"]:checked').value;
+            
+            if (videoType === 'upload') {
+                const videoFile = document.getElementById('videoFile').files[0];
+                if (!videoFile) {
+                    courseToast.error('{% trans "Please select a video file to upload." %}');
+                    return;
+                }
+                
+                // Simulate upload process
+                submitVideoBtn.disabled = true;
+                submitVideoBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>{% trans 'Uploading...' %}`;
+                
+                // Simulate file upload with progress
+                let progress = 0;
+                const uploadInterval = setInterval(() => {
+                    progress += 10;
+                    if (progress <= 100) {
+                        courseToast.info(`{% trans "Uploading video" %}: ${progress}%`);
+                    } else {
+                        clearInterval(uploadInterval);
+                        
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('uploadVideoModal'));
+                        modal.hide();
+                        
+                        // Reset form and button
+                        submitVideoBtn.disabled = false;
+                        submitVideoBtn.innerHTML = `<i class="bi bi-cloud-upload me-2"></i>{% trans 'Upload Video' %}`;
+                        
+                        // Show success message
+                        courseToast.success('{% trans "Video uploaded successfully!" %}');
+                    }
+                }, 1000);
+            } else {
+                const youtubeUrl = document.getElementById('youtubeUrl').value;
+                if (!youtubeUrl) {
+                    courseToast.error('{% trans "Please enter a YouTube URL." %}');
+                    return;
+                }
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('uploadVideoModal'));
+                modal.hide();
+                
+                // Show success message
+                courseToast.success('{% trans "YouTube video added successfully!" %}');
+            }
+        });
+    }
+    
+    // Handle video link clicks
+    const videoLinks = document.querySelectorAll('.video-link');
+    if (videoLinks.length > 0) {
+        videoLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const videoId = this.getAttribute('data-video-id');
+                courseToast.info(`{% trans "Loading video" %} #${videoId}...`);
+                // In a real implementation, this would load the selected video
+            });
+        });
+    }
+    
+    // Notes button
+    const showVideoNoteBtn = document.getElementById('showVideoNoteBtn');
+    if (showVideoNoteBtn) {
+        showVideoNoteBtn.addEventListener('click', function() {
+            courseToast.info('{% trans "Notes feature coming soon!" %}');
+        });
+    }
+});
+</script>
+
+{% endblock content %} 

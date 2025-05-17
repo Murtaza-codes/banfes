@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+
+
+
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+        <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}">{% trans 'My courses' %}</a></li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}">{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ course }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">AI Discussion Assistant</h5>
+        </div>
+        <div class="card-body">
+            <form id="aiForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="prompt" class="form-label">Your Question</label>
+                    <textarea 
+                        class="form-control" 
+                        id="prompt" 
+                        rows="4" 
+                        maxlength="300" 
+                        required></textarea>
+                    <small class="text-muted">
+                        <span id="charCount">0</span>/300 characters
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    Get Response
+                </button>
+            </form>
+            
+            <div id="responseArea" class="mt-4" style="display: none;">
+                <h6>AI Response:</h6>
+                <div id="aiResponse" class="p-3 bg-light rounded"></div>
+            </div>
+            
+            <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+{% endblock content %}

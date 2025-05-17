@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door-fill me-1"></i>{% trans 'Home' %}</a></li>
+                  <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-person-workspace me-1"></i>{% trans 'Lecturers' %}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0"><i class="bi bi-person-workspace me-2 text-primary"></i>{% trans 'Lecturers Management' %}</h3>
+        
+        {% if request.user.is_superuser %}
+        <div class="manage-wrap">
+            <a class="btn btn-primary me-2 rounded-pill" href="{% url 'add_lecturer' %}"><i class="bi bi-plus-circle me-1"></i>{% trans 'Add Lecturer' %}</a>
+            <a class="btn btn-success rounded-pill" target="_blank" href="{% url 'lecturer_list_pdf' %}"><i class="bi bi-file-pdf me-1"></i> {% trans 'Download PDF' %}</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% include 'snippets/messages.html' %}
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light py-3">
+            <h5 class="mb-0"><i class="bi bi-funnel-fill me-2"></i>{% trans 'Filter Options' %}</h5>
+        </div>
+        <div class="card-body">
+            {% include 'snippets/filter_form.html' %}
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" width="50">#</th>
+                            <th scope="col"><i class="bi bi-person me-2"></i>{% trans 'Username' %}</th>
+                            <th scope="col"><i class="bi bi-person-vcard me-2"></i>{% trans 'Full Name' %}</th>
+                            <th scope="col"><i class="bi bi-envelope me-2"></i>{% trans 'Email' %}</th>
+                            <th scope="col"><i class="bi bi-telephone me-2"></i>{% trans 'Mob No.' %}</th>
+                            <th scope="col"><i class="bi bi-geo-alt me-2"></i>{% trans 'Address/city' %}</th>
+                            <th scope="col"><i class="bi bi-clock-history me-2"></i>{% trans 'Last login' %}</th>
+                            {% if request.user.is_superuser %}
+                            <th scope="col" class="text-center"><i class="bi bi-gear me-2"></i>{% trans 'Action' %}</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lecturer in filter.qs %}
+                        <tr>
+                            <td class="fw-bold">{{ forloop.counter }}.</td>
+                            <td>{{ lecturer.username }}</td>
+                            <td><a href="{% url 'profile_single' lecturer.id %}" class="text-decoration-none">{{ lecturer.get_full_name }}</a></td>
+                            <td><a href="mailto:{{ lecturer.email }}" class="text-decoration-none"><i class="bi bi-envelope-fill text-muted me-1"></i>{{ lecturer.email }}</a></td>
+                            <td>{% if lecturer.phone %}<a href="tel:{{ lecturer.phone }}" class="text-decoration-none"><i class="bi bi-telephone-fill text-muted me-1"></i>{{ lecturer.phone }}</a>{% else %}<span class="text-muted">N/A</span>{% endif %}</td>
+                            <td>{% if lecturer.address %}<span class="d-inline-flex align-items-center"><i class="bi bi-geo-alt-fill text-muted me-1"></i>{{ lecturer.address }}</span>{% else %}<span class="text-muted">N/A</span>{% endif %}</td>
+                            <td>{% if lecturer.last_login %}<span title="{{ lecturer.last_login|date:'Y-m-d H:i' }}" class="d-inline-flex align-items-center"><i class="bi bi-clock text-muted me-1"></i>{{ lecturer.last_login|timesince }} ago</span>{% else %}<span class="text-muted">Never</span>{% endif %}</td>
+                            {% if request.user.is_superuser %}
+                            <td class="text-center"> 
+                                <div class="btn-group">
+                                    <a href="{% url 'staff_edit' pk=lecturer.pk %}" class="btn btn-sm btn-outline-primary" title="{% trans 'Edit' %}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{% url 'profile_single' lecturer.id %}" class="btn btn-sm btn-outline-info" title="{% trans 'View Profile' %}">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'profile_single' lecturer.id %}?download_pdf=1" target="_blank" class="btn btn-sm btn-outline-success" title="{% trans 'Download PDF' %}">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                    <a href="{% url 'lecturer_delete' pk=lecturer.pk %}" class="btn btn-sm btn-outline-danger" title="{% trans 'Delete' %}" onclick="return confirm('{% trans 'Are you sure you want to delete this lecturer?' %}')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            {% endif %}
+                            
+                            {% empty %}
+                            <tr>
+                              <td colspan="8" class="text-center py-4">
+                                <div class="alert alert-info mb-0 d-flex align-items-center justify-content-center">
+                                  <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+                                  <div>
+                                    {% trans 'No Lecturer(s) found.' %}
+                                    {% if request.user.is_superuser %}
+                                    <a href="{% url 'add_lecturer' %}" class="alert-link ms-1">
+                                      {% trans 'Add Lecturer Now.' %}
+                                    </a>
+                                    {% endif %}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-outline-primary, .btn-outline-info, .btn-outline-success, .btn-outline-danger {
+    transition: all 0.3s;
+}
+
+.btn-outline-primary:hover, .btn-outline-info:hover, .btn-outline-success:hover, .btn-outline-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+
+.rounded-pill {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+</style>
+{% endblock content %}
+

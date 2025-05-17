@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+<div class="title-1">{% trans 'Course Session Add Form' %}</div>
+<br>
+<br>
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{% if session %}Edit Session{% else %}Add Session{% endif %}</h5>
+        <button type="button" class="close" id="closeSessionModal" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+        <form id="sessionForm" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="mt-3">
+                <button type="submit" id="submitModal" class="btn btn-primary">{% if session %}Update{% else %}Create{% endif %}</button>
+                <button type="button" id="cancel-button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('cancel-button').addEventListener('click', () => {
+    const form = document.getElementById('sessionForm');
+    form.reset();
+    window.history.back();
+});
+});
+</script>
+
+{% endblock content %}

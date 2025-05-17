@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Student Dashboard' %} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1 class="mb-4">{% trans 'Student Dashboard' %}</h1>
+    
+    <div class="row g-4">
+        <!-- My Profile -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-person-circle fs-3"></i>
+                    </div>
+                    <h4>{% trans 'My Profile' %}</h4>
+                    <p class="text-muted">{% trans 'View and update your personal information' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'profile' %}" class="btn btn-primary">
+                            <i class="bi bi-person me-2"></i>{% trans 'View Profile' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Courses -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-success bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-journal-richtext fs-3"></i>
+                    </div>
+                    <h4>{% trans 'My Courses' %}</h4>
+                    <p class="text-muted">{% trans 'Access your enrolled courses' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'user_course_list' %}" class="btn btn-success">
+                            <i class="bi bi-book me-2"></i>{% trans 'View Courses' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignments -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-info bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-file-earmark-text fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Assignments' %}</h4>
+                    <p class="text-muted">{% trans 'View and submit your assignments' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'user_course_list' %}" class="btn btn-info">
+                            <i class="bi bi-clipboard me-2"></i>{% trans 'View Assignments' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quizzes & Tests -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-warning bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-question-circle fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Quizzes & Tests' %}</h4>
+                    <p class="text-muted">{% trans 'Take online tests and quizzes' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'user_course_list' %}" class="btn btn-warning">
+                            <i class="bi bi-pen me-2"></i>{% trans 'Take Quizzes' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results & Grades -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-danger bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-graph-up fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Results & Grades' %}</h4>
+                    <p class="text-muted">{% trans 'View your academic performance' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'grade_results' %}" class="btn btn-danger">
+                            <i class="bi bi-award me-2"></i>{% trans 'View Results' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Materials -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-secondary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-file-earmark-pdf fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Learning Materials' %}</h4>
+                    <p class="text-muted">{% trans 'Access course materials and resources' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'user_course_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-file-text me-2"></i>{% trans 'View Materials' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Registration -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-plus-square fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Course Registration' %}</h4>
+                    <p class="text-muted">{% trans 'Register for new courses' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'course_registration' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>{% trans 'Register' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar & Schedule -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-success bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-calendar3 fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Calendar & Schedule' %}</h4>
+                    <p class="text-muted">{% trans 'View your academic calendar and class schedule' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'user_course_list' %}" class="btn btn-success">
+                            <i class="bi bi-calendar-week me-2"></i>{% trans 'View Schedule' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-info bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-check2-square fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Attendance' %}</h4>
+                    <p class="text-muted">{% trans 'Check your attendance records' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'user_course_list' %}" class="btn btn-info">
+                            <i class="bi bi-clock-history me-2"></i>{% trans 'View Attendance' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} 

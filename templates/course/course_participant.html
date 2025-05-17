@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journal me-1"></i>{% trans 'My courses' %}</a></li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ course }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+        <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-people-fill fs-4"></i>
+                        </div>
+                        <h2 class="mb-0">{% trans 'Course Participants' %}</h2>
+                    </div>
+                </div>
+                
+                <!-- Lecturers Section -->
+                <div class="card-body pt-0">
+                    <h4 class="border-bottom pb-2 mb-4">
+                        <i class="bi bi-mortarboard-fill me-2 text-primary"></i>
+                        {% trans 'Lecturers' %}
+                    </h4>
+                    
+                    <div class="row g-4 mb-5">
+                        {% for lecturer in lecturers %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-3">
+                                        {% if lecturer.lecturer.picture %}
+                                        <img class="rounded-circle shadow-sm" src="{{ lecturer.lecturer.picture.url }}" alt="" style="width:80px; height:80px; object-fit:cover;">
+                                        {% else %}
+                                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width:80px; height:80px;">
+                                            <i class="bi bi-person-fill fs-1 text-primary"></i>
+                                        </div>
+                                        {% endif %}
+            </div>
+                                    <h5 class="fw-bold mb-1">{{ lecturer|title }}</h5>
+                                    <p class="text-muted mb-3">
+                                        <i class="bi bi-envelope me-2"></i>
+                                        {{ lecturer.lecturer.email }}
+                                    </p>
+                                    <a href="mailto:{{ lecturer.lecturer.email }}" class="btn btn-sm btn-outline-primary contact-lecturer-btn">
+                                        <i class="bi bi-envelope me-2"></i>{% trans 'Contact' %}
+                                    </a>
+        </div>
+    </div>
+</div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <span>{% trans 'No lecturer assigned for this course' %}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Students Section -->
+                    <h4 class="border-bottom pb-2 mb-4">
+                        <i class="bi bi-person-badge me-2 text-primary"></i>
+                        {% trans 'Students' %}
+                    </h4>
+                    
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                                    <th scope="col" class="text-nowrap"><i class="bi bi-person me-2"></i>{% trans 'Student Name' %}</th>
+                                    <th scope="col" class="text-nowrap"><i class="bi bi-book me-2"></i>{% trans 'Program' %}</th>
+                                    <th scope="col" class="text-nowrap"><i class="bi bi-envelope me-2"></i>{% trans 'Email' %}</th>
+                                    <th scope="col" class="text-nowrap"><i class="bi bi-clock-history me-2"></i>{% trans 'Status' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ student.student.get_picture }}" 
+                                                class="rounded-circle border me-2" 
+                                    width="40" 
+                                    height="40"
+                                                style="object-fit: cover;"
+                                                alt="{% trans 'Profile picture' %}">
+                                            <div class="text-break fw-medium">{{ student.student.get_full_name }}</div>
+                        </div>
+                    </td>
+                    <td class="text-break">{{ student.program }}</td>
+                    <td>
+                        <a href="mailto:{{ student.student.email }}" 
+                            class="text-decoration-none text-break">
+                            {{ student.student.email }}
+                        </a>
+                    </td>
+                    <td>
+                            {% if student.student.is_online %}
+                                            <span class="badge bg-success text-white d-inline-flex align-items-center">
+                                                <i class="bi bi-circle-fill me-1 small"></i>
+                                                {% trans 'Online' %}
+                                </span>
+                            {% else %}
+                                            <span class="badge bg-secondary text-white d-inline-flex align-items-center">
+                                                <i class="bi bi-clock-history me-1 small"></i>
+                                                {% trans 'Last seen' %}: {{ student.student.get_last_login_display }}
+                                            </span>
+                            {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                                    <td colspan="4" class="text-center py-5">
+                                        <div class="text-muted mb-3">
+                                            <i class="bi bi-people-fill fs-1"></i>
+                                        </div>
+                                        <p class="mb-0">{% trans 'No students enrolled in this course yet.' %}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>    
+    </div>
+</div>
+</div>    
+
+{% include 'course/course_components.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listeners for contact buttons
+    const contactButtons = document.querySelectorAll('.contact-lecturer-btn');
+    contactButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const email = this.getAttribute('href').replace('mailto:', '');
+            courseToast.success(`{% trans "Opening email client for" %} ${email}`);
+        });
+    });
+});
+</script>
+
+{% endblock content %}

@@ -1,0 +1,51 @@
+{% load custom_filters %}
+{% load i18n %}
+
+
+<div class="card h-100 shadow-sm rounded-lg">
+    <div class="card-body">
+
+        <h5 class="card-title fw-bold">{{ assignment.title }}</h5>
+
+        <p class="mt-3"><strong>{% trans 'Type' %}:</strong> {{ assignment.assignment_type}}</p>
+        
+        <p><strong>{% trans 'Deadline' %}:</strong> {{ assignment.deadline|date:"D, d M Y H:i" }}</p>
+
+        {% if assignment.final_score %}
+            <p class="mt-3"><strong>{% trans 'Final Score' %}:</strong> {{ assignment.final_score }}</p>
+        {% endif %}
+
+        <p class="mt-3 text-success"><strong>{% trans 'Status' %}:</strong> {{ assignment.status }}</p>
+
+        {% if assignment.evaluation_criteria %}
+            <p><strong>{% trans 'Evaluation Criteria' %}:</strong> 
+                <a href="{{ assignment.evaluation_criteria.url }}" target="_blank" class="text-primary">
+                    {% trans 'View File' %}<i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </p>
+        {% endif %}
+            
+        {% if assignment.additional_file %}
+            <p><strong>{% trans 'Additional File' %}:</strong> 
+                <a href="{{ assignment.additional_file.url }}" target="_blank" class="text-primary">
+                    {% trans 'View File' %} <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </p>
+        {% endif %}
+    </div>
+    <div class="card-footer d-flex flex-wrap gap-2">
+        <a href="{% url 'assignment_submissions' slug=course.slug assignment_id=assignment.id %}" class="btn btn-secondary btn-sm">
+            <i class="bi bi-eye"></i>{% trans 'View Submissions' %}
+        </a>
+        <a href="{% url 'assignment_update' slug=course.slug pk=assignment.id %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-pencil-square"></i>{% trans 'Edit Assignment' %}
+        </a>
+        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ assignment.id }}">
+            <i class="bi bi-trash"></i>{% trans 'Delete Assignment' %}
+        </button>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+{% include './assignment_delete_modal.html' %}
+       

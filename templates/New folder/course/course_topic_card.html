@@ -1,0 +1,338 @@
+{% load course_filters %}
+
+<div class="topic-card mb-4" id="topic-{{ topic.id }}">
+  <div class="card shadow-sm border-0 rounded-3">
+    <div
+      class="card-header bg-white d-flex justify-content-between align-items-center py-3"
+      role="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#topic-content-{{ topic.id }}"
+    >
+      <div class="d-flex align-items-center">
+        <span class="topic-icon me-3">
+          <i class="fas fa-chevron-down toggle-icon transition-transform"></i>
+        </span>
+        <div>
+          <h3 class="mb-0 fw-bold">{{ topic.title }}</h3>
+        </div>
+      </div>
+
+      {% if request.user.is_lecturer or request.user.is_superuser %}
+      <div class="topic-actions">
+        <div class="dropdown">
+          <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li>
+              <h6 class="dropdown-header">Add Content</h6>
+            </li>
+              <a class="dropdown-item" href="{% url 'upload_file_view' course.slug %}?topic={{ topic.id }}">
+              <li>
+                <i class="fas fa-file-upload me-2"></i>Add File
+              </li>
+              </a>
+              <a class="dropdown-item" href="{% url 'upload_video' course.slug %}?topic={{ topic.id }}">
+            <li>
+                <i class="fas fa-video me-2"></i>Add Video
+            </li>
+              </a>
+              <a class="dropdown-item" href="{% url 'assignment_create' course.slug %}?topic={{ topic.id }}">
+            <li>
+                <i class="fas fa-tasks me-2"></i>Add Assignment
+            </li>
+              </a>
+            <li><hr class="dropdown-divider" /></li>
+              <a class="dropdown-item" href="{% url 'topic_edit' course.slug topic.id %}">
+            <li>
+                <i class="fas fa-edit me-2"></i>Edit Topic
+            </li>
+              </a>
+              <form action="{% url 'topic_delete' course.slug topic.id %}" method="post" class="delete-topic-form" data-topic-title="{{ topic.title }}">
+                {% csrf_token %}
+            <li>
+                <button type="submit" class="dropdown-item text-danger">
+                  <i class="fas fa-trash me-2"></i>Delete Topic
+                </button>
+            </li>
+              </form>
+          </ul>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div id="topic-content-{{ topic.id }}" class="collapse show">
+      <div class="card-body">
+        {% if topic.description %}
+        <p class="mb-4 text-secondary">{{ topic.description }}</p>
+        {% endif %}
+
+        <div class="topic-content">
+          {% if topic.files.exists %}
+          <div class="">
+            <div class="list-group list-group-flush">
+              {% for file in topic.files.all %}
+              <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <a
+                    href="{{ file.file.url }}"
+                    class="text-decoration-none text-body d-flex align-items-center"
+                  >
+                    <i class="fas fa-file me-2 text-primary"></i>
+                    <span>{{ file.title }}</span>
+                  </a>
+                  {% if request.user.is_lecturer or request.user.is_superuser %}
+                  <div class="btn-group">
+                    <a
+                      href="{% url 'upload_file_edit' course.slug file.id %}"
+                      class="btn btn-sm btn-light rounded-circle me-1"
+                      title="Edit file"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <a
+                      href="{% url 'upload_file_delete' course.slug file.id %}"
+                      class="btn btn-sm btn-light rounded-circle text-danger"
+                      title="Delete file"
+                      data-file-title="{{ file.title }}"
+                      onclick="return confirm('Delete file {{ file.title }}?');"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %} 
+          
+          {% if topic.videos.exists %}
+          <div class="">
+            <div class="list-group list-group-flush">
+              {% for video in topic.videos.all %}
+              <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <a
+                    href="{% url 'video_single' course.slug video.slug %}"
+                    class="text-decoration-none text-body d-flex align-items-center"
+                  >
+                    <i class="fas fa-play-circle me-2 text-danger"></i>
+                    <span>{{ video.title }}</span>
+                  </a>
+                  {% if request.user.is_lecturer or request.user.is_superuser %}
+                  <div class="btn-group">
+                    <a
+                      href="{% url 'upload_video_edit' course.slug video.slug %}"
+                      class="btn btn-sm btn-light rounded-circle me-1"
+                      title="Edit video"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <a
+                      href="{% url 'upload_video_delete' course.slug video.slug %}"
+                      class="btn btn-sm btn-light rounded-circle text-danger"
+                      title="Delete video"
+                      data-video-title="{{ video.title }}"
+                      onclick="return confirm('Delete video {{ video.title }}?');"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if topic.assignments.exists %}
+          <div class="">
+            <div class="list-group list-group-flush">
+              {% for assignment in topic.assignments.all %}
+              <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                
+                {% now "U" as now_timestamp %}
+                {% if assignment.deadline|date:"U" >= now_timestamp %}
+                  <a
+                  href="{% url 'assignment_submission' slug=course.slug assignment_id=assignment.id %}"
+                  class="text-decoration-none text-body d-flex align-items-center"
+                  >
+                  <i class="fas fa-tasks me-2 text-primary"></i>
+                  <span>{{ assignment.title }}</span>
+                  </a>
+                {% else %}
+                  <div class="text-body d-flex align-items-center">
+                  <i class="fas fa-tasks me-2 text-primary"></i>
+                  <span>{{ assignment.title }}</span>
+                  </div>
+                  <span class="badge bg-danger rounded-pill">Closed</span>
+                {% endif %}
+
+                {% if assignment|submission_limit:request.user %}
+                  <span class="badge bg-secondary rounded-pill">Submission Limit Reached</span>
+                {% endif %}
+
+                {% if assignment|has_submission:request.user %}
+                  <a
+                      href="{% url 'assignment_result' slug=course.slug assignment_id=assignment.id %}"
+                      class="btn btn-sm btn-light rounded-circle text-danger"
+                      title="View Submissions"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </a>
+                {% endif %}
+
+                  {% if request.user.is_lecturer or request.user.is_superuser %}
+                  <div class="btn-group">
+                    <a
+                      href="{% url 'assignment_update' slug=course.slug pk=assignment.id %}"
+                      class="btn btn-sm btn-light rounded-circle me-1"
+                      title="Edit Assignment"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <a
+                      href="{% url 'assignment_submissions' slug=course.slug assignment_id=assignment.id %}"
+                      class="btn btn-sm btn-light rounded-circle text-danger"
+                      title="View Submissions"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteTopicModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="mb-4">
+          <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+        </div>
+        <h5 class="mb-3">Delete Topic?</h5>
+        <p class="mb-2" id="deleteTopicName"></p>
+        <p class="text-muted small">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger px-4" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const deleteModal = document.getElementById('deleteTopicModal');
+  const deleteTopicName = document.getElementById('deleteTopicName');
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  let activeForm = null;
+
+  // Handle delete button clicks
+  document.querySelectorAll('.delete-topic-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      activeForm = this;
+      const topicTitle = this.dataset.topicTitle;
+      deleteTopicName.textContent = `"${topicTitle}"`;
+      
+      const modal = new bootstrap.Modal(deleteModal);
+      modal.show();
+    });
+  });
+
+  // Handle confirmation
+  confirmDeleteBtn.addEventListener('click', function() {
+    if (activeForm) {
+      confirmDeleteBtn.disabled = true;
+      confirmDeleteBtn.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        Deleting...
+      `;
+      activeForm.submit();
+    }
+  });
+
+  // Reset modal on close
+  deleteModal.addEventListener('hidden.bs.modal', function() {
+    confirmDeleteBtn.disabled = false;
+    confirmDeleteBtn.innerHTML = 'Delete';
+    activeForm = null;
+    // close the overlay
+    document.querySelector('.modal-backdrop').remove();
+  });
+});
+</script>
+
+<style>
+  .dropdown-menu {
+    min-width: 200px;
+    margin-top: 0.5rem !important;
+    transform-origin: top right !important;
+    animation: dropdownFade 0.2s ease;
+  }
+
+  @keyframes dropdownFade {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+
+.modal-content {
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal.show .modal-content {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.btn {
+  transition: all 0.2s;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+</style>
+
+
+
+

@@ -1,0 +1,141 @@
+/* RTL support for Farsi language */
+html[dir="rtl"] {
+    /* Text alignment */
+    text-align: right;
+}
+
+html[dir="rtl"] body {
+    direction: rtl;
+    unicode-bidi: embed;
+    text-align: right;
+    font-family: 'Tahoma', 'Arial', sans-serif;
+}
+
+/* Navigation */
+html[dir="rtl"] .nav-btn:after {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .nav-item-btn {
+    text-align: right;
+}
+
+html[dir="rtl"] .dropdown-menu {
+    text-align: right;
+}
+
+html[dir="rtl"] .bi {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* RTL for margins and paddings */
+html[dir="rtl"] .me-1, 
+html[dir="rtl"] .me-2,
+html[dir="rtl"] .me-3,
+html[dir="rtl"] .me-4,
+html[dir="rtl"] .me-5 {
+    margin-right: 0 !important;
+}
+
+html[dir="rtl"] .me-1 {
+    margin-left: 0.25rem !important;
+}
+
+html[dir="rtl"] .me-2 {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+}
+
+html[dir="rtl"] .me-3 {
+    margin-right: 0 !important;
+    margin-left: 1rem !important;
+}
+
+html[dir="rtl"] .me-4 {
+    margin-left: 1.5rem !important;
+}
+
+html[dir="rtl"] .me-5 {
+    margin-left: 3rem !important;
+}
+
+html[dir="rtl"] .ms-1,
+html[dir="rtl"] .ms-2,
+html[dir="rtl"] .ms-3,
+html[dir="rtl"] .ms-4,
+html[dir="rtl"] .ms-5 {
+    margin-left: 0 !important;
+}
+
+html[dir="rtl"] .ms-1 {
+    margin-right: 0.25rem !important;
+}
+
+html[dir="rtl"] .ms-2 {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+}
+
+html[dir="rtl"] .ms-3 {
+    margin-right: 1rem !important;
+}
+
+html[dir="rtl"] .ms-4 {
+    margin-right: 1.5rem !important;
+}
+
+html[dir="rtl"] .ms-5 {
+    margin-right: 3rem !important;
+}
+
+/* Forms */
+html[dir="rtl"] .form-label {
+    text-align: right;
+}
+
+/* Footer */
+html[dir="rtl"] .footer-links a i {
+    transform: rotate(180deg);
+}
+
+html[dir="rtl"] .footer-links a i.bi-chevron-right {
+    transform: rotate(180deg);
+}
+
+/* User info */
+html[dir="rtl"] .user-avatar {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+html[dir="rtl"] .text-md-start {
+    text-align: right !important;
+}
+
+html[dir="rtl"] .text-md-end {
+    text-align: left !important;
+}
+
+/* Cards and accordion */
+html[dir="rtl"] .card-title,
+html[dir="rtl"] .accordion-button {
+    text-align: right;
+}
+
+html[dir="rtl"] .accordion-button::after {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* Contact information */
+html[dir="rtl"] .contact-icon {
+    margin-right: 0;
+    margin-left: 1rem;
+}
+
+html[dir="rtl"] .dropdown-item i.bi {
+    margin-right: 0;
+    margin-left: 8px;
+} 

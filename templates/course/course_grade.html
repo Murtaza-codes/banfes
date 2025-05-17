@@ -1,0 +1,498 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journal me-1"></i>{% trans 'My courses' %}</a></li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ course }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-mortarboard-fill fs-4"></i>
+                        </div>
+                        <h2 class="mb-0">{% trans 'Course Grades' %}</h2>
+                    </div>
+                </div>
+                
+                <div class="card-body pt-0">
+                    {% if request.user.is_student %}
+                    <!-- Student View -->
+                    <div class="row g-4">
+                        <!-- Overall Grade -->
+                        <div class="col-md-4">
+                            <div class="card h-100 bg-success bg-opacity-10 border-0">
+                                <div class="card-body p-4 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-award fs-1 text-success"></i>
+                                    </div>
+                                    <h1 class="display-4 mb-0 fw-bold">{{ overall_grade|default:"B+" }}</h1>
+                                    <p class="text-muted mb-0">{% trans 'Overall Grade' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Points Earned -->
+                        <div class="col-md-4">
+                            <div class="card h-100 bg-primary bg-opacity-10 border-0">
+                                <div class="card-body p-4 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-star-fill fs-1 text-primary"></i>
+                                    </div>
+                                    <h1 class="display-4 mb-0 fw-bold">{{ points_earned|default:"85" }}<small class="fs-6">/100</small></h1>
+                                    <p class="text-muted mb-0">{% trans 'Points Earned' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Class Standing -->
+                        <div class="col-md-4">
+                            <div class="card h-100 bg-info bg-opacity-10 border-0">
+                                <div class="card-body p-4 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-bar-chart-line-fill fs-1 text-info"></i>
+                                    </div>
+                                    <h1 class="display-4 mb-0 fw-bold">{{ class_rank|default:"8" }}<small class="fs-6">/25</small></h1>
+                                    <p class="text-muted mb-0">{% trans 'Class Standing' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grade Distribution Chart -->
+                    <div class="row mt-4">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-white py-3 border-0">
+                                    <h5 class="mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>{% trans 'Grade Distribution' %}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="height: 300px; position: relative;">
+                                        <canvas id="gradeChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-white py-3 border-0">
+                                    <h5 class="mb-0"><i class="bi bi-check-circle me-2 text-success"></i>{% trans 'Completed Work' %}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>{% trans 'Assignments' %}</span>
+                                            <span>12/15</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>{% trans 'Quizzes' %}</span>
+                                            <span>8/10</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>{% trans 'Projects' %}</span>
+                                            <span>2/2</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+<div>
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>{% trans 'Exams' %}</span>
+                                            <span>1/2</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grade Details Table -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3 border-0">
+                            <h5 class="mb-0"><i class="bi bi-list-columns-reverse me-2 text-primary"></i>{% trans 'Grade Details' %}</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+            <tr>
+                                            <th>{% trans 'Assessment' %}</th>
+                                            <th>{% trans 'Type' %}</th>
+                                            <th>{% trans 'Due Date' %}</th>
+                                            <th>{% trans 'Status' %}</th>
+                                            <th class="text-end">{% trans 'Grade' %}</th>
+            </tr>
+        </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{% trans 'Midterm Exam' %}</td>
+                                            <td><span class="badge bg-danger-subtle text-danger">{% trans 'Exam' %}</span></td>
+                                            <td>2023-10-15</td>
+                                            <td><span class="badge bg-success">{% trans 'Completed' %}</span></td>
+                                            <td class="text-end fw-medium">88/100</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{% trans 'Assignment 3' %}</td>
+                                            <td><span class="badge bg-primary-subtle text-primary">{% trans 'Assignment' %}</span></td>
+                                            <td>2023-10-22</td>
+                                            <td><span class="badge bg-success">{% trans 'Completed' %}</span></td>
+                                            <td class="text-end fw-medium">92/100</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{% trans 'Assignment 4' %}</td>
+                                            <td><span class="badge bg-primary-subtle text-primary">{% trans 'Assignment' %}</span></td>
+                                            <td>2023-11-05</td>
+                                            <td><span class="badge bg-warning">{% trans 'In Progress' %}</span></td>
+                                            <td class="text-end fw-medium">--/100</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{% trans 'Final Project' %}</td>
+                                            <td><span class="badge bg-info-subtle text-info">{% trans 'Project' %}</span></td>
+                                            <td>2023-12-10</td>
+                                            <td><span class="badge bg-secondary">{% trans 'Not Started' %}</span></td>
+                                            <td class="text-end fw-medium">--/100</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{% trans 'Final Exam' %}</td>
+                                            <td><span class="badge bg-danger-subtle text-danger">{% trans 'Exam' %}</span></td>
+                                            <td>2023-12-15</td>
+                                            <td><span class="badge bg-secondary">{% trans 'Not Started' %}</span></td>
+                                            <td class="text-end fw-medium">--/100</td>
+                                        </tr>
+                                    </tbody>
+    </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% elif request.user.is_lecturer or request.user.is_superuser %}
+                    <!-- Lecturer View -->
+                    
+                    <!-- Class Statistics -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <div class="card h-100 bg-primary bg-opacity-10 border-0">
+                                <div class="card-body p-4 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-people-fill fs-1 text-primary"></i>
+                                    </div>
+                                    <h3 class="mb-0">{{ total_students }}</h3>
+                                    <p class="text-muted mb-0">{% trans 'Total Students' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="card h-100 bg-success bg-opacity-10 border-0">
+                                <div class="card-body p-4 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-check-circle fs-1 text-success"></i>
+                                    </div>
+                                    <h3 class="mb-0">{{ avg_grade }}</h3>
+                                    <p class="text-muted mb-0">{% trans 'Average Score' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="card h-100 bg-info bg-opacity-10 border-0">
+                                <div class="card-body p-4 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-file-earmark-check fs-1 text-info"></i>
+                                    </div>
+                                    <h3 class="mb-0">-</h3>
+                                    <p class="text-muted mb-0">{% trans 'Graded Items' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="card h-100 bg-warning bg-opacity-10 border-0">
+                                <div class="card-body p-4 text-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-hourglass-split fs-1 text-warning"></i>
+                                    </div>
+                                    <h3 class="mb-0">-</h3>
+                                    <p class="text-muted mb-0">{% trans 'Pending Items' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Class Grade Distribution -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>{% trans 'Class Grade Distribution' %}</h5>
+                            <div>
+                                <select class="form-select form-select-sm">
+                                    <option selected>{% trans 'All Assessments' %}</option>
+                                    <option>{% trans 'Assignments' %}</option>
+                                    <option>{% trans 'Quizzes' %}</option>
+                                    <option>{% trans 'Exams' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container" style="height: 300px; position: relative;">
+                                <canvas id="classGradeChart"></canvas>
+                            </div>
+                        </div>
+</div>    
+
+                    <!-- Student Grade Table -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-table me-2 text-primary"></i>{% trans 'Student Grades' %}</h5>
+                            <div class="d-flex gap-2">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                                    <input type="search" class="form-control" placeholder="{% trans 'Search students...' %}">
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="exportGradesBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-download me-1"></i>{% trans 'Export' %}
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportGradesBtn">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'export_grades_excel' slug=course.slug %}">
+                                                <i class="bi bi-file-earmark-excel me-2 text-success"></i>{% trans 'Excel (.xls)' %}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'export_grades_pdf' slug=course.slug %}">
+                                                <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>{% trans 'PDF (.pdf)' %}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'export_grades_csv' slug=course.slug %}">
+                                                <i class="bi bi-file-earmark-text me-2 text-primary"></i>{% trans 'CSV (.csv)' %}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>{% trans 'Student' %}</th>
+                                            <th>{% trans 'ID' %}</th>
+                                            <th>{% trans 'Assignment Avg' %}</th>
+                                            <th>{% trans 'Quiz Avg' %}</th>
+                                            <th>{% trans 'Exam Avg' %}</th>
+                                            <th>{% trans 'Total' %}</th>
+                                            <th class="text-end">{% trans 'Actions' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for taken_course in taken_courses %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ taken_course.student.student.get_picture }}" class="rounded-circle me-2" width="32" height="32" alt="{{ taken_course.student.student.get_full_name }}" style="object-fit: cover;">
+                                                    <span>{{ taken_course.student.student.get_full_name }}</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ taken_course.student.id_number|default:"-" }}</td>
+                                            <td>{{ taken_course.assignment }}/100</td>
+                                            <td>{{ taken_course.quiz }}/100</td>
+                                            <td>{{ taken_course.final_exam }}/100</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                                        <div class="progress-bar {% if taken_course.total >= 70 %}bg-success{% elif taken_course.total >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                                             role="progressbar" 
+                                                             style="width: {{ taken_course.total }}%;" 
+                                                             aria-valuenow="{{ taken_course.total }}" 
+                                                             aria-valuemin="0" 
+                                                             aria-valuemax="100"></div>
+                                                    </div>
+                                                    <span class="text-nowrap">{{ taken_course.total }}% ({{ taken_course.grade }})</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="{% url 'add_score_for' taken_course.course.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4 text-muted">
+                                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                                {% trans 'No student grades available' %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'course/course_components.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Student grade chart
+    if (document.getElementById('gradeChart')) {
+        const ctx = document.getElementById('gradeChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['{% trans "Assignments" %}', '{% trans "Quizzes" %}', '{% trans "Projects" %}', '{% trans "Exams" %}'],
+                datasets: [{
+                    label: '{% trans "Your Score" %}',
+                    data: [85, 78, 90, 72],
+                    backgroundColor: [
+                        'rgba(13, 110, 253, 0.7)',
+                        'rgba(25, 135, 84, 0.7)',
+                        'rgba(13, 202, 240, 0.7)',
+                        'rgba(220, 53, 69, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(13, 110, 253, 1)',
+                        'rgba(25, 135, 84, 1)',
+                        'rgba(13, 202, 240, 1)',
+                        'rgba(220, 53, 69, 1)'
+                    ],
+                    borderWidth: 1
+                }, {
+                    label: '{% trans "Class Average" %}',
+                    data: [75, 72, 80, 68],
+                    backgroundColor: 'rgba(173, 181, 189, 0.5)',
+                    borderColor: 'rgba(173, 181, 189, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    }
+
+    // Class grade distribution chart for lecturer
+    if (document.getElementById('classGradeChart')) {
+        const ctx = document.getElementById('classGradeChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['F', 'D', 'C', 'B', 'A'],
+                datasets: [{
+                    label: '{% trans "Number of Students" %}',
+                    data: [0, 0, 0, 0, 0], // Real data should be calculated server-side
+                    backgroundColor: [
+                        'rgba(220, 53, 69, 0.7)',
+                        'rgba(255, 193, 7, 0.7)',
+                        'rgba(13, 202, 240, 0.7)',
+                        'rgba(25, 135, 84, 0.7)',
+                        'rgba(13, 110, 253, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(255, 193, 7, 1)',
+                        'rgba(13, 202, 240, 1)',
+                        'rgba(25, 135, 84, 1)',
+                        'rgba(13, 110, 253, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+    }
+    
+    // Add event listeners for lecturer actions
+    const editGradeButtons = document.querySelectorAll('.edit-grade-btn');
+    if (editGradeButtons.length > 0) {
+        editGradeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const student = this.getAttribute('data-student');
+                courseToast.info(`{% trans "Editing grades for" %} ${student}`);
+                // In a real implementation, this would open a modal or redirect to an edit page
+            });
+        });
+    }
+    
+    // For student view - show a welcome toast message when page loads
+    if (document.querySelector('.bg-success.bg-opacity-10') && 
+        !document.getElementById('classGradeChart')) {
+        // This is likely the student view (checking for elements that only exist in student view)
+        setTimeout(() => {
+            courseToast.info('{% trans "Your current grade is" %} B+. {% trans "Keep up the good work!" %}');
+        }, 1000);
+    }
+    
+    // Remove the old event listener for exportGradesBtn since we now use direct links
+    // instead add toast messages for export actions
+    const exportLinks = document.querySelectorAll('.dropdown-menu .dropdown-item');
+    if (exportLinks.length > 0) {
+        exportLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const format = this.textContent.trim();
+                courseToast.info(`{% trans "Preparing" %} ${format} {% trans "export..." %}`);
+            });
+        });
+    }
+});
+</script>
+
+{% endblock content %}

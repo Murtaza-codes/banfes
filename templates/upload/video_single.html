@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ video.title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+{% load course_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' video.course.slug %}" class="text-decoration-none"><i class="bi bi-book me-1"></i>{{ video.course }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-play-btn me-1"></i>{{ video.title }}</li>
+        </ol>
+    </nav>
+
+    {% include 'course/course_navigation.html' %}  
+
+    <div class="row">
+        <!-- Main Video Content -->
+        <div class="col-lg-8 col-md-12 mx-auto mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-circle me-3">
+                            <i class="bi bi-play-btn-fill fs-4"></i>
+                        </div>
+                        <h2 class="mb-0">{{ video.title }}</h2>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Video Container with Plyr -->
+                    <div class="video-wrapper mb-4">
+                        {% if video.video_url %}
+                            <!-- YouTube Video with Plyr -->
+                            <div class="plyr__video-embed" id="player">
+                                <iframe
+                                    src="{{ video.video_url | youtube_embed }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+                                    allowfullscreen
+                                    allowtransparency
+                                    allow="autoplay"
+                                    loading="lazy">
+                                </iframe>
+                            </div>
+                        {% else %}
+                            <!-- HTML5 Video with Plyr -->
+                            <video id="player" playsinline controls>
+                                <source src="{{ video.video.url }}" type="video/mp4">
+                                {% trans 'Your browser does not support the video tag.' %}
+                            </video>
+                        {% endif %}
+                    </div>
+
+                    <!-- Video metadata -->
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="video-metadata">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-calendar3 text-primary me-2"></i>
+                                <span>{{ video.timestamp|date:"F d, Y" }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock-history text-primary me-2"></i>
+                                <span>{{ video.timestamp|timesince }} {% trans 'ago' %}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Video description -->
+                    {% if video.description %}
+                    <div class="video-description mt-4">
+                        <h5 class="mb-3"><i class="bi bi-info-circle text-primary me-2"></i>{% trans 'Description' %}</h5>
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0">{{ video.description }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Course reference -->
+                    <div class="mt-4 pt-3 border-top">
+                        <h6><i class="bi bi-journal-text text-primary me-2"></i>{% trans 'From course:' %}</h6>
+                        <a href="{% url 'course_detail' video.course.slug %}" class="d-flex align-items-center text-decoration-none mt-2">
+                            <span class="bg-primary bg-opacity-10 p-2 rounded-circle me-3">
+                                <i class="bi bi-book text-primary"></i>
+                            </span>
+                            <div>
+                                <p class="mb-0 fw-medium">{{ video.course.name }}</p>
+                                <small class="text-muted">{{ video.course.code }}</small>
+                            </div>
+                            <i class="bi bi-chevron-right ms-auto"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Video Sidebar -->
+        <div class="col-lg-4 col-md-12">
+            <!-- Video categories if any -->
+            {% if video.topic %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0"><i class="bi bi-tag-fill text-primary me-2"></i>{% trans 'Topic' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary bg-opacity-10 text-primary p-2">
+                            <i class="bi bi-bookmark-fill me-1"></i>{{ video.topic.title }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Usage tips -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb text-primary me-2"></i>{% trans 'Tips' %}</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex align-items-center px-0 border-0">
+                            <i class="bi bi-gear text-primary me-3"></i>
+                            <span>{% trans 'Use the settings icon to adjust quality' %}</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center px-0 border-0">
+                            <i class="bi bi-speedometer2 text-primary me-3"></i>
+                            <span>{% trans 'Change playback speed with the speed control' %}</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center px-0 border-0">
+                            <i class="bi bi-arrows-fullscreen text-primary me-3"></i>
+                            <span>{% trans 'Use fullscreen for better viewing' %}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.video-wrapper {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    background-color: #000;
+    aspect-ratio: 16 / 9;
+}
+
+/* Plyr custom styling */
+:root {
+    --plyr-color-main: #3d5a80;
+    --plyr-audio-controls-background: #fff;
+    --plyr-audio-control-color: #3d5a80;
+    --plyr-audio-control-color-hover: #3d5a80;
+    --plyr-control-radius: 4px;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important;
+}
+
+@media (max-width: 576px) {
+    .video-wrapper {
+        aspect-ratio: 4 / 3;
+    }
+}
+</style>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Plyr
+    const player = new Plyr('#player', {
+        controls: [
+            'play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 
+            'captions', 'settings', 'pip', 'airplay', 'fullscreen'
+        ],
+        ratio: '16:9',
+        seekTime: 10,
+        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
+        quality: { default: 720, options: [4320, 2880, 2160, 1440, 1080, 720, 576, 480, 360, 240] }
+    });
+    
+    // Event listeners for video tracking
+    player.on('ready', () => {
+        console.log('Video player is ready');
+    });
+    
+    player.on('play', () => {
+        console.log('Video started playing');
+    });
+    
+    player.on('ended', () => {
+        console.log('Video completed');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+    {{ item.title }} | {% trans 'Learning management system' %}
+{% endblock %}
+
+{% block meta %}
+    <!-- Open Graph meta tags for social sharing -->
+    <meta property="og:title" content="{{ item.title }}">
+    <meta property="og:description" content="{{ item.summary|truncatewords:25 }}">
+    {% if item.thumbnail %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ item.thumbnail.url }}">
+    {% endif %}
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <meta property="og:type" content="article">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'news' %}">{% trans 'News & Events' %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ item.title|truncatechars:30 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card border-0 shadow-sm">
+                {% if item.thumbnail %}
+                <img src="{{ item.thumbnail.url }}" alt="{{ item.title }}" class="card-img-top" style="max-height: 400px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge {% if item.posted_as == 'News' %}bg-info{% else %}bg-warning{% endif %} me-2">{{ item.posted_as }}</span>
+                        <small class="text-muted">{{ item.updated_date|date:"F d, Y" }}</small>
+                        {% if not item.is_public %}
+                        <span class="badge bg-secondary ms-2">{% trans 'Private' %}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h1 class="card-title mb-4">{{ item.title }}</h1>
+                    
+                    <div class="card-text fs-5">
+                        {{ item.summary|linebreaks }}
+                    </div>
+                    
+                    {% if request.user.is_superuser %}
+                    <div class="mt-4 pt-3 border-top">
+                        <a href="{% url 'edit_post' pk=item.id %}" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-pencil-square me-1"></i>{% trans 'Edit' %}
+                        </a>
+                        <a href="{% url 'delete_post' pk=item.id %}" class="btn btn-outline-danger" 
+                           onclick="return confirm('{% trans 'Are you sure you want to delete this item?' %}');">
+                            <i class="bi bi-trash me-1"></i>{% trans 'Delete' %}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <a href="{% url 'news' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>{% trans 'Back to News & Events' %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

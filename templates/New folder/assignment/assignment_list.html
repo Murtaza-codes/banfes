@@ -1,0 +1,91 @@
+<!-- templates/assignment/assignment_list.html -->
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load i18n %}
+
+{% block content %}
+
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light p-2 rounded">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}">{% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}">{{ course }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Assignments' %}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+<!-- Page Title -->
+<h1 class="mb-4">{% trans 'Assignments for' %} {{ course }}</h1>
+
+<!-- Assignment List -->
+<div class="row w-100 mx-auto justify-content-center">
+    {% if request.user.is_lecturer or request.user.is_superuser %}
+    <!-- Lecturer/Admin View -->
+    <h3 class="mb-4 text-primary">{% trans 'Active Assignments' %}</h3>
+    <div class="row">
+        {% for assignment in assignments %}
+            {% now "U" as now_timestamp %}
+            {% if assignment.deadline|date:"U" >= now_timestamp %}
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4 ">
+                    {% include 'assignment/assignment_card.html' %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <h3 class="mb-4 mt-5 text-success">{% trans 'Passed Assignments' %}</h3>
+    <div class="row">
+        {% for assignment in assignments %}
+            {% now "U" as now_timestamp %}
+            {% if assignment.deadline|date:"U" < now_timestamp %}
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    {% include 'assignment/assignment_card.html' %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Student View -->
+    <h3 class="mb-4 text-primary">{% trans 'Active Assignments' %}</h3>
+    <div class="row">
+        {% for assignment in assignments %}
+        {% if assignment.status == "open"  %}
+            {% now "U" as now_timestamp %}
+            {% if assignment.deadline|date:"U" >= now_timestamp  %}
+                {% if not submission_dict|get_item:assignment.id %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        {% include 'assignment/assignment_student_card.html' %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+    </div>   
+
+    <h3 class="mb-4 mt-5 text-success">{% trans 'Passed & Submitted Assignments' %}</h3>
+    <div class="row">
+        {% for assignment in assignments %}
+            {% if assignment.status == "open"  %}
+                {% now "U" as now_timestamp %}
+                {% if submission_dict|get_item:assignment.id or assignment.deadline|date:"U" < now_timestamp %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        {% include 'assignment/assignment_student_card.html' %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+    {% if not assignments %}
+        <div class="col-12">
+            <p class="text-muted">{% trans 'No assignments available.' %}</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

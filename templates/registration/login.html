@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Education Portal - Login' %}{% endblock title %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow border-0 rounded-lg">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h3 class="mb-0"><i class="bi bi-shield-lock me-2"></i>{% trans 'Sign in' %}</h3>
+          <p class="mt-2 mb-0">Access your personalized dashboard</p>
+    </div>
+        <div class="card-body p-4">
+          {% if form.errors %}
+          <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans 'Invalid ID & Password.' %}
+          </div>
+          {% endif %}
+          
+          {% include 'snippets/messages.html' %}
+          
+          <form method="post" action="{% url 'login' %}" id="login-form">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+              <input type="text" name="username" id="username_id" class="form-control" placeholder="Username" required>
+              <label for="username_id"><i class="bi bi-person me-2"></i>{% trans 'Username' %}</label>
+              <div id="message-wrapper"></div>
+          </div>
+            
+            <div class="form-floating mb-4">
+              <input type="password" name="password" id="password_id" class="form-control" placeholder="Password" required>
+              <label for="password_id"><i class="bi bi-key me-2"></i>{% trans 'Password' %}</label>
+            </div>
+            
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="remember_me">
+                <label class="form-check-label" for="remember_me">{% trans 'Remember me' %}</label>
+              </div>
+              <a href="{% url 'password_reset' %}" class="text-primary">{% trans 'Forgot password?' %}</a>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 py-2 mb-3" id="login-btn">
+              <i class="bi bi-box-arrow-in-right me-2"></i>{% trans 'SIGN IN' %}
+            </button>
+
+            <div class="text-center">
+              <small class="text-muted">For students, use your username (e.g., test2)</small>
+            </div>
+          </form>
+        </div>
+        
+        <div class="card-footer bg-light py-3">
+          <div class="row">
+            <div class="col-md-4 mb-2 mb-md-0">
+              <button class="btn btn-outline-primary w-100 btn-sm login-type active" data-type="student">
+                <i class="bi bi-mortarboard me-1"></i> {% trans 'Student' %}
+              </button>
+            </div>
+            <div class="col-md-4 mb-2 mb-md-0">
+              <button class="btn btn-outline-primary w-100 btn-sm login-type" data-type="exam">
+                <i class="bi bi-pencil-square me-1"></i> {% trans 'Exam Center' %}
+              </button>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-outline-primary w-100 btn-sm login-type" data-type="school">
+                <i class="bi bi-building me-1"></i> {% trans 'School Admin' %}
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+    // Visual feedback when logging in
+    $('#login-form').submit(function() {
+      $('#login-btn').addClass('disabled');
+      $('#login-btn').html('<i class="bi bi-arrow-repeat me-2 spinner-border spinner-border-sm"></i> {% trans "Signing in..." %}');
+    });
+    
+    // Set appropriate placeholder based on login type
+    $('.login-type').click(function() {
+      const type = $(this).data('type');
+      $('.login-type').removeClass('active');
+      $(this).addClass('active');
+      
+      if (type === 'student') {
+        $('#username_id').attr('placeholder', '{% trans "Username" %}');
+        $('label[for="username_id"]').html('<i class="bi bi-person me-2"></i>{% trans "Username" %}');
+      } else if (type === 'exam') {
+        $('#username_id').attr('placeholder', '{% trans "Exam ID" %}');
+        $('label[for="username_id"]').html('<i class="bi bi-person-badge me-2"></i>{% trans "Exam ID" %}');
+      } else if (type === 'school') {
+        $('#username_id').attr('placeholder', '{% trans "School ID" %}');
+        $('label[for="username_id"]').html('<i class="bi bi-person-badge me-2"></i>{% trans "School ID" %}');
+      }
+      
+      $('#username_id').focus();
+    });
+  });
+</script>
+{% endblock %}

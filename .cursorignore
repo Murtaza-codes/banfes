@@ -1,0 +1,65 @@
+media/
+static/
+pycache/
+*.log
+*.sqlite3
+node_modules/
+.env
+# Ignore compiled python files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ignore database files
+*.db
+db.sqlite3-journal
+
+# Ignore media uploads
+media/
+staticfiles/
+
+# Ignore cached files and directories
+.cache/
+.pytest_cache/
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.coverage-report/
+coverage.xml
+*.cover
+
+# Ignore environment files
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Ignore translation compiled files
+*.mo
+*.pot
+
+# Ignore package files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+sdist/
+var/
+wheels/
+
+# Ignore Docker related
+.docker/
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore migrations for better performance
+*/migrations/
+
+# Ignore large content files
+uploads/

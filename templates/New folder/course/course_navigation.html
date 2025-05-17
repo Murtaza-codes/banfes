@@ -1,0 +1,113 @@
+<style>
+    .course-nav {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin: 20px 0;
+    }
+
+    .course-nav-list {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .course-nav-item {
+        position: relative;
+    }
+
+    .course-nav-link {
+        color: #475569;
+        display: block;
+        padding: 1rem 1.5rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .course-nav-link:hover {
+        color: #2563eb;
+        background-color: #f8fafc;
+    }
+
+    .course-nav-link.active {
+        color: #2563eb;
+        background-color: #eff6ff;
+    }
+
+    .course-nav-link.active:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #2563eb;
+    }
+
+    /* Icons */
+    .course-nav-link i {
+        margin-right: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .course-nav-list {
+            flex-direction: column;
+        }
+
+        .course-nav-link {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .course-nav-link.active:after {
+            display: none;
+        }
+    }
+</style>
+
+<nav class="course-nav">
+    <ul class="course-nav-list">
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'overview' %}active{% endif %} " href="{% url 'programs:course_detail' course.slug %}">
+                <i class="fas fa-book"></i> Overview
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'assignments' %}active{% endif %}" href="{% url 'assignment_list' course.slug %}">
+                <i class="fas fa-tasks"></i> Assignments
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'quizzes' %}active{% endif %}" href="{% url 'quiz_index' course.slug %}">
+                <i class="fas fa-question"></i> Quizzes
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'attendance' %}active{% endif %}" href="{% url 'programs:course_attendance' course.slug %}">
+                <i class="fas fa-check"></i> Attendance
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'participants' %}active{% endif %}" href="{% url 'programs:course_participants' course.slug %}">
+                <i class="fas fa-person"></i> Participants
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'discussion' %}active{% endif %}" href="{% url 'programs:course_discussion' course.slug %}">
+                <i class="fas fa-robot"></i> Discussion
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'grades' %}active{% endif %}" href="{% url 'programs:course_grade' course.slug %}">
+                <i class="fas fa-chart-bar"></i> Grades
+            </a>
+        </li>
+    </ul>
+</nav>

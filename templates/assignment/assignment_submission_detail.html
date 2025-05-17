@@ -1,0 +1,215 @@
+<!-- templates/assignment/assignment_submission_detail.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- Breadcrumb Navigation with modern styling -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light p-2 rounded">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}">{% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}">{{ course }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'assignment_submissions' slug=course.slug assignment_id=assignment.id %}">{% trans 'Submissions' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Submission Detail' %}</li>
+    </ol>
+</nav>
+
+<!-- Header Section with Status Badge -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">{% trans 'Submission Detail' %}</h1>
+    <div class="submission-status">
+        {% if submission.is_late %}
+            <span class="badge bg-warning">{% trans 'Late Submission' %}</span>
+        {% else %}
+            <span class="badge bg-success">{% trans 'On Time' %}</span>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Submission Details Card -->
+<div class="card mb-4 shadow-sm hover-shadow">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-user-graduate"></i> {{ submission.student.get_full_name }}</h5>
+            <div class="submission-time">
+                <i class="far fa-clock"></i> {{ submission.submitted_at|date:"F d, Y H:i" }}
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="submission-info">
+                    <p><i class="fas fa-calendar-alt"></i> <strong>{% trans 'Submitted' %}:</strong> {{ submission.updated_at }}</p>
+                    {% if assignment.deadline %}
+                        <p><i class="fas fa-hourglass-end"></i> <strong>{% trans 'Deadline' %}:</strong> {{ assignment.deadline }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="score-summary text-end">
+                    {% if submission.teacher_score %}
+                        <h3 class="text-primary">{{ submission.final_score }}/100</h3>
+                        <small class="text-muted">{% trans 'Final Score' %}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scoring and Feedback Section -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-light">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#scoring" role="tab">
+                    <i class="fas fa-star"></i> {% trans 'Scoring' %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#ai-feedback" role="tab">
+                    <i class="fas fa-robot"></i> {% trans 'AI Feedback' %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#submission-content" role="tab">
+                    <i class="fas fa-file-alt"></i> {% trans 'Submission Content' %}
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <!-- Scoring Tab -->
+            <div class="tab-pane fade show active" id="scoring" role="tabpanel">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="teacher_score" class="form-label">{% trans 'Teacher Score' %}</label>
+                        <div class="input-group">
+                            <input type="number" min="0" max="100" name="teacher_score" id="teacher_score" 
+                                   class="form-control" value="{{ submission.teacher_score|default_if_none:'' }}"
+                                   required>
+                            <span class="input-group-text">/100</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="teacher_feedback" class="form-label">{% trans 'Teacher Feedback' %}</label>
+                        <textarea name="teacher_feedback" id="teacher_feedback" rows="5" 
+                                  class="form-control" required>{{ submission.teacher_feedback }}</textarea>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        {% if submission.teacher_feedback %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-edit"></i> {% trans 'Update Feedback' %}
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> {% trans 'Save Feedback' %}
+                            </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+            <!-- AI Feedback Tab -->
+            <div class="tab-pane fade" id="ai-feedback" role="tabpanel">
+                {% if show_ai_score %}
+                    <div class="ai-score-badge mb-3">
+                        <h4 class="text-center">
+                            <span class="badge bg-primary">
+                                <i class="fas fa-robot"></i> {% trans 'AI Score' %}: {{ submission.ai_score }}/100
+                            </span>
+                        </h4>
+                    </div>
+                {% endif %}
+                {% if submission.ai_feedback %}
+                    <div class="ai-feedback-content p-3 bg-light rounded">
+                        <p style="white-space: pre-wrap;">{{ submission.ai_feedback }}</p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> {% trans 'No AI feedback available yet.' %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Submission Content Tab -->
+            <div class="tab-pane fade" id="submission-content" role="tabpanel">
+                {% if submission.extracted_text %}
+                    <div class="extracted-text p-3 bg-light rounded" dir="rtl">
+                        <h6 class="mb-3">{% trans 'Extracted Text' %}</h6>
+                        <p style="white-space: pre-wrap; text-align: right;">{{ submission.extracted_text }}</p>
+                    </div>
+                {% elif submission.text_submission %}
+                    <div class="text-submission p-3 bg-light rounded">
+                        <h6 class="mb-3">{% trans 'Text Submission' %}</h6>
+                        <p style="white-space: pre-wrap;">{{ submission.text_submission }}</p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> {% trans 'No text content available.' %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Submitted Files Section -->
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="fas fa-paperclip"></i> {% trans 'Submitted Files' %}</h5>
+    </div>
+    <div class="card-body">
+        {% if files %}
+            <div class="row">
+                {% for file in files %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="file-item p-3 border rounded hover-shadow">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-file fa-2x text-primary me-2"></i>
+                                <div class="file-info">
+                                    <p class="mb-1 text-break">{{ file.file.name|basename }}</p>
+                                    <div class="btn-group">
+                                        <a href="{{ file.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="fas fa-eye"></i> {% trans 'View' %}
+                                        </a>
+                                        <a href="{{ file.file.url }}" class="btn btn-sm btn-outline-success" download>
+                                            <i class="fas fa-download"></i> {% trans 'Download' %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> {% trans 'No files submitted.' %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        transition: all .3s ease;
+    }
+    .file-item {
+        transition: all .3s ease;
+    }
+    .file-item:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

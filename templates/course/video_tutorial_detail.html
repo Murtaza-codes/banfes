@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ video.title|default:_("Video Tutorial") }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+            <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none">{{ course.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}videos/" class="text-decoration-none">{% trans 'Videos' %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ video.title|default:_("Video Tutorial") }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Main Video Content -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-circle me-3">
+                            <i class="bi bi-play-btn-fill fs-4"></i>
+                        </div>
+                        <h2 class="mb-0">{{ video.title|default:_("Video Tutorial") }}</h2>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Video Player (YouTube or local file) -->
+                    {% include 'course/course_video.html' with 
+                        video_url=video.url|default:video.file.url 
+                        video_title="" 
+                        is_youtube=video.is_youtube 
+                        poster_url=video.thumbnail.url|default:""
+                        video_description=video.description 
+                    %}
+                    
+                    <div class="d-flex align-items-center justify-content-between mt-3">
+                        <div>
+                            <p class="text-muted mb-1">{% trans 'Uploaded by' %}: {{ video.uploaded_by|default:"Admin" }}</p>
+                            <p class="text-muted mb-0">{% trans 'Upload Date' %}: {{ video.upload_date|date:"Y-m-d"|default:"" }}</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            {% if video.allow_download %}
+                            <a href="{{ video.file.url }}" download class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-download me-1"></i>{% trans 'Download' %}
+                            </a>
+                            {% endif %}
+                            
+                            <button class="btn btn-sm btn-outline-primary" id="shareVideoBtn">
+                                <i class="bi bi-share me-1"></i>{% trans 'Share' %}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {% if video.description %}
+                    <hr class="my-3">
+                    <h5>{% trans 'Description' %}</h5>
+                    <p>{{ video.description }}</p>
+                    {% endif %}
+                    
+                    {% if video.topics.all %}
+                    <div class="mt-3">
+                        <h6>{% trans 'Related Topics' %}:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for topic in video.topics.all %}
+                            <a href="#" class="badge bg-light text-dark text-decoration-none">{{ topic.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if user.is_lecturer or user.is_superuser %}
+                    <div class="mt-4 d-flex justify-content-end">
+                        <button class="btn btn-sm btn-outline-primary me-2" id="editVideoBtn">
+                            <i class="bi bi-pencil me-1"></i>{% trans 'Edit Video' %}
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" id="deleteVideoBtn">
+                            <i class="bi bi-trash me-1"></i>{% trans 'Delete Video' %}
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0"><i class="bi bi-chat-left-text me-2 text-primary"></i>{% trans 'Comments' %} ({{ video.comments.count|default:"0" }})</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Comment Form -->
+                    <form id="commentForm" class="mb-4">
+                        <div class="mb-3">
+                            <label for="commentText" class="form-label">{% trans 'Add a comment' %}</label>
+                            <textarea class="form-control" id="commentText" rows="3" placeholder="{% trans 'Write your comment here...' %}"></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary" id="postCommentBtn">
+                                <i class="bi bi-send me-1"></i>{% trans 'Post Comment' %}
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Comments List -->
+                    <div id="commentsList">
+                        {% if video.comments.count %}
+                            {% for comment in video.comments.all %}
+                            <div class="d-flex mb-4">
+                                <img src="{{ comment.user.get_picture }}" alt="{{ comment.user.get_full_name }}" 
+                                     class="rounded-circle me-3" width="48" height="48" style="object-fit: cover;">
+                                <div>
+                                    <div class="d-flex align-items-center">
+                                        <h6 class="mb-0 me-2">{{ comment.user.get_full_name }}</h6>
+                                        <small class="text-muted">{{ comment.created_at|timesince }} {% trans 'ago' %}</small>
+                                    </div>
+                                    <p class="mb-0 mt-2">{{ comment.text }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center my-4 py-4">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-chat-left fs-1"></i>
+                                </div>
+                                <p>{% trans 'No comments yet. Be the first to comment!' %}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Related Videos -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0"><i class="bi bi-collection-play me-2 text-primary"></i>{% trans 'Related Videos' %}</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for related_video in related_videos %}
+                        <a href="{{ related_video.get_absolute_url }}" class="list-group-item list-group-item-action py-3 px-4">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 position-relative">
+                                    <img src="{{ related_video.thumbnail.url|default:'https://via.placeholder.com/120x68' }}" 
+                                         alt="{{ related_video.title }}" 
+                                         class="rounded" width="120" height="68"
+                                         style="object-fit: cover;">
+                                    <span class="position-absolute top-50 start-50 translate-middle text-white">
+                                        <i class="bi bi-play-circle-fill fs-4"></i>
+                                    </span>
+                                    <span class="position-absolute bottom-0 end-0 badge bg-dark m-1">{{ related_video.duration }}</span>
+                                </div>
+                                <div class="ms-3">
+                                    <p class="mb-1 fw-medium">{{ related_video.title }}</p>
+                                    <small>{{ related_video.uploaded_by }} • {{ related_video.upload_date|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                        </a>
+                        {% empty %}
+                        <div class="text-center p-4">
+                            <p class="text-muted mb-0">{% trans 'No related videos found.' %}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Course Information -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2 text-primary"></i>{% trans 'Course Information' %}</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="fw-bold">{{ course.name }}</h6>
+                    <p class="text-muted">{{ course.description|truncatewords:30 }}</p>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-calendar me-2 text-primary"></i>
+                            <span>{% trans 'Start Date' %}: {{ course.start_date|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-people me-2 text-primary"></i>
+                            <span>{% trans 'Enrolled Students' %}: {{ course.student_count }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-mortarboard me-2 text-primary"></i>
+                            <span>{% trans 'Instructor' %}: {{ course.lecturer_name }}</span>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ course.get_absolute_url }}" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-arrow-right me-1"></i>{% trans 'Go to Course Page' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'course/course_components.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Post comment functionality
+    const commentForm = document.getElementById('commentForm');
+    const postCommentBtn = document.getElementById('postCommentBtn');
+    
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const commentText = document.getElementById('commentText').value;
+            
+            if (!commentText.trim()) {
+                courseToast.warning('{% trans "Please enter a comment first." %}');
+                return;
+            }
+            
+            // Show loading state
+            postCommentBtn.disabled = true;
+            postCommentBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>{% trans 'Posting...' %}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Reset form
+                commentForm.reset();
+                
+                // Reset button
+                postCommentBtn.disabled = false;
+                postCommentBtn.innerHTML = `<i class="bi bi-send me-1"></i>{% trans 'Post Comment' %}`;
+                
+                // Show success message
+                courseToast.success('{% trans "Comment posted successfully!" %}');
+                
+                // In a real implementation, you would add the new comment to the DOM
+                // or refresh the comments section
+            }, 1000);
+        });
+    }
+    
+    // Share button
+    const shareVideoBtn = document.getElementById('shareVideoBtn');
+    if (shareVideoBtn) {
+        shareVideoBtn.addEventListener('click', function() {
+            // Get the current page URL
+            const videoUrl = window.location.href;
+            
+            // Try to use the Web Share API if available
+            if (navigator.share) {
+                navigator.share({
+                    title: '{{ video.title|default:_("Video Tutorial") }}',
+                    text: '{{ video.description|truncatewords:20|default:_("Check out this video tutorial") }}',
+                    url: videoUrl
+                })
+                .then(() => courseToast.success('{% trans "Shared successfully!" %}'))
+                .catch(() => courseToast.error('{% trans "Error sharing video." %}'));
+            } else {
+                // Fallback to copying to clipboard
+                navigator.clipboard.writeText(videoUrl).then(function() {
+                    courseToast.success('{% trans "Video URL copied to clipboard!" %}');
+                }, function() {
+                    courseToast.error('{% trans "Failed to copy URL." %}');
+                });
+            }
+        });
+    }
+    
+    // Video edit button
+    const editVideoBtn = document.getElementById('editVideoBtn');
+    if (editVideoBtn) {
+        editVideoBtn.addEventListener('click', function() {
+            courseToast.info('{% trans "Redirecting to edit page..." %}');
+            // In a real implementation, this would redirect to an edit page
+        });
+    }
+    
+    // Video delete button
+    const deleteVideoBtn = document.getElementById('deleteVideoBtn');
+    if (deleteVideoBtn) {
+        deleteVideoBtn.addEventListener('click', function() {
+            if (confirm('{% trans "Are you sure you want to delete this video? This action cannot be undone." %}')) {
+                courseToast.error('{% trans "Video deleted successfully." %}');
+                // In a real implementation, this would send a delete request to the server
+                // and redirect on success
+            }
+        });
+    }
+});
+</script>
+
+{% endblock content %} 

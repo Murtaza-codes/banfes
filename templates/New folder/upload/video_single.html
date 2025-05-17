@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ video.title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+{% load course_filters %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs:program_list' %}">{% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs:course_detail' video.course.slug %}">{{ video.course }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ video.title }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}  
+<div class="col-md-10 mx-auto">
+    <div class="shadow-sm rounded-3 bg-white p-5 mb-4" style="border: none;">
+        <!-- Video Title Section -->
+        <div class="mb-5 mt-3">
+            <h3 class="fw-bold mb-3">{{ video.title }}</h3>
+            {% if video.description %}
+                <p class="text-muted lead">{{ video.description }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Video Container -->
+        <div class="ratio ratio-16x9 mb-4 shadow-sm rounded overflow-hidden">
+            {% if video.video_url %}
+                <iframe src="{{ video.video_url | youtube_embed }}" 
+                        allowfullscreen
+                        loading="lazy">
+                </iframe>
+            {% else %}
+                <video src="{{ video.video.url }}" 
+                       controls
+                       class="w-100 h-100 object-fit-cover">
+                </video>
+            {% endif %}
+        </div>
+
+        <!-- Timestamp -->
+        <div class="d-flex align-items-center  text-muted">
+            <small>
+                <i class="fas fa-calendar-alt me-2"></i>
+                {{ video.timestamp|timesince }} {% trans 'ago' %}
+            </small>
+        </div>
+    </div>
+</div>
+
+<style>
+.ratio iframe,
+.ratio video {
+    background: #f8f9fa;
+}
+
+.shadow-sm {
+    transition: all 0.3s ease;
+}
+
+.shadow-sm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important;
+}
+</style>
+
+{% endblock content %}

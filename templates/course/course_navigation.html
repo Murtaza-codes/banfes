@@ -1,0 +1,151 @@
+<style>
+    .course-nav {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin: 20px 0;
+        transition: all 0.3s ease;
+    }
+
+    .course-nav-list {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        list-style: none;
+        flex-wrap: wrap;
+    }
+
+    .course-nav-item {
+        position: relative;
+        flex: 1;
+        text-align: center;
+        min-width: 110px;
+    }
+
+    .course-nav-link {
+        color: #4b5563;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0.75rem;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        border-radius: 8px;
+        margin: 0.25rem;
+    }
+
+    .course-nav-link:hover {
+        color: #3b82f6;
+        background-color: #f0f9ff;
+        transform: translateY(-2px);
+    }
+
+    .course-nav-link.active {
+        color: #2563eb;
+        background-color: #eff6ff;
+        border-bottom: 3px solid #2563eb;
+    }
+
+    /* Icons */
+    .course-nav-link i {
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+        transition: transform 0.2s ease;
+    }
+    
+    .course-nav-link:hover i {
+        transform: scale(1.15);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .course-nav-list {
+            justify-content: center;
+        }
+        
+        .course-nav-item {
+            flex: 0 0 auto;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .course-nav-list {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            justify-content: flex-start;
+            padding: 0.5rem;
+        }
+        
+        .course-nav-item {
+            flex: 0 0 auto;
+        }
+        
+        .course-nav-link {
+            padding: 0.75rem;
+            white-space: nowrap;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .course-nav-link {
+            flex-direction: row;
+            justify-content: flex-start;
+            padding: 0.75rem 1rem;
+        }
+        
+        .course-nav-link i {
+            margin-right: 0.75rem;
+            margin-bottom: 0;
+            font-size: 1.25rem;
+        }
+        
+        .course-nav-list {
+            flex-direction: column;
+            overflow-x: visible;
+        }
+    }
+</style>
+
+<nav class="course-nav">
+    <ul class="course-nav-list">
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'overview' %}active{% endif %} " href="{% url 'course_detail' course.slug %}">
+                <i class="bi bi-journal-text"></i> Overview
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'assignments' %}active{% endif %}" href="{% url 'assignment_list' course.slug %}">
+                <i class="bi bi-clipboard-check"></i> Assignments
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'quizzes' %}active{% endif %}" href="{% url 'quiz_index' course.slug %}">
+                <i class="bi bi-question-diamond"></i> Quizzes
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'attendance' %}active{% endif %}" href="{% url 'course_attendance' course.slug %}">
+                <i class="bi bi-calendar-check"></i> Attendance
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'participants' %}active{% endif %}" href="{% url 'course_participants' course.slug %}">
+                <i class="bi bi-people"></i> Participants
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'discussion' %}active{% endif %}" href="{% url 'course_discussion' course.slug %}">
+                <i class="bi bi-chat-dots"></i> Discussion
+            </a>
+        </li>
+        <li class="course-nav-item">
+            <a class="course-nav-link {% if active_page == 'grades' %}active{% endif %}" href="{% url 'course_grade' course.slug %}">
+                <i class="bi bi-bar-chart"></i> Grades
+            </a>
+        </li>
+    </ul>
+</nav>

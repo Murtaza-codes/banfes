@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'About Us' %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 mb-4">{% trans 'About Us' %}</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans 'Our Mission' %}</h3>
+                    <p>{% trans 'Our mission is to provide a revolutionary education management system that integrates blockchain and artificial intelligence technologies, offering secure, personalized, and innovative learning experiences to students worldwide.' %}</p>
+                    
+                    <h3 class="mt-4">{% trans 'Our Vision' %}</h3>
+                    <p>{% trans 'We envision a world where education is accessible, engaging, and effective for all learners regardless of their background or circumstances, powered by secure and cutting-edge technology.' %}</p>
+                    
+                    <h3 class="mt-4">{% trans 'BANFES: Our Innovative Approach' %}</h3>
+                    <p>{% trans 'Our platform is built on the Blockchain and Artificial Intelligence Non-Formal Education System (BANFES), an innovative approach that combines the security and transparency of blockchain technology with the adaptive learning capabilities of artificial intelligence.' %}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h4 class="card-title border-bottom pb-2">{% trans 'Blockchain Technology' %}</h4>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-shield-check text-primary me-2"></i>
+                                            {% trans 'Secure digital certification and credential verification' %}
+                                        </li>
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-file-earmark-lock text-primary me-2"></i>
+                                            {% trans 'Tamper-proof academic records' %}
+                                        </li>
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-lock text-primary me-2"></i>
+                                            {% trans 'Enhanced privacy and data ownership' %}
+                                        </li>
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-arrow-repeat text-primary me-2"></i>
+                                            {% trans 'Transparent and verifiable learning processes' %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h4 class="card-title border-bottom pb-2">{% trans 'Artificial Intelligence' %}</h4>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-diagram-3 text-primary me-2"></i>
+                                            {% trans 'Personalized learning paths based on student needs' %}
+                                        </li>
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-graph-up text-primary me-2"></i>
+                                            {% trans 'Real-time progress tracking and analytics' %}
+                                        </li>
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-chat-dots text-primary me-2"></i>
+                                            {% trans 'Intelligent tutoring systems and feedback' %}
+                                        </li>
+                                        <li class="list-group-item border-0 ps-0">
+                                            <i class="bi bi-lightning text-primary me-2"></i>
+                                            {% trans 'Adaptive assessment and skill evaluation' %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <h5 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i>{% trans 'Academic Reference' %}</h5>
+                        <p>{% trans 'Our BANFES approach is based on cutting-edge research in educational technology. For more information, please refer to: ' %}</p>
+                        <p class="mb-0"><strong>Nazari, Z., Vahidi, A. R., & Musilek, P. (2024).</strong> Blockchain and Artificial Intelligence Non-Formal Education System (BANFES). <em>Education Sciences</em>, 14(8), 881. <a href="https://doi.org/10.3390/educsci14080881" target="_blank">https://doi.org/10.3390/educsci14080881</a></p>
+                    </div>
+                    
+                    <h3 class="mt-5">{% trans 'Our Values' %}</h3>
+                    <div class="row mt-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-star me-2"></i>{% trans 'Excellence' %}</h5>
+                                    <p>{% trans 'We strive for excellence in everything we do, from the design of our platform to the support we provide to our users.' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-people me-2"></i>{% trans 'Collaboration' %}</h5>
+                                    <p>{% trans 'We believe in the power of collaboration and work closely with educators and institutions to develop solutions that meet their needs.' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-lightbulb me-2"></i>{% trans 'Innovation' %}</h5>
+                                    <p>{% trans 'We continuously innovate and improve our platform to incorporate the latest educational technologies and best practices.' %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans 'Open Access Policy' %}</h3>
+                    <p>{% trans 'In alignment with modern educational principles, we follow an open access approach to educational content:' %}</p>
+                    
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item border-0 bg-light rounded mb-2">
+                            <i class="bi bi-unlock text-primary me-2"></i>
+                            {% trans 'All educational materials are made immediately available worldwide under an open access license.' %}
+                        </li>
+                        <li class="list-group-item border-0 bg-light rounded mb-2">
+                            <i class="bi bi-arrows-angle-expand text-primary me-2"></i>
+                            {% trans 'No special permission is required to reuse all or part of published content, including figures and tables.' %}
+                        </li>
+                        <li class="list-group-item border-0 bg-light rounded mb-2">
+                            <i class="bi bi-link-45deg text-primary me-2"></i>
+                            {% trans 'For content published under Creative Commons CC BY license, any part may be reused without permission provided the original content is clearly cited.' %}
+                        </li>
+                        <li class="list-group-item border-0 bg-light rounded mb-2">
+                            <i class="bi bi-coin text-primary me-2"></i>
+                            {% trans 'Our platform offers various pricing tiers, but ensures that core educational resources remain accessible to all.' %}
+                        </li>
+                    </ul>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'home' %}#pricing" class="btn btn-primary">{% trans 'View Our Pricing Policy' %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

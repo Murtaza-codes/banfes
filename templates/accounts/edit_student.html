@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door-fill me-1"></i>{% trans 'Home' %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'student_list' %}" class="text-decoration-none"><i class="bi bi-mortarboard-fill me-1"></i>{% trans 'Students' %}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-pencil-square me-1"></i>{% trans 'Update' %}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light py-3">
+            <h4 class="mb-0"><i class="bi bi-mortarboard-fill me-2 text-primary"></i>{% trans 'Student Update Form' %}</h4>
+        </div>
+        <div class="card-body">
+            {% include 'snippets/messages.html' %}
+
+            <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="bi bi-envelope me-2"></i>{% trans 'Email' %} &amp; {% trans 'Personal Info' %}</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ form.email|as_crispy_field }}
+                                {{ form.first_name|as_crispy_field }}
+                                {{ form.last_name|as_crispy_field }}
+                                {{ form.gender|as_crispy_field }}
+                                {{ form.phone|as_crispy_field }}
+                                {{ form.address|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>{% trans 'Account Details' %}</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ form.username|as_crispy_field }}
+                                
+                                <!-- Password Reset Section -->
+                                <div class="mb-3">
+                                    <label for="new_password" class="form-label">{% trans 'New Password' %}</label>
+                                    <div class="input-group">
+                                        <input type="text" id="new_password" name="new_password" class="form-control" placeholder="{% trans 'Enter new password' %}">
+                                        <button type="button" class="btn btn-primary" id="generatePassword" title="{% trans 'Generate Password' %}">
+                                            <i class="bi bi-magic"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" id="copyPassword" title="{% trans 'Copy Password' %}">
+                                            <i class="bi bi-clipboard"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-text">{% trans 'Leave blank to keep current password' %}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="bi bi-image me-2"></i>{% trans 'Profile Picture' %}</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ form.picture|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary rounded-pill px-4" type="submit">
+                    <i class="bi bi-save me-2"></i>{% trans 'Save Changes' %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password generation and management
+    const generatePasswordBtn = document.getElementById('generatePassword');
+    const copyPasswordBtn = document.getElementById('copyPassword');
+    const passwordField = document.getElementById('new_password');
+    
+    // Generate random password
+    generatePasswordBtn.addEventListener('click', function() {
+        const length = 10;
+        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
+        let password = "";
+        
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * charset.length);
+            password += charset[randomIndex];
+        }
+        
+        passwordField.value = password;
+        
+        // Visual feedback
+        generatePasswordBtn.innerHTML = '<i class="bi bi-check"></i>';
+        setTimeout(() => {
+            generatePasswordBtn.innerHTML = '<i class="bi bi-magic"></i>';
+        }, 1000);
+    });
+    
+    // Copy password to clipboard
+    copyPasswordBtn.addEventListener('click', function() {
+        if (passwordField.value) {
+            navigator.clipboard.writeText(passwordField.value).then(function() {
+                // Success feedback
+                copyPasswordBtn.innerHTML = '<i class="bi bi-check"></i>';
+                setTimeout(() => {
+                    copyPasswordBtn.innerHTML = '<i class="bi bi-clipboard"></i>';
+                }, 1000);
+            });
+        }
+    });
+});
+</script>
+
+<style>
+.card {
+    border-radius: 8px;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+}
+
+.btn {
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+
+.form-control:focus {
+    border-color: #3d5a80;
+    box-shadow: 0 0 0 0.2rem rgba(61, 90, 128, 0.25);
+}
+
+.rounded-pill {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+</style>
+{% endblock content %}

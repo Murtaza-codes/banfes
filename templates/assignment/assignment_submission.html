@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light p-2 rounded">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}">{% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}">{{ course }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'assignment_list' course.slug %}">{% trans 'Assignments' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Submit Assignment' %}</li>
+    </ol>
+</nav>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="text-white mt-3">Processing your submission...</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assignment Details Card -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <div class="g-3 m-3 "> 
+            <h2 class="card-title">{{ assignment.title }}</h2>
+            <p class="card-text">{{ assignment.description }}</p>
+            <p class="card-text">
+                <strong> {% trans 'Type: ' %} </strong>
+                {{ assignment.assignment_type|title }}
+            </p>
+            {% if assignment.assignment_type != 'project' %}
+            <p class="card-text">
+                <strong> {% trans 'Attempts Left: ' %} </strong>
+                {{ attempts_left }}
+            </p>
+            {% endif %}
+        </div>
+        <!-- Assignment Info Grid -->
+        <div class="g-3 mb-3">
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded">
+                    <i class="fas fa-calendar-alt text-primary"></i>
+                    <strong>{% trans 'Opened' %}:</strong> 
+                    {{ assignment.updated_at|date:"D, d M Y H:i" }}
+                </div>
+            </div>
+            {% if assignment.deadline %}
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded">
+                    <i class="fas fa-clock text-warning"></i>
+                    <strong>{% trans 'Due' %}:</strong> 
+                    {{ assignment.deadline|date:"D, d M Y H:i" }}
+                </div>
+            </div>
+            {% endif %}
+        </div>  
+
+        <!-- Additional Files Section -->
+        {% if assignment.additional_file %}
+        <div class="mb-4">
+            <h5 class="mb-3">{% trans 'Additional Resources' %}</h5>
+            <div class="d-flex align-items-center gap-2">
+                <a href="{{ assignment.additional_file.url }}" class="btn btn-outline-primary" target="_blank">
+                    <i class="fas fa-eye me-2"></i>{% trans 'View File' %}
+                </a>
+                <a href="{{ assignment.additional_file.url }}" class="btn btn-outline-secondary" download>
+                    <i class="fas fa-download me-2"></i>{% trans 'Download' %}
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Submission Form -->
+<div class="container">
+    <input type="hidden" name="step" value="{{ step }}">
+    {% if step == 'review' %}
+    <!-- Review Step -->
+    <form id="text-review-form" method="post" class="card shadow-sm">
+        {% csrf_token %}
+        <div class="card-body">
+            <h3 class="card-title mb-4">{% trans 'Review Submission' %}</h3>
+
+            <!-- Extracted Text -->
+            {% if extracted_text %}
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-file-alt me-2"></i>{% trans 'Extracted Text' %}
+                </label>
+                <textarea name="extracted_text" class="form-control" rows="10" dir="rtl">{{ extracted_text }}</textarea>
+            </div>
+            {% endif %}
+
+            <!-- Submission Text -->
+            {% if submission_text %}
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-edit me-2"></i>{% trans 'Your Text' %}
+                </label>
+                <textarea name="submission_text" class="form-control" rows="5">{{ submission_text }}</textarea>
+            </div>
+            {% endif %}
+
+            <input type="hidden" name="step" value="review">
+            
+            <!-- Action Buttons -->
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-success flex-grow-1" id="assignmentReview">
+                    <i class="fas fa-paper-plane me-2"></i>{% trans 'Submit' %}
+                </button>
+                <button type="button" id="backButton" class="btn btn-secondary flex-grow-1">
+                    <i class="fas fa-arrow-left me-2"></i>{% trans 'Back' %}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% else %}
+    <!-- Upload Step -->
+    <form id="assignment-form" method="post" enctype="multipart/form-data" class="card shadow-sm">
+        <input type="hidden" name="files_paths" id="files_paths" value="" multiple>
+
+        {% csrf_token %}
+        <div class="card-body">
+            <h3 class="card-title mb-4">{% trans 'Submit Assignment' %}</h3>
+
+            <!-- File Upload Section -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-upload me-2"></i>{% trans 'Upload Files' %}
+                </label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="submission_files" name="files" multiple 
+                           class="d-none" 
+                           accept="{{ allowed_file_types }}">
+                    
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('submission_files').click()">
+                        <i class="fas fa-plus me-2"></i>{% trans 'Choose Files' %}
+                    </button>
+                </div>
+                <div id="uploaded_files" class="mt-3"></div>
+                <div id="upload-progress" class="progress mt-2" style="display: none;">
+                    <div class="progress-bar" role="progressbar"></div>
+                </div>
+            </div>
+
+            <!-- Submission Text (only for projects) -->
+            {% if assignment.assignment_type == 'project' %}
+            <div class="form-group mb-4">
+                    {{ form.submission_text|as_crispy_field }}
+            </div>
+            {% endif %}
+
+            <input type="hidden" name="step" value="upload">
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-success" id="assignmentSubmit">
+                <i class="fas fa-paper-plane me-2"></i>{% trans 'Continue to Review' %}
+            </button>
+        </div>
+    </form>
+    {% endif %}
+
+</div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const fileInput = document.getElementById('submission_files');
+    const uploadedFiles = document.getElementById('uploaded_files');
+    const uploadProgress = document.getElementById('upload-progress');
+    let currentStep = '{{ step }}';
+
+
+    if (currentStep == 'upload') {
+    fileInput.addEventListener('change', function() {
+        uploadProgress.style.display = 'block';
+        console.log('Files selected:', fileInput.files);
+        const files = Array.from(fileInput.files);
+        const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+        let uploadedSize = 0;
+
+        files.forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'mb-2');
+            fileItem.dataset.filename = file.name;
+            fileItem.innerText = file.name;
+            uploadedFiles.appendChild(fileItem);
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('file_name', file.name);
+            formData.append('field_name', 'submission_files');
+            formData.append('assignment_type', '{{ assignment.assignment_type }}');
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            formData.append('step', 'upload');
+            formData.append('assignment_id', '{{ assignment.id }}');
+            formData.append('submission_id', '{{ submission.id }}');
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '{% url 'ajax_upload_file' %}', true);
+            xhr.upload.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    uploadedSize += event.loaded;
+                    const progress = (uploadedSize / totalSize) * 100;
+                    uploadProgress.querySelector('.progress-bar').style.width = `${progress}%`;
+                }
+            };
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                        const uploadedFiles = document.getElementById('uploaded_files');
+                        const files_paths = document.getElementById('files_paths');
+                        // add uploaded file to the hidden input field
+                        files_paths.value += response.file_path + ',';
+                        file_url = response.file_url;
+
+                        fileItem.classList.add('text-success');
+
+                        // add a link to view the uploaded file
+                        const fileLink = document.createElement('a');
+                        fileLink.href = response.file_url;
+                        fileLink.target = '_blank';
+                        fileLink.innerText = 'View';
+                        fileItem.appendChild(fileLink);
+                        // add design for the link
+                        fileLink.classList.add('btn', 'btn-sm', 'btn-primary', 'me-2');
+
+
+                        // add delete button to remove uploaded file
+                        const deleteButton = document.createElement('button');
+                        deleteButton.classList.add('btn', 'btn-sm', 'btn-danger');
+                        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                        deleteButton.innerText = 'Delete';
+                        deleteButton.onclick = function() {
+                            uploadedFiles.removeChild(fileItem);
+                            // remove progress bar if all files are deleted
+                            if (uploadedFiles.children.length === 0) {
+                                uploadProgress.style.display = 'none';
+                            }
+                            deleteFile(response.file_path, response.file_name);
+                        };
+                        fileItem.appendChild(deleteButton);
+                        uploadedFiles.appendChild(fileItem);
+                    } else {
+                        const response = JSON.parse(xhr.responseText);
+                        fileItem.classList.add('text-danger');
+                        // display error message added to uploadedFiles
+                        const errorMessage = document.createElement('span');
+                        errorMessage.innerText = response.error;
+                        errorMessage.classList.add('text-danger', 'ms-2');
+                        uploadedFiles.appendChild(errorMessage);
+                        
+
+                        // remove the fileItem from the list
+                        setTimeout(() => {
+                            uploadedFiles.removeChild(fileItem);
+                            uploadedFiles.removeChild(errorMessage);
+                            uploadProgress.style.display = 'none';
+                        }, 3000);
+                    }
+                }
+            xhr.send(formData);
+        });
+    });
+
+
+    // delete uploaded file
+    function deleteFile(file_path, file_name) {
+        const formData = new FormData();
+        formData.append('file_path', file_path);
+        formData.append('file_name', file_name);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'ajax_delete_file' %}', true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                // remove file from the hidden input field
+                const files_paths = document.getElementById('files_paths');
+                files_paths.value = files_paths.value.replace(file_path + ',', '');
+
+                if (response.success) {
+                    console.log('File deleted successfully');
+                }
+            }
+        };
+        xhr.send(formData);
+    };
+    }
+
+    // submission step and loader modal
+    const assignmentSubmitBtn = document.getElementById('assignmentSubmit');
+    const assignmentForm = document.getElementById('assignment-form');
+    if ( currentStep === 'upload' && assignmentForm) {
+        assignmentForm.addEventListener('submit', function(e) {
+            // Disable submit button
+            if (assignmentSubmitBtn) {
+                assignmentSubmitBtn.disabled = true;
+                assignmentSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+            }
+            
+            // Show loading modal
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+            loadingModal.show();
+            
+            // Form will submit normally and navigate to the next page
+        });
+    }
+
+    const assignmentReviewBtn = document.getElementById('assignmentReview');
+    const reviewForm = document.getElementById('text-review-form');
+    if (currentStep === 'review' && reviewForm && assignmentReviewBtn) {
+        reviewForm.addEventListener('submit', function(e) {
+            // Disable submit button
+            if (assignmentReviewBtn) {
+                assignmentReviewBtn.disabled = true;
+                assignmentReviewBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+            }
+            
+            // Show loading modal
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+            loadingModal.show();
+            // Form will submit normally and navigate to the next page
+        });
+    }
+
+    // go back to submission step
+    const backButton = document.getElementById('backButton');
+    if (currentStep === 'review' && backButton) {
+        backButton.addEventListener('click', function() {
+            console.log('Back button clicked');
+            
+            // Disable button and show spinner
+            backButton.disabled = true;
+            backButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Going back...';
+
+            // Clear extracted text from session but keep files
+            fetch('{% url "assignment_back" slug=course.slug assignment_id=assignment.id %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                console.log('Response:', response);
+                // change the step to upload
+                window.location.href = '{% url "assignment_submission" slug=course.slug assignment_id=assignment.id %}?step=upload';
+                } else {
+                throw new Error('Network response was not ok'); 
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                backButton.disabled = false;
+                backButton.innerHTML = 'Try Again';
+            });
+        });
+    };
+
+});
+
+</script>
+
+<style>
+/* Add your existing styles here and these new ones */
+.card {
+    border: none;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.btn {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+#loadingModal .modal-content {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+.form-control {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+.badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+/* File upload improvements */
+.custom-file-upload {
+    border: 2px dashed #ddd;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    border-color: #007bff;
+    background: rgba(0, 123, 255, 0.05);
+}
+.progress {
+    height: 0.5rem;
+    border-radius: 1rem;
+}
+</style>
+
+{% endblock %}

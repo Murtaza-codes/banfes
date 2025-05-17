@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door-fill me-1"></i>{% trans 'Home' %}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-calendar-week me-1"></i>{% trans 'Session List' %}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0"><i class="bi bi-calendar-week me-2 text-primary"></i>{% trans 'Session Management' %}</h3>
+        
+        {% if request.user.is_superuser %}
+        <div class="manage-wrap">
+            <a class="btn btn-primary rounded-pill" href="{% url 'add_session' %}"><i class="bi bi-plus-circle me-1"></i>{% trans 'Add New Session' %}</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% include 'snippets/messages.html' %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" width="50">#</th>
+                            <th scope="col"><i class="bi bi-calendar3 me-2"></i>{% trans 'Session' %}</th>
+                            <th scope="col"><i class="bi bi-check-circle me-2"></i>{% trans 'Is Current Session' %}</th>
+                            <th scope="col"><i class="bi bi-arrow-right-circle me-2"></i>{% trans 'Next Session Begins' %}</th>
+                            {% if request.user.is_superuser %}
+                            <th scope="col" class="text-center"><i class="bi bi-gear me-2"></i>{% trans 'Actions' %}</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sessions %}
+                        <tr>
+                            <td class="fw-bold">{{ forloop.counter }}.</td>
+                            <td>{{ session.session }}</td>
+                            <td>
+                                {% if session.is_current_session == True %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i>{% trans 'Current' %}</span>
+                                {% else %}
+                                <span class="badge bg-secondary"><i class="bi bi-x-circle-fill me-1"></i>{% trans 'Not Current' %}</span>
+                                {% endif %}
+                            </td>
+                            <td><span class="d-inline-flex align-items-center"><i class="bi bi-calendar-date text-muted me-1"></i>{{ session.next_session_begins }}</span></td>
+
+                            {% if request.user.is_superuser %}
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="{% url 'edit_session' pk=session.pk %}" class="btn btn-sm btn-outline-primary" title="{% trans 'Edit' %}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{% url 'delete_session' pk=session.pk %}" class="btn btn-sm btn-outline-danger" title="{% trans 'Delete' %}" onclick="return confirm('{% trans 'Are you sure you want to delete this session?' %}')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            {% endif %}
+                            
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <div class="alert alert-info mb-0 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+                                        <div>
+                                            {% trans 'No Session.' %}
+                                            {% if request.user.is_superuser %}
+                                            <a href="{% url 'add_session' %}" class="alert-link ms-1">
+                                                {% trans 'Add Session Now.' %}
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-outline-primary, .btn-outline-danger {
+    transition: all 0.3s;
+}
+
+.btn-outline-primary:hover, .btn-outline-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+
+.rounded-pill {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+}
+</style>
+{% endblock content %}

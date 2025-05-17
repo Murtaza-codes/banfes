@@ -1,0 +1,1011 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %} {% trans 'Dashboard' %} | {% trans 'Learning management system' %} {% endblock title %}
+{% load static %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans 'Dashboard' %}</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<!-- Welcome Card -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="fw-bold mb-2">{% trans 'Welcome to your Dashboard' %}</h2>
+                <p class="text-muted mb-0">{% trans 'Here you can monitor system statistics and manage all aspects of the education platform.' %}</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fas fa-cog me-2"></i>{% trans 'Dashboard Settings' %}
+                    </button>
+                    <div class="dropdown-menu">
+                        <h6 class="dropdown-header">{% trans 'Dashboard settings' %}</h6>
+                        <button class="dropdown-item active" type="button">{% trans 'Display grid' %}</button>
+                        <button class="dropdown-item" type="button">{% trans 'Display table' %}</button>
+                        <hr>
+                        <button class="dropdown-item" type="button">{% trans 'Manage dashboard' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Statistics Section -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>{% trans 'User Statistics' %}</h4>
+            <span class="badge bg-primary rounded-pill">{{ student_count|add:lecturer_count|add:superuser_count }} {% trans 'Total Users' %}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row users-count g-3">
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-mortarboard-fill fs-3 bg-light-aqua"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Students' %}</div>
+                        <h3 class="mb-0 fw-bold">{{ student_count }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-person-workspace fs-3 bg-sky-blue"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Lecturers' %}</div>
+                        <h3 class="mb-0 fw-bold">{{ lecturer_count }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-shield-lock-fill fs-3 bg-goldenrod"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Administrators' %}</div>
+                        <h3 class="mb-0 fw-bold">{{ superuser_count }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-flask fs-3 bg-emerald-green"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Lab Assistance' %}</div>
+                        <h3 class="mb-0 fw-bold">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-journal-bookmark-fill fs-3 bg-goldenrod"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Librarians' %}</div>
+                        <h3 class="mb-0 fw-bold">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-briefcase-fill fs-3 bg-emerald-green"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Supervisors' %}</div>
+                        <h3 class="mb-0 fw-bold">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-person-gear fs-3 bg-light-aqua"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Office Assistance' %}</div>
+                        <h3 class="mb-0 fw-bold">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-count p-3 d-flex align-items-center">
+                    <div class="icon-wrapper me-3">
+                        <i class="bi bi-people-fill fs-3 bg-sky-blue"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">{% trans 'Others' %}</div>
+                        <h3 class="mb-0 fw-bold">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Section -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>{% trans 'Analytics & Reports' %}</h4>
+            <span class="badge bg-primary rounded-pill">{% trans 'Real-time' %}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="chart-wrap">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{% trans 'Traffic Overview' %}</h5>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <canvas id="traffic"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-wrap">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{% trans 'Enrollment Trends' %}</h5>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <canvas id="enrollement"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-wrap">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{% trans 'Student Performance' %}</h5>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <canvas id="students_grade"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-wrap">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{% trans 'Latest Activities' %}</h5>
+                        <i class="bi bi-clock-history text-primary"></i>
+                    </div>
+                    <div class="activity-list">
+                        <ul class="ps-2 small list-unstyled">
+                            {% for log in logs %}
+                            <li class="mb-2 pb-2 border-bottom">
+                                <div class="d-flex">
+                                    <div class="me-2"><i class="bi bi-circle-fill text-primary" style="font-size: 8px;"></i></div>
+                                    <div>
+                                        <div>{{ log.message }}</div>
+                                        <small class="text-muted">{{ log.created_at }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                            {% empty %}
+                            <li class="text-center py-3">
+                                <i class="bi bi-info-circle text-muted me-2"></i>{% trans 'No recent activity' %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!-- Demographics Section -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-pie-chart-fill me-2 text-primary"></i>{% trans 'School Demographics' %}</h4>
+            <span class="badge bg-primary rounded-pill">{% trans 'Statistics' %}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="chart-wrap">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{% trans 'Gender Distribution' %}</h5>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <canvas id="gender"></canvas>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="chart-wrap">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{% trans 'Ethnicity Distribution' %}</h5>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <canvas id="ethnicity"></canvas>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="chart-wrap">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{% trans 'Language Distribution' %}</h5>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <canvas id="language"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Administrative Controls Section -->
+{% if is_admin %}
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-gear-fill me-2 text-primary"></i>{% trans 'Administrative Controls' %}</h4>
+            <span class="badge bg-primary rounded-pill">{% trans 'Admin' %}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="text-muted mb-4">{% trans 'Manage all aspects of the education system' %}</p>
+        
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card h-100 border-0 shadow-sm hover-card">
+                    <div class="card-body text-center p-3">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-lock fs-3 text-danger"></i>
+                        </div>
+                        <h5>{% trans 'User Permissions' %}</h5>
+                        <p class="text-muted small mb-3">{% trans 'Manage user roles & permissions' %}</p>
+                        <a href="/admin/auth/user/" class="btn btn-sm btn-outline-danger mt-2 w-100">{% trans 'Manage' %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Django Admin Panel Button -->
+            <div class="col-md-3">
+                <div class="card h-100 border-0 shadow-sm hover-card">
+                    <div class="card-body text-center p-3">
+                        <div class="mb-3">
+                            <i class="bi bi-grid-3x3-gap-fill fs-3 text-danger"></i>
+                        </div>
+                        <h5>{% trans 'All Admin Options' %}</h5>
+                        <p class="text-muted small mb-3">{% trans 'Access complete admin panel' %}</p>
+                        <a href="#adminOptionsSection" class="btn btn-sm btn-outline-danger mt-2 w-100">{% trans 'View All' %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Complete Admin Panel Options -->
+<div id="adminOptionsSection" class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-grid-fill me-2"></i>{% trans 'Agate Admin - Complete Admin Panel' %}</h4>
+            <span class="badge bg-light text-primary rounded-pill">{% trans 'Admin Access' %}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="text-muted mb-4">{% trans 'Complete access to all administrative functions in one place. Use these options to manage all aspects of the system.' %}</p>
+        
+        <div class="accordion" id="adminOptionsAccordion">
+            <!-- Accounts Section -->
+            <div class="accordion-item border mb-3 rounded shadow-sm">
+                <h2 class="accordion-header" id="accountsHeading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accountsCollapse" aria-expanded="true" aria-controls="accountsCollapse">
+                        <i class="bi bi-people-fill me-2 text-primary"></i> <strong>{% trans 'Accounts' %}</strong>
+                    </button>
+                </h2>
+                <div id="accountsCollapse" class="accordion-collapse collapse show" aria-labelledby="accountsHeading">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Parents' %}</h6>
+                                    <a href="/admin/accounts/parent/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/accounts/parent/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Students' %}</h6>
+                                    <a href="/admin/accounts/student/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/accounts/student/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Users' %}</h6>
+                                    <a href="/admin/auth/user/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/auth/user/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment Section -->
+            <div class="accordion-item border mb-3 rounded shadow-sm">
+                <h2 class="accordion-header" id="assignmentHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assignmentCollapse" aria-expanded="false" aria-controls="assignmentCollapse">
+                        <i class="bi bi-file-earmark-text me-2 text-primary"></i> <strong>{% trans 'Assignment' %}</strong>
+                    </button>
+                </h2>
+                <div id="assignmentCollapse" class="accordion-collapse collapse" aria-labelledby="assignmentHeading">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Assignment submission files' %}</h6>
+                                    <a href="/admin/assignment/assignmentsubmissionfiles/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/assignment/assignmentsubmissionfiles/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Assignment submissions' %}</h6>
+                                    <a href="/admin/assignment/assignmentsubmission/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/assignment/assignmentsubmission/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Assignments' %}</h6>
+                                    <a href="/admin/assignment/assignment/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/assignment/assignment/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authentication and Authorization Section -->
+            <div class="accordion-item border mb-3 rounded shadow-sm">
+                <h2 class="accordion-header" id="authHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#authCollapse" aria-expanded="false" aria-controls="authCollapse">
+                        <i class="bi bi-key-fill me-2 text-primary"></i> <strong>{% trans 'Authentication and Authorization' %}</strong>
+                    </button>
+                </h2>
+                <div id="authCollapse" class="accordion-collapse collapse" aria-labelledby="authHeading">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Groups' %}</h6>
+                                    <a href="/admin/auth/group/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/auth/group/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Section -->
+            <div class="accordion-item border mb-3 rounded shadow-sm">
+                <h2 class="accordion-header" id="coreHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coreCollapse" aria-expanded="false" aria-controls="coreCollapse">
+                        <i class="bi bi-box me-2 text-primary"></i> <strong>{% trans 'Core' %}</strong>
+                    </button>
+                </h2>
+                <div id="coreCollapse" class="accordion-collapse collapse" aria-labelledby="coreHeading">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'News and events' %}</h6>
+                                    <a href="/admin/core/newsandevents/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/core/newsandevents/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Semesters' %}</h6>
+                                    <a href="/admin/core/semester/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/core/semester/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Sessions' %}</h6>
+                                    <a href="/admin/core/session/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/core/session/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Section -->
+            <div class="accordion-item border mb-3 rounded shadow-sm">
+                <h2 class="accordion-header" id="courseHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#courseCollapse" aria-expanded="false" aria-controls="courseCollapse">
+                        <i class="bi bi-book me-2 text-primary"></i> <strong>{% trans 'Course' %}</strong>
+                    </button>
+                </h2>
+                <div id="courseCollapse" class="accordion-collapse collapse" aria-labelledby="courseHeading">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Course allocations' %}</h6>
+                                    <a href="/admin/course/courseallocation/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/course/courseallocation/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Courses' %}</h6>
+                                    <a href="/admin/programs/course/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/programs/course/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Programs' %}</h6>
+                                    <a href="/admin/programs/program/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/programs/program/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Topics' %}</h6>
+                                    <a href="/admin/course/topic/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/course/topic/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Upload videos' %}</h6>
+                                    <a href="/admin/course/uploadvideo/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/course/uploadvideo/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Uploads' %}</h6>
+                                    <a href="/admin/course/upload/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/course/upload/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="accordion-item border mb-3 rounded shadow-sm">
+                <h2 class="accordion-header" id="quizHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#quizCollapse" aria-expanded="false" aria-controls="quizCollapse">
+                        <i class="bi bi-question-circle-fill me-2 text-primary"></i> <strong>{% trans 'Quiz' %}</strong>
+                    </button>
+                </h2>
+                <div id="quizCollapse" class="accordion-collapse collapse" aria-labelledby="quizHeading">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Essay Style Questions' %}</h6>
+                                    <a href="/admin/quiz/essay_question/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/quiz/essay_question/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Multiple Choice Questions' %}</h6>
+                                    <a href="/admin/quiz/mcquestion/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/quiz/mcquestion/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Quizzes' %}</h6>
+                                    <a href="/admin/quiz/quiz/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/quiz/quiz/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Sittings' %}</h6>
+                                    <a href="/admin/quiz/sitting/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/quiz/sitting/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'User progress records' %}</h6>
+                                    <a href="/admin/quiz/progress/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/quiz/progress/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="accordion-item border mb-3 rounded shadow-sm">
+                <h2 class="accordion-header" id="resultHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#resultCollapse" aria-expanded="false" aria-controls="resultCollapse">
+                        <i class="bi bi-award-fill me-2 text-primary"></i> <strong>{% trans 'Result' %}</strong>
+                    </button>
+                </h2>
+                <div id="resultCollapse" class="accordion-collapse collapse" aria-labelledby="resultHeading">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Results' %}</h6>
+                                    <a href="/admin/result/result/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/result/result/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-2">{% trans 'Taken courses' %}</h6>
+                                    <a href="/admin/result/takencourse/add/" class="btn btn-sm btn-outline-success mb-2">{% trans 'Add' %}</a>
+                                    <a href="/admin/result/takencourse/" class="btn btn-sm btn-outline-primary">{% trans 'Change' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}
+
+{% block js %}
+
+<script src="{% url 'javascript-catalog' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+	$('.fa-expand-alt').click(function () {
+		if ($(this).parent('.chart-wrap').parent('.col-md-6').hasClass('expand')) {
+			$('.col-md-6.expand').removeClass('expand');
+		}
+		else {
+			$('.col-md-6.expand')?.removeClass('expand');
+			$(this).parent('.chart-wrap').parent('.col-md-6').addClass('expand');
+		}
+	})
+</script>
+<style>
+/* Dashboard Styles */
+.hover-card {
+    transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.card-count {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.card-count:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.chart-wrap {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    position: relative;
+    height: 100%;
+}
+
+.chart-wrap .fas.fa-expand-alt {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ccc;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s ease;
+}
+
+.chart-wrap .fas.fa-expand-alt:hover {
+    color: var(--primary-color);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.bg-light-aqua {
+    background-color: rgba(0, 255, 255, 0.2);
+    padding: 12px;
+    border-radius: 50%;
+    color: #06aed5;
+}
+
+.bg-sky-blue {
+    background-color: rgba(135, 206, 250, 0.2);
+    padding: 12px;
+    border-radius: 50%;
+    color: #1e88e5;
+}
+
+.bg-goldenrod {
+    background-color: rgba(218, 165, 32, 0.2);
+    padding: 12px;
+    border-radius: 50%;
+    color: #ff9800;
+}
+
+.bg-emerald-green {
+    background-color: rgba(0, 201, 87, 0.2);
+    padding: 12px;
+    border-radius: 50%;
+    color: #2e7d32;
+}
+
+/* Improved accordion styling */
+.accordion-button:not(.collapsed) {
+    background-color: rgba(61, 90, 128, 0.1);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(61, 90, 128, 0.1);
+}
+
+.accordion-item {
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Enhanced card headers */
+.card-header {
+    border-bottom: none;
+    padding: 1rem 1.25rem;
+}
+
+/* Improved badge styling */
+.badge.bg-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-dark)) !important;
+}
+
+/* User Statistics enhancements */
+.icon-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+}
+
+/* Admin panel section styling */
+#adminOptionsSection .card-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+}
+
+#adminOptionsSection .badge.bg-light {
+    color: var(--primary-dark) !important;
+    font-weight: bold;
+}
+
+/* Breadcrumb enhancements */
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    font-weight: 600;
+}
+</style>
+<script>
+	const malesCount = {{ males_count }}
+const femalesCount = {{ females_count }}
+
+$(document).ready(function () {
+
+    // Setup
+    const labels = [
+        gettext('January'),
+        gettext('February'),
+        gettext('March'),
+        gettext('April'),
+        gettext('May'),
+        gettext('June'),
+    ];
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: gettext('Students'),
+            backgroundColor: 'rgba(0, 51, 102, 0.5)', // Navy Blue
+            borderColor: 'rgba(0, 51, 102, 1)',
+            hoverBorderWidth: 3,
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }, {
+            label: gettext('Teachers'),
+            backgroundColor: 'rgba(135, 206, 235, 0.5)', // Sky Blue
+            borderColor: 'rgba(135, 206, 235, 1)',
+            hoverBorderWidth: 3,
+            data: [20, 0, 15, 4, 6, 4, 60],
+        }, {
+            label: gettext('Admins'),
+            backgroundColor: 'rgba(0, 155, 119, 0.5)', // Emerald Green
+            borderColor: 'rgba(0, 155, 119, 1)',
+            hoverBorderWidth: 3,
+            data: [85, 30, 34, 20, 20, 55, 45],
+        }, {
+            label: gettext('Staff'),
+            backgroundColor: 'rgba(218, 165, 32, 0.5)', // Goldenrod
+            borderColor: 'rgba(218, 165, 32, 1)',
+            hoverBorderWidth: 3,
+            data: [45, 75, 70, 80, 20, 30, 90],
+        }]
+    };
+
+    var traffic = document.getElementById('traffic');
+    var chart = new Chart(traffic, {
+        type: 'line',
+        data: data,
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: gettext('Website Traffic'),
+                    padding: 15
+                }
+            }
+        }
+    });
+
+    // Setup
+    const labelsEnrollment = [
+        '2016',
+        '2017',
+        '2018',
+        '2019',
+        '2020',
+        '2021',
+    ];
+    const dataEnrollment = {
+        labels: labelsEnrollment,
+        datasets: [{
+            label: gettext('Grade 6.'),
+            backgroundColor: 'rgba(87, 206, 235, 0.5)',
+            borderColor: 'rgb(87, 206, 235, 1)',
+            hoverBorderWidth: 3,
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }, {
+            label: gettext('Grade 7.'),
+            backgroundColor: 'rgba(0, 155, 119, 0.5)',
+            borderColor: 'rgb(0, 155, 119, 1)',
+            hoverBorderWidth: 3,
+            data: [20, 0, 15, 4, 6, 4, 60],
+        }, {
+            label: gettext('Grade 8.'),
+            backgroundColor: 'rgba(0, 51, 102, 0.5)',
+            borderColor: 'rgb(0, 51, 102)',
+            hoverBorderWidth: 3,
+            data: [85, 30, 34, 20, 20, 55, 45],
+        }, {
+            label: gettext('Grade 9.'),
+            backgroundColor: 'rgba(218, 165, 32, 0.5)',
+            borderColor: 'rgb(218, 165, 32)',
+            hoverBorderWidth: 3,
+            data: [45, 75, 70, 80, 20, 30, 90],
+        }, {
+            label: gettext('Grade 10.'),
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            borderColor: 'rgb(0, 0, 0)',
+            hoverBorderWidth: 3,
+            data: [15, 75, 45, 90, 60, 30, 90],
+        }]
+    };
+
+    var enrollement = document.getElementById('enrollement');
+    var chart = new Chart(enrollement, {
+        type: 'bar',
+        data: dataEnrollment,
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: gettext('Enrollment per course'),
+                    padding: 20
+                }
+            }
+        }
+    });
+
+    // Average grade setup
+    const labelsGrade = [
+        '2017',
+        '2018',
+        '2019',
+        '2020',
+        '2022',
+    ];
+    const dataGrade = {
+        labels: labelsGrade,
+        datasets: [{
+            label: gettext("Grade 6."),
+            backgroundColor: 'rgba(87, 206, 235, 0.5)',
+            borderColor: 'rgb(87, 206, 235, 1)',
+            hoverBorderWidth: 3,
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }, {
+            label: gettext("Grade 7."),
+            backgroundColor: 'rgba(0, 155, 119, 0.5)',
+            borderColor: 'rgb(0, 155, 119, 1)',
+            hoverBorderWidth: 3,
+            data: [20, 0, 15, 4, 6, 4, 60],
+        }, {
+            label: gettext("Grade 8."),
+            backgroundColor: 'rgba(0, 51, 102, 0.5)',
+            borderColor: 'rgb(0, 51, 102)',
+            hoverBorderWidth: 3,
+            data: [85, 30, 34, 20, 20, 55, 45],
+        }, {
+            label: gettext("Grade 9."),
+            backgroundColor: 'rgba(218, 165, 32, 0.5)',
+            borderColor: 'rgb(255, 19, 157)',
+            hoverBorderWidth: 3,
+            data: [45, 75, 70, 80, 20, 30, 90],
+        }]
+    };
+    
+    var students_grade = document.getElementById('students_grade');
+    var chart = new Chart(students_grade, {
+        type: 'bar',
+        data: dataGrade,
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: gettext('Students average grade (performance)'),
+                    padding: 20
+                }
+            }
+        }
+    });
+
+    const dataGender = {
+        labels: [
+            gettext('Man'),
+            gettext('Women')
+        ],
+        datasets: [{
+            label: gettext("Students Gender Dataset"),
+            data: [malesCount, femalesCount],
+            backgroundColor: [
+            'rgb(135, 206, 235)',
+            'rgb(218, 165, 32)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    var gender = document.getElementById('gender');
+    var chart = new Chart(gender, {
+        type: 'pie',
+        data: dataGender,
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: gettext('Students Gender'),
+                    padding: 20
+                }
+            }
+        }
+    });
+
+    const dataQualification = {
+        labels: [
+            gettext('PHD'),
+            gettext('Masters'),
+            gettext('BSc degree')
+        ],
+        datasets: [{
+            label: gettext("Lecturer Qualifications Dataset"),
+            data: [24, 30, 26],
+            backgroundColor: [
+            'rgb(0, 51, 102)',
+            'rgb(135, 206, 235)',
+            'rgb(0, 155, 119)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+    var ethnicity = document.getElementById('ethnicity');
+    var chart = new Chart(ethnicity, {
+        type: 'pie',
+        data: dataQualification,
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: gettext('Lecturer qualifications'),
+                    padding: 20
+                }
+            }
+        }
+    });
+
+    const dataLevels = {
+        labels: [
+            gettext('High School'),
+            gettext('Middle School'),
+        ],
+        datasets: [{
+            label: gettext("Students level"),
+            data: [60, 40],
+            backgroundColor: [
+            'rgb(218, 165, 32)',
+            'rgb(0, 155, 119)',
+            ],
+            hoverOffset: 4
+        }]
+    };
+    var language = document.getElementById('language');
+    var chart = new Chart(language, {
+        type: 'pie',
+        data: dataLevels,
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: gettext('Student levels'),
+                    padding: 20
+                }
+            }
+        }
+    });
+})
+
+</script>
+
+{% endblock %}

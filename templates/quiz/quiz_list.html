@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | Learning management system{% endblock title %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light p-2 rounded shadow-sm">
+        <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door"></i> {% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+        <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journals"></i> {% trans 'My courses' %}</a></li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection"></i> {% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-book"></i> {{ course }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-question-square"></i> {% trans 'Quizzes' %}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body bg-light">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-title d-flex align-items-center mb-0">
+                <i class="bi bi-clipboard-check text-primary me-2"></i>
+                {% trans 'Quizzes' %} {{ course|truncatechars:25 }}
+            </h4>
+            {% if request.user.is_superuser or request.user.is_lecturer %}
+            <a class="btn btn-primary" href="{% url 'quiz_create' course.slug %}">
+                <i class="bi bi-plus-circle me-2"></i>{% trans 'Add Quiz' %}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% include 'snippets/messages.html' %}
+
+<div class="container px-0">
+    <div class="row">
+        {% for quiz in quizzes %}
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100 quiz-wrapper">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-primary"><i class="bi bi-tag me-2"></i>{{ quiz.category|title }}</span>
+                        <span class="badge bg-danger rounded-pill">
+                            <i class="bi bi-list-ol me-1"></i>{{ quiz.get_questions.count }} {% trans 'Questions' %}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-pencil-square me-2 text-primary"></i>{{ quiz.title|title }}</h5>
+                    
+                    {% if quiz.description %}
+                    <p class="card-text text-muted small">
+                        <i class="bi bi-info-circle me-2"></i>{{ quiz.description }}
+                    </p>
+                    {% else %}
+                    <p class="card-text text-muted small">
+                        <i class="bi bi-info-circle me-2"></i>{% trans 'No description set.' %}
+                    </p>
+                    {% endif %}
+
+                    {% if quiz.single_attempt %}
+                    <div class="alert alert-warning d-flex align-items-center mt-2 mb-3 py-2 small">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>{% trans "You will only get one attempt at this quiz" %}.</div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white border-0 pt-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a class="btn btn-primary" href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}">
+                            <i class="bi bi-play-fill me-1"></i>{% trans "Start quiz" %}
+                        </a>
+
+                        {% if request.user.is_superuser or request.user.is_lecturer %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'quiz_update' slug=course.slug pk=quiz.id %}">
+                                        <i class="bi bi-pencil me-2"></i>{% trans 'Edit' %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'quiz_delete' slug=course.slug pk=quiz.id %}">
+                                        <i class="bi bi-trash me-2"></i>{% trans 'Delete' %}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info d-flex align-items-center">
+                <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+                <div>{% trans 'Course quizzes will appear here.' %}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    // #####################################
+    // loader
+    // document.getElementById('progress-main').style.display = 'none';
+    var timer = setInterval(function(){
+        document.getElementById('progress-card').style.display = 'none';
+        document.getElementById('progress-main').style.display = 'block';
+        clearInterval(timer)
+    }, 4000);           
+</script>
+{% endblock js %}

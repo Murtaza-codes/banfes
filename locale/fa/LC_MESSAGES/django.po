@@ -1,0 +1,1283 @@
+# Translation of Django site to Dari
+# Copyright (C) 2023
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-24 12:00+0000\n"
+"PO-Revision-Date: 2025-05-16 12:55+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fa_AF\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: templates/base.html
+msgid "Qualifications"
+msgstr "اعتبارنامه‌ها و شایستگی‌ها"
+
+#: templates/base.html
+msgid "News"
+msgstr "اخبار"
+
+#: templates/base.html
+msgid "FAQ"
+msgstr "پرسش‌های رایج"
+
+#: templates/base.html
+msgid "Materials and Resources"
+msgstr "مواد و منابع آموزشی"
+
+#: templates/base.html
+msgid "About us"
+msgstr "دربارهٔ ما"
+
+#: templates/base.html
+msgid "Contact us"
+msgstr "ارتباط با ما"
+
+#: templates/base.html
+msgid "Language"
+msgstr "زبان"
+
+#: templates/base.html
+msgid "Schools Login"
+msgstr "ورود مکاتب"
+
+#: templates/base.html
+msgid "Exam Center"
+msgstr "مرکز امتحانات"
+
+#: templates/base.html
+msgid "Students"
+msgstr "محصلین"
+
+#: templates/base.html
+msgid "Schools"
+msgstr "مکاتب"
+
+#: templates/base.html
+msgid "Exam"
+msgstr "امتحان"
+
+#: templates/base.html
+msgid "My Account"
+msgstr "حساب کاربری من"
+
+#: templates/base.html
+msgid "Administrator"
+msgstr "مدیر اداری"
+
+#: templates/base.html
+msgid "Lecturer"
+msgstr "استاد"
+
+#: templates/base.html
+msgid "Student"
+msgstr "محصل"
+
+#: templates/base.html
+msgid "User"
+msgstr "کاربر"
+
+#: templates/base.html
+msgid "Education Portal"
+msgstr "پورتال آموزشی"
+
+#: templates/base.html
+msgid "Empowering students and educators with innovative learning solutions that transform the educational experience."
+msgstr "توانمندسازی محصلین و استادان با راهکارهای نوین آموزشی که تجربهٔ تعلیمی را دگرگون می‌سازد."
+
+#: templates/base.html
+msgid "Quick Links"
+msgstr "پیوندهای سریع"
+
+#: templates/base.html
+msgid "Resources"
+msgstr "منابع"
+
+#: templates/base.html
+msgid "Learning Materials"
+msgstr "مواد آموزشی"
+
+#: templates/base.html
+msgid "Student Resources"
+msgstr "منابع محصلین"
+
+#: templates/base.html
+msgid "Privacy Policy"
+msgstr "سیاست حفظ حریم خصوصی"
+
+#: templates/base.html
+msgid "Terms of Service"
+msgstr "شرایط خدمات"
+
+#: templates/base.html
+msgid "Contact Info"
+msgstr "معلومات تماس"
+
+#: templates/base.html
+msgid "All rights reserved."
+msgstr "تمام حقوق محفوظ است."
+
+#: templates/core/index.html
+msgid "Welcome to Education Portal"
+msgstr "به پورتال آموزشی خوش آمدید"
+
+#: templates/core/index.html
+msgid "Your Gateway to Quality Learning"
+msgstr "دروازهٔ شما به‌سوی آموزش با کیفیت"
+
+#: templates/core/index.html
+msgid "Explore Courses"
+msgstr "جستجوی کورس‌ها"
+
+#: templates/core/index.html
+msgid "Learn More"
+msgstr "معلومات بیشتر"
+
+#: templates/core/about.html
+msgid "Our Mission"
+msgstr "ماموریت ما"
+
+#: templates/core/about.html
+msgid "Our Vision"
+msgstr "دیدگاه ما"
+
+#: templates/core/about.html
+msgid "Our Values"
+msgstr "ارزش‌های ما"
+
+#: templates/core/about.html
+msgid "Our Team"
+msgstr "تیم ما"
+
+#: templates/core/contact.html
+msgid "Get in Touch"
+msgstr "با ما در تماس شوید"
+
+#: templates/core/contact.html
+msgid "Your Name"
+msgstr "نام شما"
+
+#: templates/core/contact.html
+msgid "Email Address"
+msgstr "آدرس ایمیل"
+
+#: templates/core/contact.html
+msgid "Subject"
+msgstr "موضوع"
+
+#: templates/core/contact.html
+msgid "Message"
+msgstr "پیام"
+
+#: templates/core/contact.html
+msgid "Send Message"
+msgstr "ارسال پیام"
+
+#: templates/core/faq.html
+msgid "Frequently Asked Questions"
+msgstr "پرسش‌های متداول"
+
+#: templates/core/materials.html
+msgid "Educational Materials"
+msgstr "مواد تعلیمی"
+
+#: templates/core/materials.html
+msgid "Download Resources"
+msgstr "دانلود منابع"
+
+#: templates/core/news.html
+msgid "Latest News & Updates"
+msgstr "آخرین اخبار و به‌روزرسانی‌ها"
+
+#: templates/core/news.html
+msgid "Read More"
+msgstr "بیشتر بخوانید"
+
+#: templates/core/news.html
+msgid "Categories"
+msgstr "دسته‌بندی‌ها"
+
+#: templates/core/news.html
+msgid "Archives"
+msgstr "آرشیف"
+
+#: templates/core/news.html
+msgid "Recent Posts"
+msgstr "مطالب اخیر"
+
+#: templates/core/qualifications.html
+msgid "Our Qualifications"
+msgstr "اعتبارنامه‌ها و شایستگی‌های ما"
+
+#: templates/core/qualifications.html
+msgid "Programs Offered"
+msgstr "برنامه‌های ارائه‌شده"
+
+#: templates/accounts/login.html
+msgid "Login"
+msgstr "ورود به سیستم"
+
+#: templates/accounts/login.html
+msgid "Username"
+msgstr "نام کاربری"
+
+#: templates/accounts/login.html
+msgid "Password"
+msgstr "رمز عبور"
+
+#: templates/accounts/login.html
+msgid "Remember me"
+msgstr "مرا به خاطر بسپار"
+
+#: templates/accounts/login.html
+msgid "Forgot Password?"
+msgstr "رمز عبور خود را فراموش کرده‌اید؟"
+
+#: templates/accounts/login.html
+msgid "Don't have an account?"
+msgstr "حساب کاربری ندارید؟"
+
+#: templates/accounts/login.html
+msgid "Register"
+msgstr "ثبت نام"
+
+msgid "Lecturer Dashboard"
+msgstr "داشبورد استاد"
+
+msgid "Learning management system"
+msgstr "سیستم مدیریت آموزش"
+
+msgid "Course Management"
+msgstr "مدیریت کورس‌ها"
+
+msgid "Manage your assigned courses and teaching materials."
+msgstr "کورس‌های تعیین‌شده و مواد درسی خود را مدیریت کنید."
+
+msgid "View Sessions"
+msgstr "مشاهدهٔ جلسات"
+
+msgid "Student Scores"
+msgstr "نمرات محصلین"
+
+msgid "Manage student scores and assessment results."
+msgstr "نمرات محصلین و نتایج ارزیابی‌ها را مدیریت کنید."
+
+msgid "Manage Scores"
+msgstr "مدیریت نمرات"
+
+msgid "Course Allocations"
+msgstr "تخصیص کورس‌ها"
+
+msgid "View your allocated courses for current semester."
+msgstr "کورس‌های تخصیص‌یافتهٔ خود برای سمستر فعلی را مشاهده کنید."
+
+msgid "View Allocations"
+msgstr "مشاهدهٔ تخصیص‌ها"
+
+msgid "Assignments"
+msgstr "کارهای خانگی"
+
+msgid "Create and manage student assignments and quizzes."
+msgstr "کارهای خانگی و امتحان‌های کوتاه محصلین را ایجاد و مدیریت کنید."
+
+msgid "Quiz Progress"
+msgstr "پیشرفت امتحان‌های کوتاه"
+
+msgid "Semesters"
+msgstr "سمسترها"
+
+msgid "View and manage academic semesters."
+msgstr "سمسترهای تحصیلی را مشاهده و مدیریت کنید."
+
+msgid "Manage Semesters"
+msgstr "مدیریت سمسترها"
+
+msgid "Profile Settings"
+msgstr "تنظیمات پروفایل"
+
+msgid "Update your profile and account settings."
+msgstr "پروفایل و تنظیمات حساب کاربری خود را به‌روزرسانی کنید."
+
+msgid "Edit Profile"
+msgstr "ویرایش پروفایل"
+
+msgid "Dashboard"
+msgstr "داشبورد"
+
+#: templates/accounts/student_dashboard.html:3
+msgid "Student Dashboard"
+msgstr "داشبورد محصل"
+
+#: templates/accounts/student_dashboard.html:10
+msgid "Access all your student features and resources"
+msgstr "دسترسی به تمام امکانات و منابع محصلین"
+
+#: templates/accounts/student_dashboard.html:23
+msgid "My Profile"
+msgstr "پروفایل من"
+
+#: templates/accounts/student_dashboard.html:24
+msgid "View and update your personal information"
+msgstr "مشاهده و به‌روزرسانی معلومات شخصی شما"
+
+#: templates/accounts/student_dashboard.html:27
+msgid "View Profile"
+msgstr "مشاهدهٔ پروفایل"
+
+#: templates/accounts/student_dashboard.html:36
+msgid "My Courses"
+msgstr "کورس‌های من"
+
+#: templates/accounts/student_dashboard.html:37
+msgid "Access your enrolled courses"
+msgstr "دسترسی به کورس‌های ثبت‌نام‌شدهٔ شما"
+
+#: templates/accounts/student_dashboard.html:40
+msgid "View Courses"
+msgstr "مشاهدهٔ کورس‌ها"
+
+#: templates/accounts/student_dashboard.html:50
+msgid "View and submit your assignments"
+msgstr "مشاهده و ارسال کارهای خانگی شما"
+
+#: templates/accounts/student_dashboard.html:53
+msgid "View Assignments"
+msgstr "مشاهدهٔ کارهای خانگی"
+
+#: templates/accounts/student_dashboard.html:62
+msgid "Quizzes & Tests"
+msgstr "امتحان‌های کوتاه و تست‌ها"
+
+#: templates/accounts/student_dashboard.html:63
+msgid "Take online tests and quizzes"
+msgstr "اشتراک در تست‌ها و امتحان‌های کوتاه آنلاین"
+
+#: templates/accounts/student_dashboard.html:66
+msgid "Take Quizzes"
+msgstr "اشتراک در امتحان‌های کوتاه"
+
+#: templates/accounts/student_dashboard.html:75
+msgid "Results & Grades"
+msgstr "نتایج و نمرات"
+
+#: templates/accounts/student_dashboard.html:76
+msgid "View your academic performance"
+msgstr "مشاهدهٔ عملکرد تحصیلی شما"
+
+#: templates/accounts/student_dashboard.html:79
+msgid "View Results"
+msgstr "مشاهدهٔ نتایج"
+
+#: templates/accounts/student_dashboard.html:89
+msgid "Access course materials and resources"
+msgstr "دسترسی به مواد و منابع کورس"
+
+#: templates/accounts/student_dashboard.html:92
+msgid "View Materials"
+msgstr "مشاهدهٔ مواد درسی"
+
+#: templates/accounts/student_dashboard.html:101
+msgid "Course Registration"
+msgstr "ثبت‌نام کورس"
+
+#: templates/accounts/student_dashboard.html:102
+msgid "Register for new courses"
+msgstr "ثبت نام در کورس‌های جدید"
+
+#: templates/accounts/student_dashboard.html:114
+msgid "Calendar & Schedule"
+msgstr "تقویم و تقسیم اوقات"
+
+#: templates/accounts/student_dashboard.html:115
+msgid "View your academic calendar and class schedule"
+msgstr "مشاهدهٔ تقویم تحصیلی و تقسیم اوقات صنفی"
+
+#: templates/accounts/student_dashboard.html:118
+msgid "View Schedule"
+msgstr "مشاهدهٔ تقسیم اوقات"
+
+#: templates/accounts/student_dashboard.html:127
+msgid "Attendance"
+msgstr "حاضری"
+
+#: templates/accounts/student_dashboard.html:128
+msgid "Check your attendance records"
+msgstr "بررسی سوابق حاضری خود"
+
+#: templates/accounts/student_dashboard.html:131
+msgid "View Attendance"
+msgstr "مشاهدهٔ حاضری"
+
+#: templates/core/index.html:24
+msgid "Admin Dashboard"
+msgstr "داشبورد اداری"
+
+#: templates/core/index.html:25
+msgid "Admin Panel"
+msgstr "پنل اداری"
+
+#: templates/core/index.html:33
+msgid "Semesters"
+msgstr "سمسترها"
+
+#: templates/core/index.html:63
+msgid "Quick Actions"
+msgstr "اقدامات سریع"
+
+#: templates/core/index.html:64
+msgid "Access your personalized educational resources"
+msgstr "دسترسی به منابع آموزشی شخصی‌سازی‌شدهٔ شما"
+
+#: templates/core/index.html:93
+msgid "Access system statistics and administrative controls."
+msgstr "دسترسی به احصائیه‌های سیستم و کنترل‌های اداری."
+
+#: templates/core/index.html:94
+msgid "Go to Dashboard"
+msgstr "رفتن به داشبورد"
+
+#: templates/core/index.html:106
+msgid "Users"
+msgstr "کاربران"
+
+#: templates/core/index.html:107
+msgid "Manage students, lecturers, and system users."
+msgstr "مدیریت محصلین، استادان و کاربران سیستم."
+
+#: templates/core/index.html:108
+msgid "Manage Students"
+msgstr "مدیریت محصلین"
+
+#: templates/core/index.html:123
+msgid "Courses"
+msgstr "کورس‌ها"
+
+#: templates/core/index.html:124
+msgid "Manage your courses, materials, and student assessments."
+msgstr "مدیریت کورس‌ها، مواد درسی و ارزیابی‌های محصلین."
+
+#: templates/core/index.html:137
+msgid "View and manage academic semesters and sessions."
+msgstr "مشاهده و مدیریت سمسترهای تحصیلی و جلسات درسی."
+
+#: templates/core/index.html:138
+msgid "View Semesters"
+msgstr "مشاهدهٔ سمسترها"
+
+#: templates/core/index.html:154
+msgid "Access your personalized student dashboard."
+msgstr "دسترسی به داشبورد شخصی محصل."
+
+#: templates/core/index.html:155
+msgid "View Dashboard"
+msgstr "مشاهدهٔ داشبورد"
+
+#: templates/core/index.html:167
+msgid "Materials"
+msgstr "مواد درسی"
+
+#: templates/core/index.html:168
+msgid "Access educational resources and learning materials."
+msgstr "دسترسی به منابع تعلیمی و مواد آموزشی."
+
+# Course detail page and topic card translations
+msgid "Home"
+msgstr "صفحهٔ اصلی"
+
+msgid "My courses"
+msgstr "کورس‌های من"
+
+msgid "Programs"
+msgstr "برنامه‌ها"
+
+msgid "Semester"
+msgstr "سمستر"
+
+msgid "Level"
+msgstr "سطح"
+
+msgid "Edit course"
+msgstr "ویرایش کورس"
+
+msgid "Add Topic"
+msgstr "افزودن مبحث"
+
+msgid "Course Content"
+msgstr "محتوای کورس"
+
+msgid "Topics"
+msgstr "مبحث‌ها"
+
+msgid "No topics yet"
+msgstr "هنوز هیچ مبحثی وجود ندارد"
+
+msgid "Click \"Add Topic\" to create your first topic for this course."
+msgstr "برای ایجاد اولین مبحث این کورس، روی «افزودن مبحث» کلیک کنید."
+
+msgid "No content available"
+msgstr "محتوایی موجود نیست"
+
+msgid "This course does not have any topics yet. Please check back later."
+msgstr "این کورس هنوز هیچ مبحثی ندارد. لطفاً بعداً دوباره بررسی کنید."
+
+msgid "Hidden"
+msgstr "مخفی"
+
+msgid "Add Content"
+msgstr "افزودن محتوا"
+
+msgid "Add File"
+msgstr "افزودن فایل"
+
+msgid "Add Video"
+msgstr "افزودن ویدیو"
+
+msgid "Add Assignment"
+msgstr "افزودن کار خانگی"
+
+msgid "Edit Topic"
+msgstr "ویرایش مبحث"
+
+msgid "Delete Topic"
+msgstr "حذف مبحث"
+
+msgid "Files"
+msgstr "فایل‌ها"
+
+msgid "Edit file"
+msgstr "ویرایش فایل"
+
+msgid "Delete file"
+msgstr "حذف فایل"
+
+msgid "Videos"
+msgstr "ویدیوها"
+
+msgid "Edit video"
+msgstr "ویرایش ویدیو"
+
+msgid "Delete video"
+msgstr "حذف ویدیو"
+
+msgid "Assignments"
+msgstr "کارهای خانگی"
+
+msgid "Closed"
+msgstr "بسته شده"
+
+msgid "Submission Limit Reached"
+msgstr "محدودیت ارسال تکمیل شده"
+
+msgid "View Submissions"
+msgstr "مشاهدهٔ ارسالی‌ها"
+
+msgid "Edit Assignment"
+msgstr "ویرایش کار خانگی"
+
+msgid "Confirm Delete"
+msgstr "تأیید حذف"
+
+msgid "Close"
+msgstr "بستن"
+
+msgid "Delete Topic?"
+msgstr "مبحث حذف شود؟"
+
+msgid "This action cannot be undone."
+msgstr "این عمل قابل بازگشت نیست."
+
+msgid "Cancel"
+msgstr "انصراف"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Deleting"
+msgstr "در حال حذف..."
+
+msgid "Learning management system"
+msgstr "سیستم مدیریت آموزش"
+
+msgid "Course Details"
+msgstr "جزئیات کورس"
+
+msgid "Course Information"
+msgstr "معلومات کورس"
+
+msgid "Description"
+msgstr "تشریحات"
+
+msgid "Course Code"
+msgstr "کد کورس"
+
+msgid "Credit Hours"
+msgstr "ساعات کریدت"
+
+msgid "Available Topics"
+msgstr "مبحث‌های موجود"
+
+msgid "Course Materials"
+msgstr "مواد درسی کورس"
+
+msgid "Instructor"
+msgstr "استاد"
+
+msgid "Download"
+msgstr "دانلود"
+
+msgid "Watch Video"
+msgstr "مشاهدهٔ ویدیو"
+
+msgid "Submit Assignment"
+msgstr "ارسال کار خانگی"
+
+msgid "Due Date"
+msgstr "تاریخ مهلت"
+
+msgid "No files have been uploaded yet."
+msgstr "هنوز هیچ فایلی آپلود نشده است."
+
+msgid "No videos have been added yet."
+msgstr "هنوز هیچ ویدیویی اضافه نشده است."
+
+msgid "No assignments have been created yet."
+msgstr "هنوز هیچ کار خانگی ایجاد نشده است."
+
+msgid "View Details"
+msgstr "مشاهدهٔ جزئیات"
+
+# Missing translations from index.html and core pages
+msgid "Education Portal - Home"
+msgstr "پورتال آموزشی - صفحهٔ اصلی"
+
+msgid "Transforming Education with Technology"
+msgstr "تحول آموزش با تکنالوژی"
+
+msgid "Our education platform integrates blockchain and AI technologies to create a personalized, secure, and innovative learning environment."
+msgstr "پلتفرم آموزشی ما تکنالوژی‌های بلاکچین و هوش مصنوعی را برای ایجاد یک محیط آموزشی شخصی‌سازی‌شده، امن و نوآورانه یکپارچه می‌سازد."
+
+msgid "Contact Us"
+msgstr "ارتباط با ما"
+
+msgid "View and update your personal information and preferences."
+msgstr "مشاهده و به‌روزرسانی معلومات شخصی و ترجیحات شما."
+
+msgid "Our BANFES Approach"
+msgstr "رویکرد بانفس ما"
+
+msgid "Blockchain and Artificial Intelligence Non-Formal Education System"
+msgstr "سیستم آموزش غیررسمی مبتنی بر بلاکچین و هوش مصنوعی"
+
+msgid "Blockchain Security"
+msgstr "امنیت بلاکچین"
+
+msgid "Our platform uses blockchain technology to ensure the security and integrity of educational records and certificates."
+msgstr "پلتفرم ما از تکنالوژی بلاکچین برای تضمین امنیت و یکپارچگی سوابق تحصیلی و تصدیق‌نامه‌ها استفاده می‌کند."
+
+msgid "AI-Powered Learning"
+msgstr "آموزش مبتنی بر هوش مصنوعی"
+
+msgid "Artificial intelligence customizes the learning experience by adapting to each student's unique needs and learning style."
+msgstr "هوش مصنوعی با تطابق با نیازها و سبک یادگیری منحصربه‌فرد هر محصل، تجربهٔ آموزشی را شخصی‌سازی می‌کند."
+
+msgid "Open Access"
+msgstr "دسترسی آزاد"
+
+msgid "We believe in making education accessible to all, with transparent pricing and open-access resources."
+msgstr "ما به قابل دسترس ساختن آموزش برای همه، با قیمت‌گذاری شفاف و منابع با دسترسی آزاد، باور داریم."
+
+msgid "View Materials"
+msgstr "مشاهدهٔ مواد درسی"
+
+msgid "Take Quizzes"
+msgstr "اشتراک در امتحان‌های کوتاه"
+
+# Additional missing translations from requested pages
+
+msgid "Open Access Policy"
+msgstr "سیاست دسترسی آزاد"
+
+msgid "Based on open access principles, all educational materials created on our platform are made immediately available under an open access license. No special permission is required to reuse content, provided the original source is properly cited."
+msgstr "بر اساس اصول دسترسی آزاد، تمام مواد آموزشی ایجاد شده در پلتفرم ما فوراً تحت جواز دسترسی آزاد در دسترس قرار می‌گیرند. برای استفادهٔ مجدد از محتوا، به شرط ذکر منبع اصلی، به هیچ اجازهٔ خاصی نیاز نیست."
+
+msgid "Latest News & Events"
+msgstr "آخرین اخبار و رویدادها"
+
+msgid "Stay updated with our latest announcements and educational events"
+msgstr "از آخرین اعلانات و رویدادهای آموزشی ما مطلع باشید"
+
+msgid "Private"
+msgstr "خصوصی"
+
+msgid "Edit"
+msgstr "ویرایش"
+
+msgid "No news or events available at the moment."
+msgstr "در حال حاضر هیچ خبر یا رویدادی موجود نیست."
+
+msgid "Ready to Transform Your Learning Experience?"
+msgstr "آیا برای تحول در تجربهٔ آموزشی خود آماده هستید؟"
+
+msgid "Join our innovative education platform today and experience the power of blockchain and AI in education."
+msgstr "امروز به پلتفرم آموزشی نوآورانهٔ ما بپیوندید و قدرت بلاکچین و هوش مصنوعی را در آموزش تجربه کنید."
+
+msgid "Access Materials"
+msgstr "دسترسی به مواد درسی"
+
+msgid "Sign In"
+msgstr "ورود به سیستم"
+
+msgid "Our Mission"
+msgstr "ماموریت ما"
+
+msgid "Our mission is to provide a revolutionary education management system that integrates blockchain and artificial intelligence technologies, offering secure, personalized, and innovative learning experiences to students worldwide."
+msgstr "ماموریت ما ارائهٔ یک سیستم مدیریت آموزشی انقلابی است که تکنالوژی‌های بلاکچین و هوش مصنوعی را یکپارچه ساخته و تجارب آموزشی امن، شخصی‌سازی‌شده و نوآورانه را به محصلین در سراسر جهان ارائه می‌دهد."
+
+msgid "We envision a world where education is accessible, engaging, and effective for all learners regardless of their background or circumstances, powered by secure and cutting-edge technology."
+msgstr "ما جهانی را تصور می‌کنیم که در آن آموزش، با حمایت تکنالوژی امن و پیشرفته، برای تمام آموزندگان بدون در نظر گرفتن پیشینه یا شرایط آنها، قابل دسترس، جذاب و مؤثر باشد."
+
+msgid "BANFES: Our Innovative Approach"
+msgstr "بانفس: رویکرد نوآورانهٔ ما"
+
+msgid "Our platform is built on the Blockchain and Artificial Intelligence Non-Formal Education System (BANFES), an innovative approach that combines the security and transparency of blockchain technology with the adaptive learning capabilities of artificial intelligence."
+msgstr "پلتفرم ما بر اساس سیستم آموزش غیررسمی مبتنی بر بلاکچین و هوش مصنوعی (بانفس) بنا شده است؛ رویکردی نوآورانه که امنیت و شفافیت تکنالوژی بلاکچین را با قابلیت‌های یادگیری تطبیقی هوش مصنوعی ترکیب می‌کند."
+
+msgid "Materials & Resources"
+msgstr "مواد و منابع"
+
+msgid "Educational Resources"
+msgstr "منابع آموزشی"
+
+msgid "Access a variety of educational materials and resources to enhance your learning experience."
+msgstr "به انواع مواد و منابع آموزشی برای بهبود تجربهٔ آموزشی خود دسترسی پیدا کنید."
+
+msgid "Textbooks"
+msgstr "کتاب‌های درسی"
+
+msgid "Access digital textbooks and reading materials for your courses."
+msgstr "به کتاب‌های درسی دیجیتال و مواد خواندنی برای کورس‌های خود دسترسی پیدا کنید."
+
+msgid "Browse Textbooks"
+msgstr "مرور کتاب‌های درسی"
+
+msgid "Study Guides"
+msgstr "رهنماهای درسی"
+
+msgid "Download study guides and supplementary materials for exam preparation."
+msgstr "رهنماهای درسی و مواد کمکی را برای آمادگی امتحان دانلود کنید."
+
+msgid "View Study Guides"
+msgstr "مشاهدهٔ رهنماهای درسی"
+
+msgid "Video Tutorials"
+msgstr "آموزش‌های ویدیویی"
+
+msgid "Watch Videos"
+msgstr "تماشای ویدیوها"
+
+msgid "Full Name"
+msgstr "نام کامل"
+
+msgid "Enter your name"
+msgstr "نام خود را وارد کنید"
+
+msgid "Enter your email"
+msgstr "ایمیل خود را وارد کنید"
+
+msgid "Enter subject"
+msgstr "موضوع را وارد کنید"
+
+msgid "Enter your message"
+msgstr "پیام خود را وارد کنید"
+
+msgid "Contact Information"
+msgstr "معلومات تماس"
+
+msgid "Address"
+msgstr "آدرس"
+
+msgid "Email"
+msgstr "ایمیل"
+
+msgid "Phone"
+msgstr "تلفن"
+
+msgid "Office Hours"
+msgstr "ساعات کاری دفتر"
+
+msgid "Monday - Friday: 9:00 AM - 5:00 PM"
+msgstr "دوشنبه - جمعه: ۹:۰۰ صبح الی ۵:۰۰ عصر"
+
+msgid "How do I register for an account?"
+msgstr "چگونه می‌توانم یک حساب کاربری ثبت کنم؟"
+
+msgid "To register for an account, please contact your school administrator who will provide you with your login credentials."
+msgstr "برای ثبت یک حساب کاربری، لطفاً با مدیر مکتب خود تماس بگیرید تا مشخصات ورود شما را ارائه دهد."
+
+msgid "I forgot my password. What should I do?"
+msgstr "رمز عبور خود را فراموش کرده‌ام. چه باید بکنم؟"
+
+msgid "If you forgot your password, click on the \"Forgot password?\" link on the login page and follow the instructions to reset your password."
+msgstr "اگر رمز عبور خود را فراموش کرده‌اید، روی پیوند «رمز عبور خود را فراموش کرده‌اید؟» در صفحهٔ ورود کلیک کرده و دستورالعمل‌ها را برای بازنشانی رمز عبور خود دنبال کنید."
+
+msgid "How do I access my courses?"
+msgstr "چگونه به کورس‌های خود دسترسی پیدا کنم؟"
+
+msgid "After logging in, you can access your courses from the dashboard. Click on the course tile to enter the course and access its materials."
+msgstr "پس از ورود به سیستم، می‌توانید از طریق داشبورد به کورس‌های خود دسترسی پیدا کنید. برای ورود به کورس و دسترسی به مواد آن، روی بخش مربوط به کورس کلیک کنید."
+
+# Additional translations for About page
+msgid "About Us"
+msgstr "دربارهٔ ما"
+
+msgid "Blockchain Technology"
+msgstr "تکنالوژی بلاکچین"
+
+msgid "Secure digital certification and credential verification"
+msgstr "تصدیق‌نامه‌های دیجیتال امن و تأیید اعتبارنامه‌ها"
+
+msgid "Tamper-proof academic records"
+msgstr "سوابق تحصیلی غیرقابل دستکاری"
+
+msgid "Enhanced privacy and data ownership"
+msgstr "حریم خصوصی پیشرفته و مالکیت داده‌ها"
+
+msgid "Transparent and verifiable learning processes"
+msgstr "فرایندهای آموزشی شفاف و قابل تأیید"
+
+msgid "Artificial Intelligence"
+msgstr "هوش مصنوعی"
+
+msgid "Personalized learning paths based on student needs"
+msgstr "مسیرهای آموزشی شخصی‌سازی‌شده بر اساس نیازهای محصل"
+
+msgid "Real-time progress tracking and analytics"
+msgstr "ردیابی پیشرفت و تحلیل‌های آنی"
+
+msgid "Intelligent tutoring systems and feedback"
+msgstr "سیستم‌های آموزشی هوشمند و بازخورد"
+
+msgid "Adaptive assessment and skill evaluation"
+msgstr "ارزیابی تطبیقی و سنجش مهارت‌ها"
+
+msgid "Academic Reference"
+msgstr "مرجع علمی"
+
+msgid "Our BANFES approach is based on cutting-edge research in educational technology. For more information, please refer to: "
+msgstr "رویکرد بانفس ما مبتنی بر تحقیقات پیشرفته در تکنالوژی آموزشی است. برای معلومات بیشتر، لطفاً به این مرجع مراجعه کنید: "
+
+msgid "Excellence"
+msgstr "برتری"
+
+msgid "We strive for excellence in everything we do, from the design of our platform to the support we provide to our users."
+msgstr "ما در تمام امور خود، از طراحی پلتفرم گرفته تا پشتیبانی که به کاربران خود ارائه می‌دهیم، برای برتری تلاش می‌کنیم."
+
+msgid "Collaboration"
+msgstr "همکاری"
+
+msgid "We believe in the power of collaboration and work closely with educators and institutions to develop solutions that meet their needs."
+msgstr "ما به قدرت همکاری باور داریم و با استادان و نهادها برای توسعهٔ راهکارهایی که نیازهای آنها را برآورده سازد، از نزدیک همکاری می‌کنیم."
+
+msgid "Innovation"
+msgstr "نوآوری"
+
+msgid "We continuously innovate and improve our platform to incorporate the latest educational technologies and best practices."
+msgstr "ما به طور مداوم نوآوری کرده و پلتفرم خود را برای شامل ساختن آخرین تکنالوژی‌های آموزشی و بهترین شیوه‌ها بهبود می‌بخشیم."
+
+msgid "In alignment with modern educational principles, we follow an open access approach to educational content:"
+msgstr "در تطابق با اصول آموزشی مدرن، ما از رویکرد دسترسی آزاد به محتوای آموزشی پیروی می‌کنیم:"
+
+msgid "All educational materials are made immediately available worldwide under an open access license."
+msgstr "تمام مواد آموزشی فوراً در سراسر جهان تحت جواز دسترسی آزاد در دسترس قرار می‌گیرند."
+
+msgid "No special permission is required to reuse all or part of published content, including figures and tables."
+msgstr "برای استفادهٔ مجدد از تمام یا بخشی از محتوای منتشرشده، به‌شمول تصاویر و جداول، به هیچ اجازهٔ خاصی نیاز نیست."
+
+msgid "For content published under Creative Commons CC BY license, any part may be reused without permission provided the original content is clearly cited."
+msgstr "برای محتوای منتشرشده تحت جواز کریتیو کامنز CC BY، هر بخش بدون اجازه قابل استفادهٔ مجدد است، مشروط بر اینکه منبع اصلی به وضوح ذکر شود."
+
+msgid "Our platform offers various pricing tiers, but ensures that core educational resources remain accessible to all."
+msgstr "پلتفرم ما سطوح مختلف قیمت‌گذاری را ارائه می‌دهد، اما تضمین می‌کند که منابع اصلی آموزشی برای همه قابل دسترس باقی بمانند."
+
+msgid "View Our Pricing Policy"
+msgstr "مشاهدهٔ سیاست قیمت‌گذاری ما"
+
+# Additional translations for Materials page
+msgid "Watch instructional videos and tutorials to enhance your understanding."
+msgstr "برای افزایش درک خود، ویدیوهای آموزشی و رهنماها را تماشا کنید."
+
+msgid "Practice Tests"
+msgstr "امتحان‌های تمرینی"
+
+msgid "Take practice tests and quizzes to assess your knowledge and prepare for exams."
+msgstr "برای ارزیابی دانش خود و آمادگی برای امتحان‌ها، در امتحان‌های تمرینی و امتحان‌های کوتاه اشتراک کنید."
+
+msgid "Take Practice Tests"
+msgstr "اشتراک در امتحان‌های تمرینی"
+
+msgid "Academic Calendar"
+msgstr "تقویم تحصیلی"
+
+msgid "View important dates, deadlines, and events for the academic year."
+msgstr "تاریخ‌های مهم، مهلت‌ها و رویدادهای سال تحصیلی را مشاهده کنید."
+
+msgid "View Calendar"
+msgstr "مشاهدهٔ تقویم"
+
+msgid "External Resources"
+msgstr "منابع خارجی"
+
+msgid "Access external educational resources and websites to supplement your learning."
+msgstr "برای تکمیل آموزش خود، به منابع آموزشی و وب‌سایت‌های خارجی دسترسی پیدا کنید."
+
+msgid "Browse Resources"
+msgstr "مرور منابع"
+
+# Additional translations for News pages
+msgid "News & Announcements"
+msgstr "اخبار و اعلانات"
+
+msgid "Latest Updates"
+msgstr "آخرین به‌روزرسانی‌ها"
+
+msgid "Stay informed about the latest developments, announcements, and news."
+msgstr "از آخرین تحولات، اعلانات و اخبار مطلع باشید."
+
+msgid "News & Events"
+msgstr "اخبار و رویدادها"
+
+msgid "Are you sure you want to delete this item?"
+msgstr "آیا مطمئن هستید که می‌خواهید این مورد را حذف کنید؟"
+
+msgid "Back to News & Events"
+msgstr "بازگشت به اخبار و رویدادها"
+
+# Admin Dashboard Translations
+msgid "Dashboard settings"
+msgstr "تنظیمات داشبورد"
+
+msgid "Display grid"
+msgstr "نمایش شبکه‌ای"
+
+msgid "Display table"
+msgstr "نمایش جدولی"
+
+msgid "Manage dashboard"
+msgstr "مدیریت داشبورد"
+
+msgid "Lecturers"
+msgstr "استادان"
+
+msgid "Administrators"
+msgstr "مدیران اداری"
+
+msgid "Lab Assistance"
+msgstr "همکاران لابراتوار"
+
+msgid "Librarians"
+msgstr "کتابداران"
+
+msgid "Supervisors"
+msgstr "ناظرین"
+
+msgid "Office Assistance"
+msgstr "همکاران اداری"
+
+msgid "Others"
+msgstr "دیگران"
+
+msgid "Administration Panel"
+msgstr "پنل مدیریت اداری"
+
+msgid "Manage Lecturers"
+msgstr "مدیریت استادان"
+
+msgid "CRUD (Create, Retrieve, Update & Delete) lecturers"
+msgstr "ایجاد، بازیابی، به‌روزرسانی و حذف استادان (CRUD)"
+
+msgid "CRUD (Create, Retrieve, Update & Delete) students"
+msgstr "ایجاد، بازیابی، به‌روزرسانی و حذف محصلین (CRUD)"
+
+msgid "Manage Sessions"
+msgstr "مدیریت جلسات درسی"
+
+msgid "CRUD (Create, Retrieve, Update & Delete) sessions"
+msgstr "ایجاد، بازیابی، به‌روزرسانی و حذف جلسات درسی (CRUD)"
+
+msgid "CRUD (Create, Retrieve, Update & Delete) semesters"
+msgstr "ایجاد، بازیابی، به‌روزرسانی و حذف سمسترها (CRUD)"
+
+msgid "Course Add & Drop"
+msgstr "اضافه و حذف کورس"
+
+msgid "Enable or disable course registration"
+msgstr "فعال یا غیرفعال کردن ثبت‌نام کورس"
+
+msgid "ON"
+msgstr "فعال"
+
+msgid "OFF"
+msgstr "غیرفعال"
+
+msgid "Programs & Courses"
+msgstr "برنامه‌ها و کورس‌ها"
+
+msgid "CRUD (Create, Retrieve, Update & Delete) programs"
+msgstr "ایجاد، بازیابی، به‌روزرسانی و حذف برنامه‌ها (CRUD)"
+
+msgid "Manage Programs"
+msgstr "مدیریت برنامه‌ها"
+
+msgid "CRUD (Create, Retrieve, Update & Delete) course allocations"
+msgstr "ایجاد، بازیابی، به‌روزرسانی و حذف تخصیص کورس‌ها (CRUD)"
+
+msgid "Manage Allocations"
+msgstr "مدیریت تخصیص‌ها"
+
+msgid "CRUD (Create, Retrieve, Update & Delete) News & Events"
+msgstr "ایجاد، بازیابی، به‌روزرسانی و حذف اخبار و رویدادها (CRUD)"
+
+msgid "Manage News"
+msgstr "مدیریت اخبار"
+
+msgid "Latest activities"
+msgstr "فعالیت‌های اخیر"
+
+msgid "No recent activity"
+msgstr "هیچ فعالیت اخیری وجود ندارد"
+
+msgid "School Demographics"
+msgstr "احصائیهٔ جمعیتی مکتب"
+
+msgid "January"
+msgstr "جنوری"
+
+msgid "February"
+msgstr "فبروری"
+
+msgid "March"
+msgstr "مارچ"
+
+msgid "April"
+msgstr "اپریل"
+
+msgid "May"
+msgstr "می"
+
+msgid "June"
+msgstr "جون"
+
+msgid "Teachers"
+msgstr "معلمان"
+
+msgid "Admins"
+msgstr "مدیران"
+
+msgid "Staff"
+msgstr "کارمندان"
+
+msgid "Website Traffic"
+msgstr "ترافیک وب‌سایت"
+
+# Lecturer Dashboard Translations
+msgid "My Courses"
+msgstr "کورس‌های من"
+
+# Login page translations
+msgid "Education Portal - Login"
+msgstr "پورتال آموزشی - ورود به سیستم"
+
+msgid "Sign in"
+msgstr "ورود به سیستم"
+
+msgid "Access your personalized dashboard"
+msgstr "به داشبورد شخصی خود دسترسی پیدا کنید"
+
+msgid "Invalid ID & Password."
+msgstr "شناسه و رمز عبور نامعتبر است."
+
+msgid "SIGN IN"
+msgstr "ورود"
+
+msgid "Signing in..."
+msgstr "در حال ورود..."
+
+msgid "For students, use your username (e.g., test2)"
+msgstr "برای محصلین، از نام کاربری خود استفاده کنید (مثلاً: test2)"
+
+msgid "Exam ID"
+msgstr "شناسهٔ امتحان"
+
+msgid "School ID"
+msgstr "شناسهٔ مکتب"
+
+msgid "School Admin"
+msgstr "مدیر مکتب"
+
+msgid "Exam Center"
+msgstr "مرکز امتحانات"
+
+# Password reset related strings
+msgid "Password Reset"
+msgstr "بازنشانی رمز عبور"
+
+msgid "Email sent"
+msgstr "ایمیل ارسال شد"
+
+msgid "Back To Login"
+msgstr "بازگشت به صفحهٔ ورود"
+
+msgid "Confirm New Password"
+msgstr "تأیید رمز عبور جدید"
+
+msgid "Password Reset Complete"
+msgstr "بازنشانی رمز عبور تکمیل شد"
+
+msgid "Sign In Here"
+msgstr "از اینجا وارد شوید"
+
+# Profile related translations
+msgid "Last login"
+msgstr "آخرین ورود"
+
+msgid "Last login:"
+msgstr "آخرین ورود:"
+
+# Course and Program page translations
+msgid "Allocation list"
+msgstr "لیست تخصیص"
+
+msgid "Allocate New Course"
+msgstr "تخصیص کورس جدید"
+
+msgid "No Course Allocated."
+msgstr "هیچ کورسی تخصیص داده نشده است."
+
+msgid "Allocate now"
+msgstr "اکنون تخصیص دهید"
+
+msgid "Action"
+msgstr "عملیات"
+
+msgid "Edit or Update"
+msgstr "ویرایش یا به‌روزرسانی"
+
+msgid "Deallocate"
+msgstr "لغو تخصیص"
+
+msgid "Edit course"
+msgstr "ویرایش کورس"
+
+msgid "Add Topic"
+msgstr "افزودن مبحث"
+
+msgid "Course Content"
+msgstr "محتوای کورس"
+
+msgid "Topics"
+msgstr "مبحث‌ها"
+
+msgid "No topics yet"
+msgstr "هنوز هیچ مبحثی وجود ندارد"
+
+msgid "Click \"Add Topic\" to create your first topic for this course."
+msgstr "برای ایجاد اولین مبحث این کورس، روی «افزودن مبحث» کلیک کنید."
+
+msgid "No content available"
+msgstr "محتوایی موجود نیست"
+
+msgid "This course does not have any topics yet. Please check back later."
+msgstr "این کورس هنوز هیچ مبحثی ندارد. لطفاً بعداً دوباره بررسی کنید."
+
+# Score Management page translations
+msgid "Manage Score"
+msgstr "مدیریت نمرات"
+
+msgid "Select a course to manage scores"
+msgstr "یک کورس را برای مدیریت نمرات انتخاب کنید"
+
+msgid "Choose a course from your assigned courses to enter or update student scores."
+msgstr "یک کورس از کورس‌های تعیین‌شدهٔ خود را برای وارد کردن یا به‌روزرسانی نمرات محصلین انتخاب کنید."
+
+msgid "Select Your Course"
+msgstr "کورس خود را انتخاب کنید"
+
+msgid "No courses available"
+msgstr "هیچ کورسی موجود نیست"
+
+msgid "You can enter scores for assignments, exams, quizzes, and attendance."
+msgstr "شما می‌توانید نمرات کارهای خانگی، امتحان‌ها، امتحان‌های کوتاه و حاضری را وارد کنید."
+
+msgid "No active semester found. Please contact an administrator."
+msgstr "هیچ سمستر فعالی یافت نشد. لطفاً با یک مدیر اداری تماس بگیرید."
+
+msgid "Change Course"
+msgstr "تغییر کورس"
+
+msgid "Student Scores"
+msgstr "نمرات محصلین"
+
+msgid "Save Scores"
+msgstr "ذخیرهٔ نمرات"
+
+msgid "Grade Report PDF"
+msgstr "گزارش نمرات به شکل PDF"
+
+msgid "Student"
+msgstr "محصل"
+
+msgid "Assignment"
+msgstr "کار خانگی"
+
+msgid "Mid Exam"
+msgstr "امتحان وسط سمستر"
+
+msgid "Quiz"
+msgstr "امتحان کوتاه"
+
+msgid "Attendance"
+msgstr "حاضری"
+
+msgid "Final Exam"
+msgstr "امتحان نهایی سمستر"
+
+msgid "Total"
+msgstr "مجموع"
+
+msgid "Point"
+msgstr "نمره"
+
+msgid "Grade"
+msgstr "درجه"
+
+msgid "Comment"
+msgstr "تبصره"
+
+msgid "No students enrolled in this course"
+msgstr "هیچ محصلی در این کورس ثبت‌نام نکرده است"
+
+msgid "Programs & Courses"
+msgstr "برنامه‌ها و کورس‌ها"
+
+msgid "Add Program"
+msgstr "افزودن برنامه"
+
+msgid "Update"
+msgstr "به‌روزرسانی"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Add Course"
+msgstr "افزودن کورس"
+
+msgid "Add & Drop Course"
+msgstr "اضافه و حذف کورس"
+
+msgid "Print Registration Form"
+msgstr "چاپ فورم ثبت‌نام"

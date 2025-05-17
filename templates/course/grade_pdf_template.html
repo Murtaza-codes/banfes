@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.5;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .site-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0 5px;
+            color: #333;
+            text-transform: uppercase;
+        }
+        .site-tagline {
+            font-size: 14px;
+            color: #777;
+            margin: 0 0 10px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            font-size: 14px;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            page-break-inside: auto;
+        }
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+            padding: 10px;
+            font-weight: bold;
+        }
+        td {
+            padding: 8px 10px;
+            word-wrap: break-word;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .summary {
+            margin-bottom: 30px;
+        }
+        .summary table {
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <!-- Simple text-based header instead of image -->
+        <h1 class="site-name">Learning Management System</h1>
+        <p class="site-tagline">Excellence in Education</p>
+    </div>
+    
+    <div class="header">
+        <h1>{{ course.title }} ({{ course.code }})</h1>
+        <p>Grade Report</p>
+    </div>
+    
+    <div class="summary">
+        <table>
+            <tr>
+                <th>Total Students</th>
+                <td>{{ taken_courses.count }}</td>
+            </tr>
+            <tr>
+                <th>Average Grade</th>
+                <td>{{ avg_grade }}%</td>
+            </tr>
+        </table>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Assignment</th>
+                <th>Quiz</th>
+                <th>Mid Exam</th>
+                <th>Attendance</th>
+                <th>Final Exam</th>
+                <th>Total</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for taken in taken_courses %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ taken.student.student.get_full_name }}</td>
+                <td>{{ taken.student.id_number|default:taken.student.student.username }}</td>
+                <td>{{ taken.assignment }}</td>
+                <td>{{ taken.quiz }}</td>
+                <td>{{ taken.mid_exam }}</td>
+                <td>{{ taken.attendance }}</td>
+                <td>{{ taken.final_exam }}</td>
+                <td>{{ taken.total }}</td>
+                <td>{{ taken.grade }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" style="text-align: center;">No student grades available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <p>Generated on {% now "F j, Y" %} • Learning Management System</p>
+    </div>
+</body>
+</html> 

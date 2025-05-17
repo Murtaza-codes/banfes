@@ -1,0 +1,24 @@
+{% load custom_filters %}
+{% load i18n %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal-{{ assignment.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ assignment.id }}" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel-{{ assignment.id }}">{% trans 'Confirm Deletion' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="modal-body text-center">
+            <p>{% trans 'Are you sure you want to delete this assignment and all associated submissions?' %}</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+            <form method="post" action="{% url 'assignment_delete' slug=course.slug pk=assignment.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">{% trans 'Delete' %}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>

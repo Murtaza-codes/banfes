@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+            {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journal me-1"></i>{% trans 'My courses' %}</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ course }}</li>
+        </ol>
+    </nav>
+
+    {% include './course_navigation.html' %}
+
+    <!-- Course Header -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="d-flex align-items-center mb-3 mb-md-0">
+                    <div class="bg-primary bg-gradient text-white rounded-circle p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="bi bi-book fs-3"></i>
+                    </div>
+                    <div>
+                        <h2 class="mb-1">{{ course.title }}</h2>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-calendar3 me-2"></i>{% trans 'Semester' %}: {{ course.semester }}
+                            {% if course.level %} • <i class="bi bi-bar-chart me-2"></i>{% trans 'Level' %}: {{ course.level }}{% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                {% if request.user.is_superuser or request.user.is_lecturer %}
+                <div class="btn-group">
+                    {% if request.user.is_superuser %}
+                    <a class="btn btn-outline-primary" href="{% url 'edit_course' course.slug %}">
+                        <i class="bi bi-pencil me-2"></i>{% trans 'Edit course' %}
+                    </a>
+                    {% endif %}
+                    <a class="btn btn-primary" href="{% url 'topic_create' course.slug %}">
+                        <i class="bi bi-plus-lg me-2"></i>{% trans 'Add Topic' %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Content -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">{% trans 'Course Content' %}</h3>
+            <span class="badge bg-primary rounded-pill">{{ topics|length }} {% trans 'Topics' %}</span>
+        </div>
+
+        {% if topics %}
+            <div class="topics-container">
+                {% for topic in topics %}
+                    {% if topic.is_visible or request.user.is_lecturer or request.user.is_superuser %}
+                        {% include './course_topic_card.html' %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="bi bi-info-circle fs-3"></i>
+                        </div>
+                        <div>
+                            {% if request.user.is_lecturer or request.user.is_superuser %}
+                                <h5 class="mb-2">{% trans 'No topics yet' %}</h5>
+                                <p class="mb-0">{% trans 'Click "Add Topic" to create your first topic for this course.' %}</p>
+                            {% else %}
+                                <h5 class="mb-2">{% trans 'No content available' %}</h5>
+                                <p class="mb-0">{% trans 'This course does not have any topics yet. Please check back later.' %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .topics-container .topic-card:last-child {
+        margin-bottom: 0 !important;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        font-family: "Bootstrap Icons";
+        content: "\F285";
+    }
+</style>
+
+{% endblock %}

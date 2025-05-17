@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/"><i class="bi bi-house-door"></i> {% trans 'Home' %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-file-earmark-plus"></i> {% trans 'Post form' %}</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-pencil-square"></i> {% trans 'Create New Post' %}</h4>
+            </div>
+            <div class="card-body p-4">
+                <form action="" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label"><i class="bi bi-type-h1"></i> {% trans 'Title' %}</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_summary" class="form-label"><i class="bi bi-text-paragraph"></i> {% trans 'Summary' %}</label>
+                        {{ form.summary }}
+                        {% if form.summary.errors %}
+                            <div class="invalid-feedback d-block">{{ form.summary.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_posted_as" class="form-label"><i class="bi bi-tag"></i> {% trans 'Posted As' %}</label>
+                        {{ form.posted_as }}
+                        {% if form.posted_as.errors %}
+                            <div class="invalid-feedback d-block">{{ form.posted_as.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_thumbnail" class="form-label"><i class="bi bi-image"></i> {% trans 'Thumbnail' %}</label>
+                        {{ form.thumbnail }}
+                        {% if form.thumbnail.errors %}
+                            <div class="invalid-feedback d-block">{{ form.thumbnail.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        {{ form.is_public }}
+                        <label for="id_is_public" class="form-check-label"><i class="bi bi-globe"></i> {% trans 'Make Public' %}</label>
+                        {% if form.is_public.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_public.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="accordion mb-4" id="seoSettings">
+                        <div class="accordion-item">
+                            <div class="d-flex align-items-center">
+                                <h2 class="accordion-header flex-grow-1 mb-0" id="seoHeader">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#seoContent" aria-expanded="false" aria-controls="seoContent">
+                                        <i class="bi bi-search me-2"></i> {% trans 'SEO Settings (Optional)' %}
+                                    </button>
+                                </h2>
+                                <button type="button" class="btn btn-sm btn-info me-2" 
+                                        data-bs-toggle="modal" data-bs-target="#seoHelpModal">
+                                    <i class="bi bi-question-circle"></i> {% trans 'Help' %}
+                                </button>
+                            </div>
+                            <div id="seoContent" class="accordion-collapse collapse" aria-labelledby="seoHeader" data-bs-parent="#seoSettings">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <label for="id_meta_title" class="form-label"><i class="bi bi-card-heading"></i> {% trans 'Meta Title' %}</label>
+                                        {{ form.meta_title }}
+                                        {% if form.meta_title.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.meta_title.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="id_meta_description" class="form-label"><i class="bi bi-card-text"></i> {% trans 'Meta Description' %}</label>
+                                        {{ form.meta_description }}
+                                        {% if form.meta_description.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.meta_description.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="id_keywords" class="form-label"><i class="bi bi-hash"></i> {% trans 'Keywords' %}</label>
+                                        {{ form.keywords }}
+                                        {% if form.keywords.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.keywords.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> {% trans 'Save' %}
+                        </button>
+                        <a class="btn btn-outline-secondary" href="{% url 'home' %}">
+                            <i class="bi bi-x-circle"></i> {% trans 'Cancel' %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SEO Help Modal -->
+<div class="modal fade" id="seoHelpModal" tabindex="-1" aria-labelledby="seoHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="seoHelpModalLabel"><i class="bi bi-search"></i> {% trans 'SEO Help Guide' %}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="mb-3"><i class="bi bi-info-circle"></i> {% trans 'What is SEO?' %}</h5>
+                <p>{% trans 'SEO (Search Engine Optimization) helps your content rank higher in search engines like Google, making it more visible to people searching for related topics.' %}</p>
+
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="bi bi-card-heading"></i> {% trans 'Meta Title' %}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans 'The meta title appears as the clickable headline in search engine results. For best results:' %}</p>
+                        <ul>
+                            <li>{% trans 'Keep it under 60 characters' %}</li>
+                            <li>{% trans 'Include relevant keywords' %}</li>
+                            <li>{% trans 'Make it compelling and accurate' %}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="bi bi-card-text"></i> {% trans 'Meta Description' %}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans 'The meta description appears as a snippet under the title in search results. For best results:' %}</p>
+                        <ul>
+                            <li>{% trans 'Keep it between 120-160 characters' %}</li>
+                            <li>{% trans 'Summarize your content accurately' %}</li>
+                            <li>{% trans 'Include a call-to-action if appropriate' %}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="bi bi-hash"></i> {% trans 'Keywords' %}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans 'Keywords help search engines understand what your content is about:' %}</p>
+                        <ul>
+                            <li>{% trans 'Use 3-5 relevant keywords separated by commas' %}</li>
+                            <li>{% trans 'Focus on terms your audience might search for' %}</li>
+                            <li>{% trans 'Include both specific and general terms related to your content' %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Got it!' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add file name display for thumbnail upload
+    document.getElementById('id_thumbnail').addEventListener('change', function(e) {
+        const fileName = e.target.files[0]?.name || '';
+        const fileLabel = document.querySelector('label[for="id_thumbnail"]');
+        if (fileName) {
+            fileLabel.innerHTML = `<i class="bi bi-image"></i> ${fileName}`;
+        } else {
+            fileLabel.innerHTML = `<i class="bi bi-image"></i> {% trans 'Thumbnail' %}`;
+        }
+    });
+    
+    // Make summary field larger
+    document.addEventListener('DOMContentLoaded', function() {
+        const summaryField = document.getElementById('id_summary');
+        if (summaryField) {
+            summaryField.rows = 6;
+        }
+    });
+</script>
+
+{% endblock content %}

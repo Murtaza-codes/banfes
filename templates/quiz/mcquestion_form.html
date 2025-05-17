@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light p-2 rounded shadow-sm">
+        <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door"></i> {% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection"></i> {% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-book"></i> {{ course }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'quiz_index' course.slug %}" class="text-decoration-none"><i class="bi bi-question-square"></i> {% trans 'Quizzes' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-plus-circle"></i> {% trans 'MC Question Form' %}</li>
+    </ol>
+</nav>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body bg-light">
+        <h4 class="card-title d-flex align-items-center mb-0">
+            <i class="bi bi-patch-question text-primary me-2"></i>
+            {% trans 'Add questions' %} [{{ quiz_obj|truncatechars:15 }}]
+        </h4>
+    </div>
+</div>
+
+{% if formset.non_form_errors %}
+<div class="alert alert-danger d-flex align-items-center">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <div>
+        <ul class="mb-0">
+        {% for e in formset.non_form_errors %}
+        <li>{{ e }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+<div class="container px-0">
+    <div class="alert alert-info d-flex align-items-center">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <span>{{ quiz_questions_count }} {% trans 'question added' %}</span>
+    </div>
+
+    <form action="#" method="POST">{% csrf_token %}
+        {% if form.errors %}
+        <div class="alert alert-danger d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <p class="mb-0">{% trans 'Correct the error(s) below.' %}</p>
+        </div>
+        {% endif %}
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0 d-flex align-items-center">
+                            <i class="bi bi-file-text text-primary me-2"></i>
+                            {% trans 'Question Details' %}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2" hidden>
+                            {{ form.quiz }}
+                        </div>
+                        {{ form.content|as_crispy_field }}
+                        {{ form.figure|as_crispy_field }}
+                        {{ form.explanation|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0 d-flex align-items-center">
+                            <i class="bi bi-list-check text-primary me-2"></i>
+                            {% trans 'Answer Choices' %}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form.choice_order|as_crispy_field }}
+                        <div class="border p-3 rounded bg-light">
+                            <label class="form-label fw-bold d-flex align-items-center">
+                                <i class="bi bi-check-circle me-2"></i>{% trans 'Choices' %}
+                            </label>
+                            {{ formset.management_form }}
+                            {% for fs in formset %}
+                            <div class="mb-3">
+                                <label for="username" class="form-label">{{ fs.label }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-text bg-light">
+                                        {{ fs.correct }} <small class="ms-1">{% trans 'Correct' %}</small>
+                                    </div>
+                                    {{ fs.choice_text }}
+                                    <div class="input-group-text bg-light">
+                                        {{ fs.DELETE }} <small class="ms-1">{% trans 'Delete' %}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-center gap-2 mt-3">
+            <button type="submit" formnovalidate name="another" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle me-2"></i>{% trans 'Save and add another' %}
+            </button>
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-save me-2"></i>{% trans 'Save' %}
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

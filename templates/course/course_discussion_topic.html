@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ topic.title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+            <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}" class="text-decoration-none"><i class="bi bi-journal me-1"></i>{% trans 'My courses' %}</a></li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item"><a href="{% url 'course_detail' slug=course.slug %}" class="text-decoration-none">{{ course.title }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'course_discussion' slug=course.slug %}" class="text-decoration-none">{% trans 'Discussions' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ topic.title }}</li>
+    </ol>
+</nav>
+
+{% include 'course/course_navigation.html' %}
+
+<div class="row">
+    <!-- Topic Details -->
+    <div class="col-lg-9">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 py-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="badge bg-{% if topic.topic_type == 'question' %}primary{% elif topic.topic_type == 'announcement' %}danger{% elif topic.topic_type == 'resource' %}info{% else %}success{% endif %} rounded-pill me-2">
+                            {% if topic.topic_type == 'question' %}{% trans 'Question' %}
+                            {% elif topic.topic_type == 'announcement' %}{% trans 'Announcement' %}
+                            {% elif topic.topic_type == 'resource' %}{% trans 'Resource' %}
+                            {% else %}{% trans 'General' %}{% endif %}
+                        </span>
+                        <h2 class="mt-2">{{ topic.title }}</h2>
+                        <div class="text-muted mt-2">
+                            <small>
+                                <i class="bi bi-person me-1"></i> {{ topic.created_by.get_full_name }}
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-calendar me-1"></i> {{ topic.created_at|date:"M d, Y" }}
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-eye me-1"></i> {{ topic.views }} {% trans 'views' %}
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-chat-left me-1"></i> {{ responses|length }} {% trans 'responses' %}
+                            </small>
+                        </div>
+                    </div>
+                    <a href="{% url 'course_discussion' course.slug %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> {% trans 'Back to discussions' %}
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="topic-content mb-4">
+                    {{ topic.content|linebreaks }}
+                </div>
+                <hr>
+                
+                <!-- Responses -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">{{ responses|length }} {% trans 'Responses' %}</h4>
+                    <a href="#new-response" class="btn btn-primary btn-sm">
+                        <i class="bi bi-reply-fill me-1"></i> {% trans 'Reply to Topic' %}
+                    </a>
+                </div>
+                
+                {% for response in responses %}
+                {% if not response.parent %}
+                <div class="response-item bg-light rounded p-3 mb-3" id="response-{{ response.id }}">
+                    <div class="d-flex align-items-start mb-3">
+                        <img src="{{ response.created_by.get_picture }}" class="rounded-circle me-3" width="40" height="40" style="object-fit: cover;">
+                        <div>
+                            <h6 class="mb-1">{{ response.created_by.get_full_name }}</h6>
+                            <div class="text-muted small">{{ response.created_at|date:"M d, Y H:i" }}</div>
+                        </div>
+                        {% if response.is_solution %}
+                        <span class="badge bg-success ms-auto">
+                            <i class="bi bi-check-circle me-1"></i> {% trans 'Solution' %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="response-content mb-2">
+                        {{ response.content|linebreaks }}
+                    </div>
+                    <div class="mt-3 d-flex justify-content-end">
+                        <button class="btn btn-sm btn-outline-primary reply-to-response" data-response-id="{{ response.id }}">
+                            <i class="bi bi-reply me-1"></i> {% trans 'Reply' %}
+                        </button>
+                    </div>
+                    
+                    <!-- Nested Replies -->
+                    {% for reply in response.replies.all %}
+                    <div class="ms-5 mt-3 p-3 bg-white rounded response-item" id="response-{{ reply.id }}">
+                        <div class="d-flex align-items-start mb-2">
+                            <img src="{{ reply.created_by.get_picture }}" class="rounded-circle me-3" width="32" height="32" style="object-fit: cover;">
+                            <div>
+                                <h6 class="mb-1">{{ reply.created_by.get_full_name }}</h6>
+                                <div class="text-muted small">{{ reply.created_at|date:"M d, Y H:i" }}</div>
+                            </div>
+                        </div>
+                        <div class="response-content">
+                            {{ reply.content|linebreaks }}
+                        </div>
+                        <div class="mt-2 d-flex justify-content-end">
+                            <button class="btn btn-sm btn-outline-primary reply-to-response" data-response-id="{{ response.id }}">
+                                <i class="bi bi-reply me-1"></i> {% trans 'Reply' %}
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% empty %}
+                <div class="text-center text-muted my-5">
+                    <i class="bi bi-chat-square-text fs-1 mb-3 d-block"></i>
+                    <p>{% trans 'No responses yet. Be the first to respond!' %}</p>
+                </div>
+                {% endfor %}
+                
+                <!-- New Response Form -->
+                <div class="new-response mt-5" id="new-response">
+                    <div class="card border-primary border-start border-start-4 mb-4">
+                        <div class="card-body">
+                            <h4 class="mb-3">{% trans 'Add Your Response' %}</h4>
+                            <form method="POST" action="{% url 'course_discussion_topic' course.slug topic.slug %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <textarea class="form-control" id="responseContent" name="content" rows="5" required></textarea>
+                                </div>
+                                <input type="hidden" name="parent_id" id="parent_id" value="">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div id="reply-info" class="text-primary" style="display: none;">
+                                        <i class="bi bi-reply-fill me-1"></i> {% trans 'Replying to a comment' %}
+                                        <a href="#" id="cancel-reply" class="ms-2 text-decoration-none">
+                                            <i class="bi bi-x"></i> {% trans 'Cancel' %}
+                                        </a>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send me-2"></i>{% trans 'Post Response' %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-lg-3">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2 text-primary"></i>{% trans 'About This Course' %}</h5>
+            </div>
+            <div class="card-body">
+                <h6>{{ course.title }}</h6>
+                <p class="text-muted small">{{ course.summary }}</p>
+                <hr>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-book text-primary me-2"></i>
+                    <span>{% trans 'Code:' %} {{ course.code }}</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-star text-primary me-2"></i>
+                    <span>{% trans 'Credit:' %} {{ course.credit }}</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-calendar-check text-primary me-2"></i>
+                    <span>{% trans 'Level:' %} {{ course.level }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-eye me-2 text-primary"></i>{% trans 'Topic Stats' %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-light rounded-circle p-3 me-3">
+                        <i class="bi bi-eye fs-4 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="small text-muted">{% trans 'Views' %}</div>
+                        <h4 class="mb-0">{{ topic.views }}</h4>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-light rounded-circle p-3 me-3">
+                        <i class="bi bi-chat-left fs-4 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="small text-muted">{% trans 'Responses' %}</div>
+                        <h4 class="mb-0">{{ responses|length }}</h4>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-light rounded-circle p-3 me-3">
+                        <i class="bi bi-calendar fs-4 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="small text-muted">{% trans 'Created' %}</div>
+                        <h6 class="mb-0">{{ topic.created_at|date:"M d, Y" }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-chat-square-text me-2 text-primary"></i>{% trans 'Discussion Guidelines' %}</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0 ps-3">
+                    <li class="mb-2">{% trans 'Be respectful and courteous' %}</li>
+                    <li class="mb-2">{% trans 'Stay on topic and relevant' %}</li>
+                    <li class="mb-2">{% trans 'Provide context for your questions' %}</li>
+                    <li class="mb-2">{% trans 'Use proper formatting for code' %}</li>
+                    <li>{% trans 'Mark solutions when your question is answered' %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% include 'course/course_components.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Reply to response buttons
+    const replyButtons = document.querySelectorAll('.reply-to-response');
+    const responseForm = document.getElementById('responseContent');
+    const parentIdField = document.getElementById('parent_id');
+    const replyInfo = document.getElementById('reply-info');
+    const cancelReply = document.getElementById('cancel-reply');
+    
+    // Setup reply buttons
+    replyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const responseId = this.getAttribute('data-response-id');
+            parentIdField.value = responseId;
+            replyInfo.style.display = 'block';
+            responseForm.focus();
+            
+            // Scroll to form
+            document.getElementById('new-response').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+    
+    // Cancel reply
+    if (cancelReply) {
+        cancelReply.addEventListener('click', function(e) {
+            e.preventDefault();
+            parentIdField.value = '';
+            replyInfo.style.display = 'none';
+        });
+    }
+});
+</script>
+
+{% endblock content %} 

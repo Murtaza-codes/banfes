@@ -1,0 +1,385 @@
+{% load course_filters %}
+{% load i18n %}
+
+<div class="topic-card mb-4" id="topic-{{ topic.id }}">
+  <div class="card shadow-sm border-0 rounded-3">
+    <div
+      class="card-header bg-white d-flex justify-content-between align-items-center py-3 px-4"
+      role="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#topic-content-{{ topic.id }}"
+    >
+      <div class="d-flex align-items-center">
+        <span class="topic-icon bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+          <i class="bi bi-chevron-down toggle-icon transition-transform"></i>
+        </span>
+        <div>
+          <h4 class="mb-0 fw-bold">{{ topic.title }}</h4>
+          {% if not topic.is_visible %}
+          <span class="badge bg-secondary rounded-pill ms-2">{% trans 'Hidden' %}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if request.user.is_lecturer or request.user.is_superuser %}
+      <div class="topic-actions">
+        <div class="dropdown">
+          <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="z-index: 1050;">
+            <li>
+              <h6 class="dropdown-header">{% trans 'Add Content' %}</h6>
+            </li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'upload_file_view' course.slug %}?topic={{ topic.id }}">
+              <li>
+                <i class="bi bi-file-earmark-arrow-up me-2"></i>{% trans 'Add File' %}
+              </li>
+              </a>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'upload_video' course.slug %}?topic={{ topic.id }}">
+            <li>
+                <i class="bi bi-camera-video me-2"></i>{% trans 'Add Video' %}
+            </li>
+              </a>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'assignment_create' course.slug %}?topic={{ topic.id }}">
+            <li>
+                <i class="bi bi-list-task me-2"></i>{% trans 'Add Assignment' %}
+            </li>
+              </a>
+            <li><hr class="dropdown-divider" /></li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'topic_edit' course.slug topic.id %}">
+            <li>
+                <i class="bi bi-pencil me-2"></i>{% trans 'Edit Topic' %}
+            </li>
+              </a>
+              <form action="{% url 'topic_delete' course.slug topic.id %}" method="post" class="delete-topic-form" data-topic-title="{{ topic.title }}">
+                {% csrf_token %}
+            <li>
+                <button type="submit" class="dropdown-item text-danger d-flex align-items-center">
+                  <i class="bi bi-trash me-2"></i>{% trans 'Delete Topic' %}
+                </button>
+            </li>
+              </form>
+          </ul>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div id="topic-content-{{ topic.id }}" class="collapse show">
+      <div class="card-body px-4 py-3">
+        {% if topic.description %}
+        <p class="mb-4 text-secondary">{{ topic.description }}</p>
+        {% endif %}
+
+        <div class="topic-content">
+          {% if topic.files.exists %}
+          <div class="mb-4">
+            <h5 class="mb-3 d-flex align-items-center">
+              <span class="bg-primary bg-opacity-10 text-primary rounded p-2 me-2">
+                <i class="bi bi-file-earmark-text"></i>
+              </span>
+              {% trans 'Files' %}
+            </h5>
+            <div class="list-group list-group-flush">
+              {% for file in topic.files.all %}
+              <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <a
+                    href="{{ file.file.url }}"
+                    class="text-decoration-none text-body d-flex align-items-center"
+                    target="_blank"
+                  >
+                    <i class="bi bi-file-earmark me-2 text-primary"></i>
+                    <span>{{ file.title }}</span>
+                  </a>
+                  {% if request.user.is_lecturer or request.user.is_superuser %}
+                  <div class="btn-group">
+                    <a
+                      href="{% url 'upload_file_edit' course.slug file.id %}"
+                      class="btn btn-sm btn-light rounded-circle me-1"
+                      title="{% trans 'Edit file' %}"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <a
+                      href="{% url 'upload_file_delete' course.slug file.id %}"
+                      class="btn btn-sm btn-light rounded-circle text-danger"
+                      title="{% trans 'Delete file' %}"
+                      data-file-title="{{ file.title }}"
+                      onclick="return confirm('{% trans 'Delete file' %} {{ file.title }}?');"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %} 
+          
+          {% if topic.videos.exists %}
+          <div class="mb-4">
+            <h5 class="mb-3 d-flex align-items-center">
+              <span class="bg-danger bg-opacity-10 text-danger rounded p-2 me-2">
+                <i class="bi bi-play-btn"></i>
+              </span>
+              {% trans 'Videos' %}
+            </h5>
+            <div class="list-group list-group-flush">
+              {% for video in topic.videos.all %}
+              <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <a
+                    href="{% url 'video_single' course.slug video.slug %}"
+                    class="text-decoration-none text-body d-flex align-items-center"
+                  >
+                    <i class="bi bi-play-circle-fill me-2 text-danger"></i>
+                    <span>{{ video.title }}</span>
+                  </a>
+                  {% if request.user.is_lecturer or request.user.is_superuser %}
+                  <div class="btn-group">
+                    <a
+                      href="{% url 'upload_video_edit' course.slug video.slug %}"
+                      class="btn btn-sm btn-light rounded-circle me-1"
+                      title="{% trans 'Edit video' %}"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <a
+                      href="{% url 'upload_video_delete' course.slug video.slug %}"
+                      class="btn btn-sm btn-light rounded-circle text-danger"
+                      title="{% trans 'Delete video' %}"
+                      data-video-title="{{ video.title }}"
+                      onclick="return confirm('{% trans 'Delete video' %} {{ video.title }}?');"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if topic.assignments.exists %}
+          <div class="mb-4">
+            <h5 class="mb-3 d-flex align-items-center">
+              <span class="bg-success bg-opacity-10 text-success rounded p-2 me-2">
+                <i class="bi bi-check2-square"></i>
+              </span>
+              {% trans 'Assignments' %}
+            </h5>
+            <div class="list-group list-group-flush">
+              {% for assignment in topic.assignments.all %}
+              <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                
+                {% now "U" as now_timestamp %}
+                {% if assignment.deadline|date:"U" >= now_timestamp %}
+                  <a
+                  href="{% url 'assignment_submission' slug=course.slug assignment_id=assignment.id %}"
+                  class="text-decoration-none text-body d-flex align-items-center"
+                  >
+                  <i class="bi bi-clipboard-check me-2 text-success"></i>
+                  <span>{{ assignment.title }}</span>
+                  </a>
+                {% else %}
+                  <div class="text-body d-flex align-items-center">
+                  <i class="bi bi-clipboard-x me-2 text-muted"></i>
+                  <span>{{ assignment.title }}</span>
+                  </div>
+                  <span class="badge bg-danger rounded-pill">{% trans 'Closed' %}</span>
+                {% endif %}
+
+                {% if assignment|submission_limit:request.user %}
+                  <span class="badge bg-secondary rounded-pill">{% trans 'Submission Limit Reached' %}</span>
+                {% endif %}
+
+                {% if assignment|has_submission:request.user %}
+                  <a
+                      href="{% url 'assignment_result' slug=course.slug assignment_id=assignment.id %}"
+                      class="btn btn-sm btn-light rounded-circle text-primary"
+                      title="{% trans 'View Submissions' %}"
+                    >
+                      <i class="bi bi-eye-fill"></i>
+                    </a>
+                {% endif %}
+
+                  {% if request.user.is_lecturer or request.user.is_superuser %}
+                  <div class="btn-group">
+                    <a
+                      href="{% url 'assignment_update' slug=course.slug pk=assignment.id %}"
+                      class="btn btn-sm btn-light rounded-circle me-1"
+                      title="{% trans 'Edit Assignment' %}"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <a
+                      href="{% url 'assignment_submissions' slug=course.slug assignment_id=assignment.id %}"
+                      class="btn btn-sm btn-light rounded-circle text-primary"
+                      title="{% trans 'View Submissions' %}"
+                    >
+                      <i class="bi bi-eye-fill"></i>
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteTopicModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">{% trans 'Confirm Delete' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <div class="mb-4">
+          <span class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle d-inline-block">
+            <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+          </span>
+        </div>
+        <h5 class="mb-3">{% trans 'Delete Topic?' %}</h5>
+        <p class="mb-2" id="deleteTopicName"></p>
+        <p class="text-muted small">{% trans 'This action cannot be undone.' %}</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+        <button type="button" class="btn btn-danger px-4" id="confirmDeleteBtn">{% trans 'Delete' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const deleteModal = document.getElementById('deleteTopicModal');
+  const deleteTopicName = document.getElementById('deleteTopicName');
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  let activeForm = null;
+
+  // Handle collapse toggle icon rotation
+  document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(item => {
+    item.addEventListener('click', event => {
+      const icon = item.querySelector('.toggle-icon');
+      const isCollapsed = item.classList.contains('collapsed') || 
+                         !item.getAttribute('aria-expanded') || 
+                         item.getAttribute('aria-expanded') === 'false';
+      
+      if (isCollapsed) {
+        icon.style.transform = 'rotate(-90deg)';
+      } else {
+        icon.style.transform = 'rotate(0deg)';
+      }
+    });
+  });
+
+  // Handle delete button clicks
+  document.querySelectorAll('.delete-topic-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      activeForm = this;
+      const topicTitle = this.dataset.topicTitle;
+      deleteTopicName.textContent = `"${topicTitle}"`;
+      
+      const modal = new bootstrap.Modal(deleteModal);
+      modal.show();
+    });
+  });
+
+  // Handle confirmation
+  confirmDeleteBtn.addEventListener('click', function() {
+    if (activeForm) {
+      confirmDeleteBtn.disabled = true;
+      confirmDeleteBtn.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        {% trans 'Deleting' %}...
+      `;
+      activeForm.submit();
+    }
+  });
+
+  // Reset modal on close
+  deleteModal.addEventListener('hidden.bs.modal', function() {
+    confirmDeleteBtn.disabled = false;
+    confirmDeleteBtn.innerHTML = '{% trans "Delete" %}';
+    activeForm = null;
+    // close the overlay
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) backdrop.remove();
+  });
+});
+</script>
+
+<style>
+  .transition-transform {
+    transition: transform 0.3s ease;
+  }
+
+  .topic-card {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .topic-card:hover {
+    z-index: 2;
+  }
+  
+  .topic-actions {
+    position: relative;
+    z-index: 3;
+  }
+
+  .dropdown-menu {
+    min-width: 200px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    border: none;
+    margin-top: 0.5rem;
+    animation: dropdownFade 0.2s ease;
+    z-index: 1060 !important;
+    position: absolute !important;
+  }
+
+  @keyframes dropdownFade {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .list-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.01) !important;
+  }
+
+  .btn-light {
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+  }
+
+  .btn-light:hover {
+    background-color: #e9ecef;
+    border-color: #e9ecef;
+  }
+</style>
+
+
+
+

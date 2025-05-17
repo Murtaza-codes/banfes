@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs:program_list' %}">{% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs:course_detail' course.slug %}">{{ course }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Video upload' %}</li>
+    </ol>
+</nav>
+    
+<p class="title-1">{% trans 'Video upload for' %} {{ course|truncatechars:25 }}</p>
+<div class="title-line"></div><br>
+
+
+<div class="row">
+<div class="col-md-8 mx-auto">
+    <div class="card">
+    <p class="form-title">{% trans 'Video Upload Form' %}</p>
+        <div class="card-body">
+            <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {{ form.errors }}
+            <div class="mb-4">
+                <div class="btn-group" role="group">
+                    <input type="radio" class="btn-check" name="uploadType" id="uploadTypeFile" value="file" checked autocomplete="off">
+                    <label class="btn btn-outline-primary" for="uploadTypeFile">{% trans 'Upload Video File' %}</label>
+
+                    <input type="radio" class="btn-check" name="uploadType" id="uploadTypeUrl" value="url" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="uploadTypeUrl">{% trans 'Enter Video URL' %}</label>
+                </div>
+            </div>
+        
+        <!-- Title Field -->
+        <div class="mb-4 mt-4">
+        {{ form.title.label_tag }}
+        {{ form.title }}
+        {{ form.title.errors }}
+        </div>
+
+        <!-- Description Field -->
+        <div class="mb-4">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        {{ form.description.errors }}
+        </div>
+
+        <!-- Video File Input Field -->
+        <div id="fileInputField" class="mb-4">
+            {{ form.video.label_tag }}
+            {{ form.video }}
+            {{ form.video.errors }}
+        </div>
+
+        <!-- Video URL Input Field -->
+        <div id="urlInputField" class="mb-4" style="display: none;">
+            {{ form.video_url.label_tag }}
+            {{ form.video_url }}
+            {{ form.video_url.errors }}
+        </div>
+            
+            <div class="form-group mt-4">
+                <button class="btn btn-primary" type="submit">{% trans 'Upload' %}</button>
+                <a class="btn btn-danger" href="{% url 'programs:course_detail' course.slug %}" style="float: right;">{% trans 'Cancel' %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // check if the video url is set dont show video upload input field else show it but if video input field is set dont show video url input field
+        const uploadTypeInputs = document.querySelectorAll('input[name="uploadType"]');
+        const fileInputField = document.getElementById('fileInputField');
+        const urlInputField = document.getElementById('urlInputField');
+
+        uploadTypeInputs.forEach((elem) => {
+            elem.addEventListener("change", function(event) {
+                if (event.target.value === "file") {
+                    fileInputField.style.display = "block";
+                    urlInputField.style.display = "none";
+                } else {
+                    fileInputField.style.display = "none";
+                    urlInputField.style.display = "block";
+                }
+            });
+        });
+    })    
+
+
+</script>
+
+
+
+{% endblock content %}

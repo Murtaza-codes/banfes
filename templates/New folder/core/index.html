@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Education Portal - Home' %}{% endblock %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold text-white mb-4">{% trans 'Transforming Education with Technology' %}</h1>
+                <p class="lead text-white-50 mb-4">{% trans 'Our education platform integrates blockchain and AI technologies to create a personalized, secure, and innovative learning environment.' %}</p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if is_authenticated %}
+                        {% if is_admin %}
+                            <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4 shadow-sm">{% trans 'Admin Dashboard' %}</a>
+                            <a href="{% url 'admin_panel' %}" class="btn btn-outline-light btn-lg px-4">{% trans 'Admin Panel' %}</a>
+                        {% elif is_lecturer %}
+                            <a href="{% url 'profile' %}" class="btn btn-light btn-lg px-4 shadow-sm">{% trans 'My Profile' %}</a>
+                            <a href="{% url 'semester_list' %}" class="btn btn-outline-light btn-lg px-4">{% trans 'Semesters' %}</a>
+                        {% elif is_student %}
+                            <a href="{% url 'profile' %}" class="btn btn-light btn-lg px-4 shadow-sm">{% trans 'My Profile' %}</a>
+                            <a href="{% url 'materials' %}" class="btn btn-outline-light btn-lg px-4">{% trans 'Learning Materials' %}</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'about' %}" class="btn btn-light btn-lg px-4 shadow-sm">{% trans 'Learn More' %}</a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-4">{% trans 'Contact Us' %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'main image perviwe.jpg' %}" alt="Education Portal Preview" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- User Dashboard Cards (Only for logged-in users) -->
+{% if is_authenticated %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-4">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-3">{% trans 'Quick Actions' %}</h2>
+                <p class="lead text-muted">{% trans 'Access your personalized educational resources' %}</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Common Quick Actions for All Users -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-person-circle fs-4"></i>
+                        </div>
+                        <h4>{% trans 'My Profile' %}</h4>
+                        <p class="text-muted">{% trans 'View and update your personal information and preferences.' %}</p>
+                        <a href="{% url 'profile' %}" class="btn btn-primary">{% trans 'View Profile' %}</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin-specific Actions -->
+            {% if is_admin %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-speedometer2 fs-4"></i>
+                        </div>
+                        <h4>{% trans 'Dashboard' %}</h4>
+                        <p class="text-muted">{% trans 'Access system statistics and administrative controls.' %}</p>
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary">{% trans 'Go to Dashboard' %}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-people fs-4"></i>
+                        </div>
+                        <h4>{% trans 'Users' %}</h4>
+                        <p class="text-muted">{% trans 'Manage students, lecturers, and system users.' %}</p>
+                        <a href="{% url 'student_list' %}" class="btn btn-primary">{% trans 'Manage Students' %}</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Lecturer-specific Actions -->
+            {% if is_lecturer %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-book fs-4"></i>
+                        </div>
+                        <h4>{% trans 'Courses' %}</h4>
+                        <p class="text-muted">{% trans 'Manage your courses, materials, and student assessments.' %}</p>
+                        <a href="{% url 'session_list' %}" class="btn btn-primary">{% trans 'View Sessions' %}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-calendar-check fs-4"></i>
+                        </div>
+                        <h4>{% trans 'Semesters' %}</h4>
+                        <p class="text-muted">{% trans 'View and manage academic semesters and sessions.' %}</p>
+                        <a href="{% url 'semester_list' %}" class="btn btn-primary">{% trans 'View Semesters' %}</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Student-specific Actions -->
+            {% if is_student %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-journal-text fs-4"></i>
+                        </div>
+                        <h4>{% trans 'My Courses' %}</h4>
+                        <p class="text-muted">{% trans 'Access your enrolled courses and educational materials.' %}</p>
+                        <a href="{% url 'profile' %}" class="btn btn-primary">{% trans 'View Courses' %}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-file-earmark-text fs-4"></i>
+                        </div>
+                        <h4>{% trans 'Materials' %}</h4>
+                        <p class="text-muted">{% trans 'Access educational resources and learning materials.' %}</p>
+                        <a href="{% url 'materials' %}" class="btn btn-primary">{% trans 'View Materials' %}</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Admin section moved to dashboard.html -->
+    </div>
+</section>
+{% endif %}
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-3">{% trans 'Our BANFES Approach' %}</h2>
+                <p class="lead text-muted">{% trans 'Blockchain and Artificial Intelligence Non-Formal Education System' %}</p>
+    </div>
+</div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-shield-lock fs-4"></i>
+                        </div>
+                        <h4>{% trans 'Blockchain Security' %}</h4>
+                        <p class="text-muted">{% trans 'Our platform uses blockchain technology to ensure the security and integrity of educational records and certificates.' %}</p>
+                    </div>
+                </div>
+                </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-robot fs-4"></i>
+                        </div>
+                        <h4>{% trans 'AI-Powered Learning' %}</h4>
+                        <p class="text-muted">{% trans 'Artificial intelligence customizes the learning experience by adapting to each student\'s unique needs and learning style.' %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto">
+                            <i class="bi bi-globe fs-4"></i>
+                        </div>
+                        <h4>{% trans 'Open Access' %}</h4>
+                        <p class="text-muted">{% trans 'We believe in making education accessible to all, with transparent pricing and open-access resources.' %}</p>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <h5><i class="bi bi-info-circle-fill me-2"></i>{% trans 'Open Access Policy' %}</h5>
+                    <p class="mb-0">{% trans 'Based on open access principles, all educational materials created on our platform are made immediately available under an open access license. No special permission is required to reuse content, provided the original source is properly cited.' %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News Section -->
+<section id="qualifications" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-3">{% trans 'Latest News & Events' %}</h2>
+                <p class="lead text-muted">{% trans 'Stay updated with our latest announcements and educational events' %}</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for item in items %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="card-title">{{ item.title }}</h4>
+                        <p class="card-text">{{ item.description|truncatewords:25 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted">{{ item.updated_date|date:"M d, Y" }}</small>
+                            <a href="#" class="btn btn-sm btn-outline-primary">{% trans 'Read More' %}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>{% trans 'No news or events available at the moment.' %}
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">{% trans 'Ready to Transform Your Learning Experience?' %}</h2>
+        <p class="lead mb-4">{% trans 'Join our innovative education platform today and experience the power of blockchain and AI in education.' %}</p>
+        <div class="d-flex justify-content-center gap-3">
+            {% if is_authenticated %}
+                {% if is_admin %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4">{% trans 'Go to Dashboard' %}</a>
+                    <a href="{% url 'admin_panel' %}" class="btn btn-outline-light btn-lg px-4">{% trans 'Admin Panel' %}</a>
+                {% elif is_lecturer %}
+                    <a href="{% url 'session_list' %}" class="btn btn-light btn-lg px-4">{% trans 'View Sessions' %}</a>
+                {% elif is_student %}
+                    <a href="{% url 'materials' %}" class="btn btn-light btn-lg px-4">{% trans 'Access Materials' %}</a>
+                {% endif %}
+    {% else %}
+                <a href="{% url 'about' %}" class="btn btn-light btn-lg px-4">{% trans 'Learn More' %}</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">{% trans 'Sign In' %}</a>
+    {% endif %}
+        </div>
+</div>
+</section>
+
+<style>
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        padding: 80px 0;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,609 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %} {% trans 'Admin Dashboard' %} | {% trans 'Learning management system' %} {% endblock title %}
+{% load static %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans 'Admin Dashboard' %}</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+	<h1 class="title-1">{% trans 'Admin Dashboard' %}</h1>
+	<div class="dropdown">
+		<button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
+			aria-expanded="false">
+			<i class="fas fa-cog"></i>
+		</button>
+		<div class="dropdown-menu">
+			<h6 class="dropdown-header">{% trans 'Dashboard settings' %}</h6>
+			<button class="dropdown-item active" type="button">{% trans 'Display grid' %}</button>
+			<button class="dropdown-item" type="button">{% trans 'Display table' %}</button>
+			<hr>
+			<button class="dropdown-item" type="button">{% trans 'Manage dashboard' %}</button>
+		</div>
+	</div>
+</div>
+
+<!-- Statistics Section with Enhanced Icons -->
+<div class="row users-count px-3 mb-4">
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-mortarboard-fill bg-light-aqua"></i></h3>
+			<div class="text-right">
+				{% trans 'Students' %}
+				<h2>{{ student_count }}</h2>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-person-workspace bg-sky-blue"></i></h3>
+			<div class="text-right">
+				{% trans 'Lecturers' %}
+				<h2>{{ lecturer_count }}</h2>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-shield-lock-fill bg-goldenrod"></i></h3>
+			<div class="text-right">
+				{% trans 'Administrators' %}
+				<h2>{{ superuser_count }}</h2>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-laptop bg-emerald-green"></i></h3>
+			<div class="text-right">
+				{% trans 'Lab Assistance' %}
+				<h2>0</h2>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-book-half bg-goldenrod"></i></h3>
+			<div class="text-right">
+				{% trans 'Librarians' %}
+				<h2>0</h2>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-person-check-fill bg-emerald-green"></i></h3>
+			<div class="text-right">
+				{% trans 'Supervisors' %}
+				<h2>0</h2>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-briefcase-fill bg-light-aqua"></i></h3>
+			<div class="text-right pl-2">
+				{% trans 'Office Assistance' %}
+				<h2>0</h2>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-3 px-2">
+		<div class="card-count p-3 shadow border-0">
+			<h3><i class="bi bi-people-fill bg-sky-blue"></i></h3>
+			<div class="text-right">
+				{% trans 'Others' %}
+				<h2>0</h2>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Admin Features Section (Integrated from admin_panel.html) -->
+<h2 class="mb-4">{% trans 'Administration Panel' %}</h2>
+<div class="row g-4 mb-4">
+    <!-- Manage Lecturers -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-person-workspace fs-3"></i>
+                </div>
+                <h4>{% trans 'Manage Lecturers' %}</h4>
+                <p class="text-muted">{% trans 'CRUD (Create, Retrieve, Update & Delete) lecturers' %}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'lecturer_list' %}" class="btn btn-primary">
+                        <i class="bi bi-person-plus me-2"></i>{% trans 'Manage Lecturers' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Students -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-success bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-mortarboard-fill fs-3"></i>
+                </div>
+                <h4>{% trans 'Manage Students' %}</h4>
+                <p class="text-muted">{% trans 'CRUD (Create, Retrieve, Update & Delete) students' %}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'student_list' %}" class="btn btn-success">
+                        <i class="bi bi-person-plus me-2"></i>{% trans 'Manage Students' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Sessions -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-info bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-calendar3-week fs-3"></i>
+                </div>
+                <h4>{% trans 'Manage Sessions' %}</h4>
+                <p class="text-muted">{% trans 'CRUD (Create, Retrieve, Update & Delete) sessions' %}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'session_list' %}" class="btn btn-info">
+                        <i class="bi bi-calendar-plus me-2"></i>{% trans 'Manage Sessions' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Semesters -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-warning bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-calendar-range fs-3"></i>
+                </div>
+                <h4>{% trans 'Manage Semesters' %}</h4>
+                <p class="text-muted">{% trans 'CRUD (Create, Retrieve, Update & Delete) semesters' %}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'semester_list' %}" class="btn btn-warning">
+                        <i class="bi bi-calendar-plus me-2"></i>{% trans 'Manage Semesters' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Add & Drop -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-danger bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-toggle-on fs-3"></i>
+                </div>
+                <h4>{% trans 'Course Add & Drop' %}</h4>
+                <p class="text-muted">{% trans 'Enable or disable course registration' %}</p>
+                <div class="d-grid gap-2">
+                    <div class="form-check form-switch d-flex justify-content-center">
+                        <input class="form-check-input me-2" type="checkbox" id="courseAddDropSwitch" checked>
+                        <label class="form-check-label" for="courseAddDropSwitch">
+                            <span class="text-success">{% trans 'ON' %}</span> / <span class="text-danger">{% trans 'OFF' %}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Programs & Courses -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-journal-bookmark fs-3"></i>
+                </div>
+                <h4>{% trans 'Programs & Courses' %}</h4>
+                <p class="text-muted">{% trans 'CRUD (Create, Retrieve, Update & Delete) programs' %}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'programs' %}" class="btn btn-primary">
+                        <i class="bi bi-journal-plus me-2"></i>{% trans 'Manage Programs' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Course Allocations -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-success bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-diagram-3 fs-3"></i>
+                </div>
+                <h4>{% trans 'Course Allocations' %}</h4>
+                <p class="text-muted">{% trans 'CRUD (Create, Retrieve, Update & Delete) course allocations' %}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'course_allocation_view' %}" class="btn btn-success">
+                        <i class="bi bi-link me-2"></i>{% trans 'Manage Allocations' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage News & Events -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-info bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                    <i class="bi bi-newspaper fs-3"></i>
+                </div>
+                <h4>{% trans 'News & Events' %}</h4>
+                <p class="text-muted">{% trans 'CRUD (Create, Retrieve, Update & Delete) News & Events' %}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'add_item' %}" class="btn btn-info">
+                        <i class="bi bi-megaphone me-2"></i>{% trans 'Manage News' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row px-2">
+	<div class="col-md-6 p-2">
+		<div class="chart-wrap shadow border-0 rounded">
+			<i class="fas fa-expand-alt"></i>
+			<canvas id="traffic"></canvas>
+		</div>
+	</div>
+	<div class="col-md-6 p-2">
+		<div class="chart-wrap shadow border-0 rounded">
+			<i class="fas fa-expand-alt"></i>
+			<canvas id="enrollement"></canvas>
+		</div>
+	</div>
+	<div class="col-md-6 p-2">
+		<div class="chart-wrap shadow border-0 rounded">
+			<i class="fas fa-expand-alt"></i>
+			<canvas id="students_grade"></canvas>
+		</div>
+	</div>
+	<div class="col-md-6 p-2">
+		<div class="card w-100 h-100 p-3 shadow border-0">
+			<h5>{% trans 'Latest activities' %}</h5>
+			<ul class="ps-2 small">
+				{% for log in logs %}
+				<li>{{ log.message }} <span class="text-muted">- {{ log.created_at }}</span></li>
+				{% empty %}
+				<li>{% trans 'No recent activity' %}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+<br>
+<div class="bg-white p-3 shadow border-0 rounded">
+	<h5 class="border-bottom pb-2">{% trans 'School Demographics' %}</h5>
+	<div class="row">
+		<div class="col-md-4">
+			<i class="fas fa-expand-alt"></i>
+			<canvas id="gender"></canvas>
+		</div>
+		<div class="col-md-4">
+			<i class="fas fa-expand-alt"></i>
+			<canvas id="ethnicity"></canvas>
+		</div>
+		<div class="col-md-4">
+			<i class="fas fa-expand-alt"></i>
+			<canvas id="language"></canvas>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+
+<script src="{% url 'javascript-catalog' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+	$('.fa-expand-alt').click(function () {
+		if ($(this).parent('.chart-wrap').parent('.col-md-6').hasClass('expand')) {
+			$('.col-md-6.expand').removeClass('expand');
+		}
+		else {
+			$('.col-md-6.expand')?.removeClass('expand');
+			$(this).parent('.chart-wrap').parent('.col-md-6').addClass('expand');
+		}
+	});
+</script>
+<script>
+	$(document).ready(function() {
+		var malesCount = {{ males_count }};
+		var femalesCount = {{ females_count }};
+
+        // Setup
+        var labels = [
+			gettext('January'),
+			gettext('February'),
+			gettext('March'),
+			gettext('April'),
+			gettext('May'),
+			gettext('June'),
+		];
+		const data = {
+			labels: labels,
+			datasets: [{
+				label: gettext('Students'),
+				backgroundColor: 'rgba(0, 51, 102, 0.5)', // Navy Blue
+				borderColor: 'rgba(0, 51, 102, 1)',
+				hoverBorderWidth: 3,
+				data: [0, 10, 5, 2, 20, 30, 45]
+			}, {
+				label: gettext('Teachers'),
+				backgroundColor: 'rgba(135, 206, 235, 0.5)', // Sky Blue
+				borderColor: 'rgba(135, 206, 235, 1)',
+				hoverBorderWidth: 3,
+				data: [20, 0, 15, 4, 6, 4, 60],
+			}, {
+				label: gettext('Admins'),
+				backgroundColor: 'rgba(0, 155, 119, 0.5)', // Emerald Green
+				borderColor: 'rgba(0, 155, 119, 1)',
+				hoverBorderWidth: 3,
+				data: [85, 30, 34, 20, 20, 55, 45],
+			}, {
+				label: gettext('Staff'),
+				backgroundColor: 'rgba(218, 165, 32, 0.5)', // Goldenrod
+				borderColor: 'rgba(218, 165, 32, 1)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}]
+		};
+
+		var traffic = document.getElementById('traffic');
+		var chart = new Chart(traffic, {
+			type: 'line',
+			data: data,
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: gettext('Website Traffic'),
+						padding: 15
+					}
+				}
+			}
+		});
+
+		// Setup
+		const labelsEnrollment = [
+			'2016',
+			'2017',
+			'2018',
+			'2019',
+			'2020',
+			'2021',
+		];
+		const dataEnrollment = {
+			labels: labelsEnrollment,
+			datasets: [{
+				label: gettext('Grade 6.'),
+				backgroundColor: 'rgba(87, 206, 235, 0.5)',
+				borderColor: 'rgb(87, 206, 235, 1)',
+				hoverBorderWidth: 3,
+				data: [0, 10, 5, 2, 20, 30, 45]
+			}, {
+				label: gettext('Grade 7.'),
+				backgroundColor: 'rgba(0, 155, 119, 0.5)',
+				borderColor: 'rgb(0, 155, 119, 1)',
+				hoverBorderWidth: 3,
+				data: [20, 0, 15, 4, 6, 4, 60],
+			}, {
+				label: gettext('Grade 8.'),
+				backgroundColor: 'rgba(0, 51, 102, 0.5)',
+				borderColor: 'rgb(0, 51, 102)',
+				hoverBorderWidth: 3,
+				data: [85, 30, 34, 20, 20, 55, 45],
+			}, {
+				label: gettext('Grade 9.'),
+				backgroundColor: 'rgba(218, 165, 32, 0.5)',
+				borderColor: 'rgb(218, 165, 32)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: gettext('Grade 10.'),
+				backgroundColor: 'rgba(0, 0, 0, 0.5)',
+				borderColor: 'rgb(0, 0, 0)',
+				hoverBorderWidth: 3,
+				data: [15, 75, 45, 90, 60, 30, 90],
+			}]
+		};
+
+		var enrollement = document.getElementById('enrollement');
+		var chart = new Chart(enrollement, {
+			type: 'bar',
+			data: dataEnrollment,
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: gettext('Enrollment per course'),
+						padding: 20
+					}
+				}
+			}
+		});
+
+		// Average grade setup
+		const labelsGrade = [
+			'2017',
+			'2018',
+			'2019',
+			'2020',
+			'2022',
+		];
+		const dataGrade = {
+			labels: labelsGrade,
+			datasets: [{
+				label: gettext("Grade 6."),
+				backgroundColor: 'rgba(87, 206, 235, 0.5)',
+				borderColor: 'rgb(87, 206, 235, 1)',
+				hoverBorderWidth: 3,
+				data: [0, 10, 5, 2, 20, 30, 45]
+			}, {
+				label: gettext("Grade 7."),
+				backgroundColor: 'rgba(0, 155, 119, 0.5)',
+				borderColor: 'rgb(0, 155, 119, 1)',
+				hoverBorderWidth: 3,
+				data: [20, 0, 15, 4, 6, 4, 60],
+			}, {
+				label: gettext("Grade 8."),
+				backgroundColor: 'rgba(0, 51, 102, 0.5)',
+				borderColor: 'rgb(0, 51, 102)',
+				hoverBorderWidth: 3,
+				data: [85, 30, 34, 20, 20, 55, 45],
+			}, {
+				label: gettext("Grade 9."),
+				backgroundColor: 'rgba(218, 165, 32, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}]
+		};
+		
+		var students_grade = document.getElementById('students_grade');
+		var chart = new Chart(students_grade, {
+			type: 'bar',
+			data: dataGrade,
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: gettext('Students average grade (performance)'),
+						padding: 20
+					}
+				}
+			}
+		});
+
+		const dataGender = {
+			labels: [
+				gettext('Man'),
+				gettext('Women')
+			],
+			datasets: [{
+				label: gettext("Students Gender Dataset"),
+				data: [malesCount, femalesCount],
+				backgroundColor: [
+				'rgb(135, 206, 235)',
+				'rgb(218, 165, 32)'
+				],
+				hoverOffset: 4
+			}]
+		};
+
+		var gender = document.getElementById('gender');
+		var chart = new Chart(gender, {
+			type: 'pie',
+			data: dataGender,
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: gettext('Students Gender'),
+						padding: 20
+					}
+				}
+			}
+		});
+
+		const dataQualification = {
+			labels: [
+				gettext('PHD'),
+				gettext('Masters'),
+				gettext('BSc degree')
+			],
+			datasets: [{
+				label: gettext("Lecturer Qualifications Dataset"),
+				data: [24, 30, 26],
+				backgroundColor: [
+				'rgb(0, 51, 102)',
+				'rgb(135, 206, 235)',
+				'rgb(0, 155, 119)'
+				],
+				hoverOffset: 4
+			}]
+		};
+		var ethnicity = document.getElementById('ethnicity');
+		var chart = new Chart(ethnicity, {
+			type: 'pie',
+			data: dataQualification,
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: gettext('Lecturer qualifications'),
+						padding: 20
+					}
+				}
+			}
+		});
+
+		const dataLevels = {
+			labels: [
+				gettext('High School'),
+				gettext('Middle School'),
+			],
+			datasets: [{
+				label: gettext("Students level"),
+				data: [60, 40],
+				backgroundColor: [
+				'rgb(218, 165, 32)',
+				'rgb(0, 155, 119)',
+				],
+				hoverOffset: 4
+			}]
+		};
+		var language = document.getElementById('language');
+		var chart = new Chart(language, {
+			type: 'pie',
+			data: dataLevels,
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: gettext('Student levels'),
+						padding: 20
+					}
+				}
+			}
+		});
+	});
+	
+	// Course Add & Drop Switch Functionality
+	$(document).ready(function(){
+		$("#courseAddDropSwitch").change(function(){
+			if($(this).is(":checked")){
+				$(this).next("label").html('<span class="text-success">' + gettext('ON') + '</span> / <span class="text-muted">' + gettext('OFF') + '</span>');
+			} else {
+				$(this).next("label").html('<span class="text-muted">' + gettext('ON') + '</span> / <span class="text-danger">' + gettext('OFF') + '</span>');
+			}
+		});
+	});
+</script>
+
+{% endblock %}

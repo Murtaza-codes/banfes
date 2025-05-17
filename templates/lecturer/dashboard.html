@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Lecturer Dashboard' %} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <h1 class="mb-4">{% trans 'Lecturer Dashboard' %}</h1>
+    
+    <div class="row g-4">
+        <!-- Course Management -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-journal-text fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Course Management' %}</h4>
+                    <p class="text-muted">{% trans 'Manage your assigned courses and teaching materials.' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'user_course_list' %}" class="btn btn-primary">
+                            <i class="bi bi-journal-text me-2"></i>{% trans 'My Courses' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Student Scores -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-success bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-table fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Student Scores' %}</h4>
+                    <p class="text-muted">{% trans 'Manage student scores and assessment results.' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'add_score' %}" class="btn btn-success">
+                            <i class="bi bi-pencil-square me-2"></i>{% trans 'Manage Scores' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Course Allocations -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-info bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-diagram-3 fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Course Allocations' %}</h4>
+                    <p class="text-muted">{% trans 'View your allocated courses for current semester.' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'course_allocation_view' %}" class="btn btn-info">
+                            <i class="bi bi-eye me-2"></i>{% trans 'View Allocations' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assignments & Quizzes -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-warning bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-file-earmark-text fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Assignments' %}</h4>
+                    <p class="text-muted">{% trans 'Create and manage student assignments and quizzes.' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'quiz_progress' %}" class="btn btn-warning">
+                            <i class="bi bi-clipboard-check me-2"></i>{% trans 'Quiz Progress' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Semester Management -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-secondary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-calendar-range fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Semesters' %}</h4>
+                    <p class="text-muted">{% trans 'View and manage academic semesters.' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'semester_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-calendar3 me-2"></i>{% trans 'Manage Semesters' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Settings -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-danger bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+                        <i class="bi bi-person-gear fs-3"></i>
+                    </div>
+                    <h4>{% trans 'Profile Settings' %}</h4>
+                    <p class="text-muted">{% trans 'Update your profile and account settings.' %}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'profile_update' %}" class="btn btn-danger">
+                            <i class="bi bi-gear me-2"></i>{% trans 'Edit Profile' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} 

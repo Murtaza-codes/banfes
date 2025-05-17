@@ -1,0 +1,79 @@
+{% load custom_filters %}
+{% load i18n %}
+
+<div class="card h-100">
+    <div class="card-body">
+        <h5 class="card-title fw-bold">{{ assignment.title }}</h5>
+        <p class="mt-3"><strong>{% trans 'Type' %}:</strong> {{ assignment.assignment_type}}</p>
+        {% if assignment.deadline %}
+                <p><strong>{% trans 'Deadline' %}:</strong> {{ assignment.deadline|date:"D, d M Y H:i" }}</p>
+        {% endif %}
+        {% if assignment.assignment_type != "project" %}
+                <p class="mt-3"><strong>{% trans 'Attempts Left' %}:</strong> {{ assignment.remaining_attempts}}</p>
+        {% elif assignment.assignment_type == "project"%}
+                <p class="mt-3"><strong>{% trans 'Attempts Left' %}:</strong> No Limit</p>
+        {% endif %}
+        {% if assignment.final_score %}
+                <p class="mt-3"><strong>{% trans 'Final Score' %}:</strong> {{ assignment.final_score }}</p>
+        {% endif %}
+        {% if assignment.additional_file %}
+                <p><strong>{% trans 'Additional File' %}:</strong> 
+                    <a href="{{ assignment.additional_file.url }}" target="_blank">
+                        {% trans 'View File' %}
+                    </a>
+                </p>
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        {% if assignment.assignment_type == "project" %}
+            {% now "U" as now_timestamp %}
+            {% if assignment.deadline|date:"U" < now_timestamp %}
+                <button class="btn btn-secondary btn-sm" disabled>
+                    {% trans 'Deadline Passed' %}
+                </button>
+                <a href="{% url 'assignment_result' slug=course.slug assignment_id=assignment.id %}" class="btn btn-info btn-sm">
+                    {% trans 'View Result' %}
+                </a>
+            {% elif assignment.remaining_attempts == assignment.allowed_submissions %}
+                <a href="{% url 'assignment_submission' slug=course.slug assignment_id=assignment.id %}" class="btn btn-primary btn-sm">
+                    {% trans 'Submit Assignment' %}
+                </a>
+            {% else %}
+                <a href="{% url 'assignment_submission' slug=course.slug assignment_id=assignment.id %}" class="btn btn-warning btn-sm">
+                    {% trans 'Update Submission' %}
+                </a>
+                <a href="{% url 'assignment_result' slug=course.slug assignment_id=assignment.id %}" class="btn btn-info btn-sm">
+                    {% trans 'View Result' %}
+                </a>
+            {% endif %}
+        {% else %}
+            {% if assignment.remaining_attempts <= 0 %}
+                <button class="btn btn-secondary btn-sm" disabled>
+                    {% trans 'Submission Limit Reached' %}
+                </button>
+                <a href="{% url 'assignment_result' slug=course.slug assignment_id=assignment.id %}" class="btn btn-info btn-sm">
+                    {% trans 'View Result' %}
+                </a>
+            {% elif assignment.remaining_attempts < assignment.allowed_submissions %}
+                <a href="{% url 'assignment_submission' slug=course.slug assignment_id=assignment.id %}" class="btn btn-warning btn-sm">
+                    {% trans 'Update Submission' %}
+                </a>
+                <a href="{% url 'assignment_result' slug=course.slug assignment_id=assignment.id %}" class="btn btn-info btn-sm">
+                    {% trans 'View Result' %}
+                </a>
+            {% now "U" as now_timestamp %} 
+            {% elif assignment.deadline|date:"U" < now_timestamp %}
+                <button class="btn btn-secondary btn-sm" disabled>
+                    {% trans 'Deadline Passed' %}
+                </button>
+                <a href="{% url 'assignment_result' slug=course.slug assignment_id=assignment.id %}" class="btn btn-info btn-sm">
+                    {% trans 'View Result' %}
+                </a>
+            {% else %}
+                <a href="{% url 'assignment_submission' slug=course.slug assignment_id=assignment.id %}" class="btn btn-primary btn-sm">
+                    {% trans 'Submit Assignment' %}
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

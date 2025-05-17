@@ -1,0 +1,77 @@
+<!-- templates/assignment/assignment_submissions.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light p-2 rounded">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}">{% trans 'Programs' %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}">{{ course }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'assignment_list' course.slug %}">{% trans 'Assignments' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Submissions' %}</li>
+    </ol>
+</nav>
+
+<!-- Page Title -->
+<h1 class="mb-4">{% trans 'Submissions for' %} {{ assignment.title }}</h1>
+
+<div class="container">
+    {% if submissions %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans 'Student' %}</th>
+                <th>{% trans 'Submitted At' %}</th>
+                <th>{% trans 'Attempts' %}</th>
+                <th>{% trans 'AI Score' %}</th>
+                <th>{% trans 'Teacher Score' %}</th>
+                <th>{% trans 'Final Score' %}</th>
+                <th>{% trans 'Actions' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for submission in submissions %}
+            <tr>
+                <td>{{ submission.student.get_full_name }}</td>
+                <td>{{ submission.updated_at }}</td>
+                <td>{{ submission.attempts }}</td>
+                <td>
+                    {% if submission.ai_score is not None and submission.teacher_score is not None %}
+                        {{ submission.ai_score }} / 100
+                    {% else %}
+                        {% trans 'N/A' %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if submission.teacher_score %}
+                        {{ submission.teacher_score }} / 100
+                    {% else %}
+                        {% trans 'Not Graded' %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if submission.final_score and submission.teacher_score is not None %}
+                        {{ submission.final_score }} / 100
+                    {% else %}
+                        {% trans 'Pending' %}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'assignment_submission_detail' slug=course.slug assignment_id=assignment.id submission_id=submission.id %}" class="btn btn-sm ">
+                        {% trans 'View Submission' %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>{% trans 'No submissions yet.' %}</p>
+    {% endif %}
+</div>
+
+{% endblock %}

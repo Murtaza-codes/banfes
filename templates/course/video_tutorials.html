@@ -1,0 +1,429 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Video Tutorials' %} | {{ course.name }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programs' %}" class="text-decoration-none"><i class="bi bi-collection me-1"></i>{% trans 'Programs' %}</a></li>
+            <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none">{{ course.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'Video Tutorials' %}</li>
+        </ol>
+    </nav>
+
+    {% include 'course/course_navigation.html' %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-circle me-3">
+                                <i class="bi bi-play-btn-fill fs-4"></i>
+                            </div>
+                            <h2 class="mb-0">{% trans 'Video Tutorials' %}</h2>
+                        </div>
+                        {% if request.user.is_lecturer or request.user.is_superuser %}
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadVideoModal">
+                            <i class="bi bi-cloud-upload me-2"></i>{% trans 'Upload Video' %}
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body pt-0">
+                    <!-- Video Categories -->
+                    <ul class="nav nav-tabs mb-4" id="videoTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="all-videos-tab" data-bs-toggle="tab" 
+                                data-bs-target="#all-videos-tab-pane" type="button" role="tab" 
+                                aria-controls="all-videos-tab-pane" aria-selected="true">
+                                <i class="bi bi-collection-play me-2"></i>{% trans 'All Videos' %}
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="lectures-tab" data-bs-toggle="tab" 
+                                data-bs-target="#lectures-tab-pane" type="button" role="tab" 
+                                aria-controls="lectures-tab-pane" aria-selected="false">
+                                <i class="bi bi-mortarboard me-2"></i>{% trans 'Lectures' %}
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tutorials-tab" data-bs-toggle="tab" 
+                                data-bs-target="#tutorials-tab-pane" type="button" role="tab" 
+                                aria-controls="tutorials-tab-pane" aria-selected="false">
+                                <i class="bi bi-lightbulb me-2"></i>{% trans 'Tutorials' %}
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="supplementary-tab" data-bs-toggle="tab" 
+                                data-bs-target="#supplementary-tab-pane" type="button" role="tab" 
+                                aria-controls="supplementary-tab-pane" aria-selected="false">
+                                <i class="bi bi-plus-circle me-2"></i>{% trans 'Supplementary' %}
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Search and Filter -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-4 gap-2">
+                        <div class="input-group" style="max-width: 400px;">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="search" class="form-control border-start-0" placeholder="{% trans 'Search videos...' %}">
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <select class="form-select" style="max-width: 150px;">
+                                <option selected>{% trans 'Newest first' %}</option>
+                                <option>{% trans 'Oldest first' %}</option>
+                                <option>{% trans 'Most viewed' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="videoTabsContent">
+                        <!-- All Videos Tab -->
+                        <div class="tab-pane fade show active" id="all-videos-tab-pane" role="tabpanel" aria-labelledby="all-videos-tab" tabindex="0">
+                            <div class="row g-4">
+                                {% for video in videos %}
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="position-relative">
+                                            <a href="{{ video.get_absolute_url }}">
+                                                <img src="{{ video.thumbnail.url|default:'https://via.placeholder.com/400x225' }}" 
+                                                     class="card-img-top" alt="{{ video.title }}"
+                                                     style="height: 200px; object-fit: cover;">
+                                                <div class="position-absolute top-50 start-50 translate-middle">
+                                                    <div class="bg-dark bg-opacity-50 rounded-circle p-3">
+                                                        <i class="bi bi-play-fill text-white fs-2"></i>
+                                                    </div>
+                                                </div>
+                                                {% if video.duration %}
+                                                <span class="position-absolute bottom-0 end-0 badge bg-dark m-2">{{ video.duration }}</span>
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-2">
+                                                <a href="{{ video.get_absolute_url }}" class="text-decoration-none text-dark">
+                                                    {{ video.title }}
+                                                </a>
+                                            </h5>
+                                            <p class="card-text text-muted small mb-2">
+                                                {% if video.category %}
+                                                <span class="badge bg-primary me-2">{{ video.category }}</span>
+                                                {% endif %}
+                                                {{ video.upload_date|date:"M d, Y" }}
+                                            </p>
+                                            <p class="card-text">{{ video.description|truncatechars:100 }}</p>
+                                        </div>
+                                        <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="bi bi-eye me-1"></i> {{ video.views|default:"0" }} {% trans 'views' %}
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="bi bi-chat-left me-1"></i> {{ video.comments.count|default:"0" }} {% trans 'comments' %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="col-12">
+                                    <div class="text-center p-5">
+                                        <div class="text-muted mb-3">
+                                            <i class="bi bi-camera-video fs-1"></i>
+                                        </div>
+                                        <h5>{% trans 'No videos available' %}</h5>
+                                        <p>{% trans 'There are no videos available for this course yet.' %}</p>
+                                        
+                                        {% if request.user.is_lecturer or request.user.is_superuser %}
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadVideoModal">
+                                            <i class="bi bi-cloud-upload me-2"></i>{% trans 'Upload First Video' %}
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Pagination -->
+                            {% if videos.has_other_pages %}
+                            <nav aria-label="Video pagination" class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    {% if videos.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ videos.previous_page_number }}">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% for i in videos.paginator.page_range %}
+                                        {% if videos.number == i %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ i }}</span>
+                                        </li>
+                                        {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                        </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if videos.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ videos.next_page_number }}">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Other tabs would have similar structure -->
+                        <div class="tab-pane fade" id="lectures-tab-pane" role="tabpanel" aria-labelledby="lectures-tab" tabindex="0">
+                            <div class="text-center p-5">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-mortarboard fs-1"></i>
+                                </div>
+                                <p>{% trans 'Lecture videos will be displayed here.' %}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="tutorials-tab-pane" role="tabpanel" aria-labelledby="tutorials-tab" tabindex="0">
+                            <div class="text-center p-5">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-lightbulb fs-1"></i>
+                                </div>
+                                <p>{% trans 'Tutorial videos will be displayed here.' %}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="supplementary-tab-pane" role="tabpanel" aria-labelledby="supplementary-tab" tabindex="0">
+                            <div class="text-center p-5">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-plus-circle fs-1"></i>
+                                </div>
+                                <p>{% trans 'Supplementary videos will be displayed here.' %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if request.user.is_lecturer or request.user.is_superuser %}
+<!-- Upload Video Modal -->
+<div class="modal fade" id="uploadVideoModal" tabindex="-1" aria-labelledby="uploadVideoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="uploadVideoModalLabel">{% trans 'Upload New Video' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="videoUploadForm">
+                    <div class="mb-3">
+                        <label for="videoTitle" class="form-label">{% trans 'Video Title' %}</label>
+                        <input type="text" class="form-control" id="videoTitle" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoCategory" class="form-label">{% trans 'Category' %}</label>
+                        <select class="form-select" id="videoCategory" required>
+                            <option value="" selected disabled>{% trans 'Select a category' %}</option>
+                            <option value="lecture">{% trans 'Lecture' %}</option>
+                            <option value="tutorial">{% trans 'Tutorial' %}</option>
+                            <option value="supplementary">{% trans 'Supplementary' %}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoType" class="form-label">{% trans 'Video Source' %}</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="videoType" id="uploadBtn" value="upload" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="uploadBtn">
+                                <i class="bi bi-upload me-1"></i>{% trans 'Upload File' %}
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="videoType" id="youtubeBtn" value="youtube" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="youtubeBtn">
+                                <i class="bi bi-youtube me-1"></i>{% trans 'YouTube Link' %}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="uploadSection" class="mb-3">
+                        <label for="videoFile" class="form-label">{% trans 'Video File' %}</label>
+                        <input class="form-control" type="file" id="videoFile" accept="video/mp4,video/webm">
+                        <div class="form-text">{% trans 'Maximum file size: 500MB. Supported formats: MP4, WebM.' %}</div>
+                    </div>
+                    
+                    <div id="youtubeSection" class="mb-3" style="display: none;">
+                        <label for="youtubeUrl" class="form-label">{% trans 'YouTube URL' %}</label>
+                        <input type="url" class="form-control" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+                        <div class="form-text">{% trans 'Paste the full YouTube video URL.' %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoDescription" class="form-label">{% trans 'Description' %}</label>
+                        <textarea class="form-control" id="videoDescription" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="videoThumbnail" class="form-label">{% trans 'Thumbnail Image' %} ({% trans 'optional' %})</label>
+                        <input class="form-control" type="file" id="videoThumbnail" accept="image/jpeg,image/png,image/webp">
+                        <div class="form-text">{% trans 'Recommended size: 1280x720px. Max file size: 2MB.' %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="allowDownload" checked>
+                            <label class="form-check-label" for="allowDownload">
+                                {% trans 'Allow students to download this video' %}
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" class="btn btn-primary" id="submitVideoBtn">
+                    <i class="bi bi-cloud-upload me-2"></i>{% trans 'Upload Video' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% include 'course/course_components.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Video source toggle
+    const uploadBtn = document.getElementById('uploadBtn');
+    const youtubeBtn = document.getElementById('youtubeBtn');
+    const uploadSection = document.getElementById('uploadSection');
+    const youtubeSection = document.getElementById('youtubeSection');
+    
+    if (uploadBtn && youtubeBtn) {
+        uploadBtn.addEventListener('change', function() {
+            uploadSection.style.display = 'block';
+            youtubeSection.style.display = 'none';
+        });
+        
+        youtubeBtn.addEventListener('change', function() {
+            uploadSection.style.display = 'none';
+            youtubeSection.style.display = 'block';
+        });
+    }
+    
+    // Video upload form submission
+    const submitVideoBtn = document.getElementById('submitVideoBtn');
+    if (submitVideoBtn) {
+        submitVideoBtn.addEventListener('click', function() {
+            const videoTitle = document.getElementById('videoTitle').value;
+            const videoCategory = document.getElementById('videoCategory').value;
+            
+            if (!videoTitle || !videoCategory) {
+                courseToast.warning('{% trans "Please fill in all required fields." %}');
+                return;
+            }
+            
+            // Check if upload or YouTube link
+            const videoType = document.querySelector('input[name="videoType"]:checked').value;
+            
+            if (videoType === 'upload') {
+                const videoFile = document.getElementById('videoFile').files[0];
+                if (!videoFile) {
+                    courseToast.error('{% trans "Please select a video file to upload." %}');
+                    return;
+                }
+                
+                // Simulate upload process
+                submitVideoBtn.disabled = true;
+                submitVideoBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>{% trans 'Uploading...' %}`;
+                
+                // Simulate file upload with progress
+                let progress = 0;
+                const uploadInterval = setInterval(() => {
+                    progress += 10;
+                    if (progress <= 100) {
+                        courseToast.info(`{% trans "Uploading video" %}: ${progress}%`);
+                    } else {
+                        clearInterval(uploadInterval);
+                        
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('uploadVideoModal'));
+                        modal.hide();
+                        
+                        // Reset form and button
+                        submitVideoBtn.disabled = false;
+                        submitVideoBtn.innerHTML = `<i class="bi bi-cloud-upload me-2"></i>{% trans 'Upload Video' %}`;
+                        
+                        // Show success message
+                        courseToast.success('{% trans "Video uploaded successfully!" %}');
+                        
+                        // In a real implementation, this would refresh the page or add the new video to the list
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                }, 1000);
+            } else {
+                const youtubeUrl = document.getElementById('youtubeUrl').value;
+                if (!youtubeUrl) {
+                    courseToast.error('{% trans "Please enter a YouTube URL." %}');
+                    return;
+                }
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('uploadVideoModal'));
+                modal.hide();
+                
+                // Show success message
+                courseToast.success('{% trans "YouTube video added successfully!" %}');
+                
+                // In a real implementation, this would refresh the page or add the new video to the list
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        });
+    }
+    
+    // Search functionality
+    const searchInput = document.querySelector('input[type="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                courseToast.info('{% trans "Searching for videos..." %}');
+                // In a real implementation, this would perform a search
+            }
+        });
+    }
+});
+</script>
+
+{% endblock content %} 

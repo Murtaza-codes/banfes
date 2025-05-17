@@ -1,0 +1,585 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Admin Dashboard' %}</li>
+    </ol>
+</nav>  
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="title-1"><i class="fas fa-tachometer-alt me-2"></i>{% trans 'Admin Dashboard' %}</h1>
+    <div class="d-flex">
+        <a href="/admin/" class="btn btn-outline-primary me-2">
+            <i class="fas fa-cog"></i> {% trans 'Django Admin' %}
+        </a>
+        <div class="dropdown">
+            <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="fas fa-sliders-h"></i> {% trans 'Options' %}
+            </button>
+            <div class="dropdown-menu">
+                <h6 class="dropdown-header">{% trans 'Dashboard settings' %}</h6>
+                <button class="dropdown-item active" type="button">{% trans 'Display grid' %}</button>
+                <button class="dropdown-item" type="button">{% trans 'Display table' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'snippets/messages.html' %}
+
+<!-- Stats Overview -->
+<div class="row users-count mb-4">
+    <div class="col-6 col-md-3 mb-3 px-2">
+        <div class="card-count p-3 shadow-sm">
+            <h3><i class="fas fa-user-graduate bg-primary text-white rounded-circle p-2"></i></h3>
+            <div class="text-right">
+                {% trans 'Students' %}
+                <h2>{{ student_count|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3 px-2">
+        <div class="card-count p-3 shadow-sm">
+            <h3><i class="fas fa-chalkboard-teacher bg-success text-white rounded-circle p-2"></i></h3>
+            <div class="text-right">
+                {% trans 'Lecturers' %}
+                <h2>{{ lecturer_count|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3 px-2">
+        <div class="card-count p-3 shadow-sm">
+            <h3><i class="fas fa-book bg-info text-white rounded-circle p-2"></i></h3>
+            <div class="text-right">
+                {% trans 'Courses' %}
+                <h2>{{ course_count|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3 px-2">
+        <div class="card-count p-3 shadow-sm">
+            <h3><i class="fas fa-graduation-cap bg-warning text-white rounded-circle p-2"></i></h3>
+            <div class="text-right">
+                {% trans 'Programs' %}
+                <h2>{{ program_count|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Modules -->
+<div class="row">
+    <!-- Left Column -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>{% trans 'Administration' %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- User Management -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-primary text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-users fs-3"></i>
+                                </div>
+                                <h5 class="card-title">{% trans 'Users' %}</h5>
+                                <p class="card-text small text-muted">{% trans 'Manage students, lecturers and other users' %}</p>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'student_list' %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-user-graduate me-1"></i> {% trans 'Students' %}
+                                    </a>
+                                    <a href="{% url 'lecturer_list' %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-chalkboard-teacher me-1"></i> {% trans 'Lecturers' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Academics -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-success text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-book-open fs-3"></i>
+                                </div>
+                                <h5 class="card-title">{% trans 'Academics' %}</h5>
+                                <p class="card-text small text-muted">{% trans 'Manage programs, courses and allocations' %}</p>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'programs:program_list' %}" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-graduation-cap me-1"></i> {% trans 'Programs' %}
+                                    </a>
+                                    <a href="{% url 'programs:course_allocation_view' %}" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-tasks me-1"></i> {% trans 'Course Allocation' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Schedule -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-info text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-calendar-alt fs-3"></i>
+                                </div>
+                                <h5 class="card-title">{% trans 'Calendar' %}</h5>
+                                <p class="card-text small text-muted">{% trans 'Manage sessions, semesters and academic calendar' %}</p>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'session_list' %}" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-calendar-week me-1"></i> {% trans 'Sessions' %}
+                                    </a>
+                                    <a href="{% url 'semester_list' %}" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-calendar-alt me-1"></i> {% trans 'Semesters' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-warning text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-newspaper fs-3"></i>
+                                </div>
+                                <h5 class="card-title">{% trans 'Content' %}</h5>
+                                <p class="card-text small text-muted">{% trans 'Manage news, events, and site content' %}</p>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'home' %}" class="btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-newspaper me-1"></i> {% trans 'News & Events' %}
+                                    </a>
+                                    <a href="/admin/core/sitesettings/" class="btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-cog me-1"></i> {% trans 'Site Settings' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Assessment -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-danger text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-clipboard-check fs-3"></i>
+                                </div>
+                                <h5 class="card-title">{% trans 'Assessment' %}</h5>
+                                <p class="card-text small text-muted">{% trans 'Manage quizzes, assignments and results' %}</p>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'quiz_progress' %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-question-circle me-1"></i> {% trans 'Quiz Progress' %}
+                                    </a>
+                                    <a href="{% url 'quiz_marking' %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-check-double me-1"></i> {% trans 'Complete Exams' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+
+                    <!-- Settings -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-secondary text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-sliders-h fs-3"></i>
+                                </div>
+                                <h5 class="card-title">{% trans 'System' %}</h5>
+                                <p class="card-text small text-muted">{% trans 'Advanced system settings and configuration' %}</p>
+                                <div class="d-grid gap-2">
+                                    <a href="/admin/" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-tools me-1"></i> {% trans 'Django Admin' %}
+                                    </a>
+                                    <a href="{% url 'profile' %}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-user-cog me-1"></i> {% trans 'My Profile' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+
+    <!-- Right Column -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>{% trans 'Activity & Stats' %}</h5>
+            </div>
+            <div class="card-body">
+                <!-- Registration toggle -->
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0"><i class="fas fa-user-plus me-2"></i>{% trans 'Course Registration' %}</h6>
+                                <p class="text-muted small mb-0">{% trans 'Enable/disable course registration' %}</p>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="courseRegistrationToggle" checked>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+                <!-- Recent Activities -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3"><i class="fas fa-history me-2"></i>{% trans 'Recent Activities' %}</h6>
+                        <ul class="list-group list-group-flush">
+                            {% for i in "12345"|make_list %}
+                            <li class="list-group-item px-0 py-2 border-bottom">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-light rounded-circle p-2">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0 small"><strong>{% trans 'User added a new course' %}</strong></p>
+                                        <p class="mb-0 small text-muted">{% trans '2 hours ago' %}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="#" class="btn btn-sm btn-outline-primary mt-3 w-100">
+                            <i class="fas fa-eye me-1"></i> {% trans 'View All Activities' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- All Admin Panel Options -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="fas fa-shield-alt me-2"></i>{% trans 'All Admin Panel Options' %}</h5>
+    </div>
+    <div class="card-body">
+        <!-- User Management -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-users me-2 text-primary"></i>{% trans 'User Management' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/accounts/user/" class="btn btn-sm btn-outline-primary w-100 text-start">
+                    <i class="fas fa-user me-1"></i> {% trans 'Users' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/accounts/student/" class="btn btn-sm btn-outline-primary w-100 text-start">
+                    <i class="fas fa-user-graduate me-1"></i> {% trans 'Students' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/accounts/parent/" class="btn btn-sm btn-outline-primary w-100 text-start">
+                    <i class="fas fa-user-friends me-1"></i> {% trans 'Parents' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{% url 'student_add_view' %}" class="btn btn-sm btn-outline-primary w-100 text-start">
+                    <i class="fas fa-user-plus me-1"></i> {% trans 'Add Student' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{% url 'staff_add_view' %}" class="btn btn-sm btn-outline-primary w-100 text-start">
+                    <i class="fas fa-user-plus me-1"></i> {% trans 'Add Lecturer' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/auth/user/add/" class="btn btn-sm btn-outline-primary w-100 text-start">
+                    <i class="fas fa-user-shield me-1"></i> {% trans 'Add Admin' %}
+                </a>
+            </div>
+        </div>
+        
+        <!-- Content & Posting Management -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-newspaper me-2 text-purple"></i>{% trans 'Content & Posting Management' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/core/newsandevents/add/" class="btn btn-sm btn-outline-purple w-100 text-start">
+                    <i class="fas fa-plus-circle me-1"></i> {% trans 'Add News/Event' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/core/newsandevents/" class="btn btn-sm btn-outline-purple w-100 text-start">
+                    <i class="fas fa-newspaper me-1"></i> {% trans 'Manage News/Events' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/upload/add/" class="btn btn-sm btn-outline-purple w-100 text-start">
+                    <i class="fas fa-file-upload me-1"></i> {% trans 'Upload Document' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/uploadvideo/add/" class="btn btn-sm btn-outline-purple w-100 text-start">
+                    <i class="fas fa-video me-1"></i> {% trans 'Upload Video' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/assignment/assignment/add/" class="btn btn-sm btn-outline-purple w-100 text-start">
+                    <i class="fas fa-tasks me-1"></i> {% trans 'Create Assignment' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/quiz/quiz/add/" class="btn btn-sm btn-outline-purple w-100 text-start">
+                    <i class="fas fa-question-circle me-1"></i> {% trans 'Create Quiz' %}
+                </a>
+            </div>
+        </div>
+        
+        <!-- Course Management -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-book-open me-2 text-success"></i>{% trans 'Course Management' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/program/" class="btn btn-sm btn-outline-success w-100 text-start">
+                    <i class="fas fa-graduation-cap me-1"></i> {% trans 'Programs' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/course/" class="btn btn-sm btn-outline-success w-100 text-start">
+                    <i class="fas fa-book me-1"></i> {% trans 'Courses' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/courseallocation/" class="btn btn-sm btn-outline-success w-100 text-start">
+                    <i class="fas fa-tasks me-1"></i> {% trans 'Course Allocations' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/topic/" class="btn btn-sm btn-outline-success w-100 text-start">
+                    <i class="fas fa-list me-1"></i> {% trans 'Topics' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/upload/" class="btn btn-sm btn-outline-success w-100 text-start">
+                    <i class="fas fa-upload me-1"></i> {% trans 'Uploads' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/course/uploadvideo/" class="btn btn-sm btn-outline-success w-100 text-start">
+                    <i class="fas fa-video me-1"></i> {% trans 'Upload Videos' %}
+                </a>
+            </div>
+        </div>
+        
+        <!-- Quiz Management -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-question-circle me-2 text-info"></i>{% trans 'Quiz Management' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/quiz/quiz/" class="btn btn-sm btn-outline-info w-100 text-start">
+                    <i class="fas fa-question me-1"></i> {% trans 'Quizzes' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/quiz/mcquestion/" class="btn btn-sm btn-outline-info w-100 text-start">
+                    <i class="fas fa-list-ol me-1"></i> {% trans 'MC Questions' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/quiz/essayquestion/" class="btn btn-sm btn-outline-info w-100 text-start">
+                    <i class="fas fa-pen me-1"></i> {% trans 'Essay Questions' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/quiz/progress/" class="btn btn-sm btn-outline-info w-100 text-start">
+                    <i class="fas fa-chart-line me-1"></i> {% trans 'Progress' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/quiz/sitting/" class="btn btn-sm btn-outline-info w-100 text-start">
+                    <i class="fas fa-chair me-1"></i> {% trans 'Sittings' %}
+                </a>
+            </div>
+        </div>
+        
+        <!-- Result Management -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-chart-bar me-2 text-warning"></i>{% trans 'Result Management' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/result/takencourse/" class="btn btn-sm btn-outline-warning w-100 text-start">
+                    <i class="fas fa-book-reader me-1"></i> {% trans 'Taken Courses' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/result/result/" class="btn btn-sm btn-outline-warning w-100 text-start">
+                    <i class="fas fa-poll me-1"></i> {% trans 'Results' %}
+                </a>
+            </div>
+        </div>
+        
+        <!-- Assignment Management -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-tasks me-2 text-danger"></i>{% trans 'Assignment Management' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/assignment/assignment/" class="btn btn-sm btn-outline-danger w-100 text-start">
+                    <i class="fas fa-file-alt me-1"></i> {% trans 'Assignments' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/assignment/assignmentsubmission/" class="btn btn-sm btn-outline-danger w-100 text-start">
+                    <i class="fas fa-clipboard-check me-1"></i> {% trans 'Assignment Submissions' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/assignment/assignmentsubmissionfile/" class="btn btn-sm btn-outline-danger w-100 text-start">
+                    <i class="fas fa-file-upload me-1"></i> {% trans 'Assignment Files' %}
+                </a>
+            </div>
+        </div>
+        
+        <!-- Calendar Management -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-calendar-alt me-2 text-secondary"></i>{% trans 'Calendar Management' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/core/semester/" class="btn btn-sm btn-outline-secondary w-100 text-start">
+                    <i class="fas fa-calendar-alt me-1"></i> {% trans 'Semesters' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/core/session/" class="btn btn-sm btn-outline-secondary w-100 text-start">
+                    <i class="fas fa-calendar-week me-1"></i> {% trans 'Sessions' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/core/newsandevents/" class="btn btn-sm btn-outline-secondary w-100 text-start">
+                    <i class="fas fa-newspaper me-1"></i> {% trans 'News & Events' %}
+                </a>
+            </div>
+        </div>
+        
+        <!-- Auth Management -->
+        <div class="row">
+            <div class="col-12">
+                <h5 class="border-bottom pb-2"><i class="fas fa-lock me-2 text-dark"></i>{% trans 'Authentication & Authorization' %}</h5>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/auth/group/" class="btn btn-sm btn-outline-dark w-100 text-start">
+                    <i class="fas fa-users-cog me-1"></i> {% trans 'Groups' %}
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="/admin/auth/permission/" class="btn btn-sm btn-outline-dark w-100 text-start">
+                    <i class="fas fa-key me-1"></i> {% trans 'Permissions' %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Footer -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>{% trans 'Quick Actions' %}</h5>
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'programs:program_list' %}" class="btn btn-primary">
+                <i class="fas fa-graduation-cap me-1"></i> {% trans 'Programs' %}
+            </a>
+            <a href="{% url 'programs:course_allocation_view' %}" class="btn btn-success">
+                <i class="fas fa-tasks me-1"></i> {% trans 'Course Allocation' %}
+            </a>
+            <a href="{% url 'student_list' %}" class="btn btn-info">
+                <i class="fas fa-user-graduate me-1"></i> {% trans 'Students' %}
+            </a>
+            <a href="{% url 'lecturer_list' %}" class="btn btn-warning">
+                <i class="fas fa-chalkboard-teacher me-1"></i> {% trans 'Lecturers' %}
+            </a>
+            <a href="/admin/" class="btn btn-danger">
+                <i class="fas fa-cog me-1"></i> {% trans 'Admin Panel' %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-count {
+        background-color: white;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .card-count:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1)!important;
+    }
+    
+    .card-count h3 i {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .card-count .text-right {
+        text-align: right;
+    }
+    
+    .card-count h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    /* Custom purple color for content management */
+    .text-purple {
+        color: #8a2be2 !important;
+    }
+    
+    .btn-outline-purple {
+        color: #8a2be2;
+        border-color: #8a2be2;
+    }
+    
+    .btn-outline-purple:hover {
+        color: white;
+        background-color: #8a2be2;
+        border-color: #8a2be2;
+    }
+</style>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    // Toggle functionality for course registration switch
+    document.getElementById('courseRegistrationToggle').addEventListener('change', function() {
+        const isEnabled = this.checked;
+        // Here you would normally send an AJAX request to update the setting
+        console.log('Course registration is now:', isEnabled ? 'enabled' : 'disabled');
+    });
+</script>
+{% endblock %}

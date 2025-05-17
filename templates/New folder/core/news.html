@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'News & Announcements' %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 mb-4">{% trans 'News & Announcements' %}</h1>
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans 'Latest Updates' %}</h3>
+                    <p class="text-muted">{% trans 'Stay informed about the latest developments, announcements, and news.' %}</p>
+                    
+                    <div class="alert alert-info">
+                        <h5><i class="bi bi-info-circle me-2"></i>{% trans 'Coming Soon' %}</h5>
+                        <p>{% trans 'This page is currently under construction. Check back soon for the latest news and announcements.' %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
